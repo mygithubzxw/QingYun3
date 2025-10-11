@@ -268,13 +268,82 @@
                 width: 100%;
             }
         }
+		/* 提示信息样式 */
+		.tooltip-container {
+		    position: relative;
+		    display: inline-block;
+		    margin-left: 8px;
+		}
+		
+		.tooltip-icon {
+		    display: inline-flex;
+		    align-items: center;
+		    justify-content: center;
+		    width: 18px;
+		    height: 18px;
+		    background-color: #fff;
+		    color: #2575fc;
+		    border-radius: 50%;
+		    font-size: 12px;
+		    font-weight: bold;
+		    cursor: help;
+		    transition: all 0.3s;
+		    box-shadow: 0 0 0 1px #2575fc;
+		}
+		
+		.tooltip-icon:hover {
+		    background-color: #2575fc;
+		    color: white;
+		}
+		
+		.tooltip-text {
+		    visibility: hidden;
+		    width: 200px;
+		    background-color: #333;
+		    color: #fff;
+		    text-align: center;
+		    border-radius: 6px;
+		    padding: 8px;
+		    position: absolute;
+		    z-index: 1;
+		    bottom: 125%;
+		    left: 50%;
+		    transform: translateX(-50%);
+		    opacity: 0;
+		    transition: opacity 0.3s;
+		    font-size: 12px;
+		    line-height: 1.4;
+		    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+		}
+		
+		.tooltip-text::after {
+		    content: "";
+		    position: absolute;
+		    top: 100%;
+		    left: 50%;
+		    margin-left: -5px;
+		    border-width: 5px;
+		    border-style: solid;
+		    border-color: #333 transparent transparent transparent;
+		}
+		
+		.tooltip-container:hover .tooltip-text {
+		    visibility: visible;
+		    opacity: 1;
+		}
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>青云之志3算极限关卡</h1>
-            <p class="description">根据当前资源状态计算关卡推进极限</p>
+            <p class="description">
+                根据当前资源状态计算关卡推进极限
+                <span class="tooltip-container">
+                    <span class="tooltip-icon">ⓘ</span>
+                    <span class="tooltip-text">此计算器使用门槛为知道膨胀转传导玩法！</span>
+                </span>
+            </p>
         </header>
         
         <div class="content">
