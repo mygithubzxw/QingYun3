@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青云之志3算极限关卡</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.2/decimal.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+        
+        .output-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border-left: 4px solid #2575fc;
+        }
+        
+        .result h3 {
+            color: #2575fc;
+            margin-bottom: 10px;
+        }
+        
+        .output-log {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 20px;
+        }
+        
+        .output-line {
+            margin-bottom: 5px;
+        }
+        
+        .highlight {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        
+        /* 表格样式 */
+        .magnitude-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .magnitude-table th {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 12px 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .magnitude-table td {
+            padding: 10px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .magnitude-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .magnitude-table tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .table-container {
+            margin-top: 20px;
+        }
+        
+        .table-title {
+            font-size: 18px;
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .format-examples {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* 自定义护身符样式 */
+        .custom-param-group {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .custom-param-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .custom-param-name {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .remove-custom-param {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .custom-param-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .custom-param-inputs label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+        
+        .custom-param-inputs input {
+            width: auto;
+            flex: 1;
+        }
+        
+        #addCustomParam {
+            background: #27ae60;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-icon {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .custom-param-inputs {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .custom-param-inputs input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>青云之志3算极限关卡</h1>
+            <p class="description">根据当前资源状态计算关卡推进极限</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <h2>输入参数</h2>
+                
+                <div class="form-group">
+                    <label for="curLevel">当前关卡</label>
+                    <input type="number" id="curLevel" value="94" min="1" max="163">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dy">盗印番数</label>
+                    <input type="text" id="dy" value="396.87沟">
+                    <div class="format-examples">支持格式：数字(396.87)、科学计数法(3.9687e34)、单位(396.87沟)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fz">负重番数</label>
+                    <input type="text" id="fz" value="1.87e36">
+                    <div class="format-examples">支持格式：数字、科学计数法、单位</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="yg">月光番数</label>
+                    <input type="text" id="yg" value="1.98e24">
+                    <div class="format-examples">支持格式：数字、科学计数法、单位</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="eat_fog">吃迷雾次数</label>
+                    <input type="number" id="eat_fog" value="0" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="lose_fz">亏负重次数</label>
+                    <input type="number" id="lose_fz" value="0" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="lose_yg">亏月光次数</label>
+                    <input type="number" id="lose_yg" value="0" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dy_type">盗印类型</label>
+                    <select id="dy_type">
+                        <option value="普通盗印">普通盗印</option>
+                        <option value="卡维膨胀盗印">卡维膨胀盗印</option>
+                        <option value="其他卡膨胀盗印">其他卡膨胀盗印</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fz_type">负重类型</label>
+                    <select id="fz_type">
+                        <option value="膨胀负重">膨胀负重</option>
+                        <option value="天使负重">天使负重</option>
+                        <option value="普通负重">普通负重</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="yg_type">月光类型</label>
+                    <select id="yg_type">
+                        <option value="普通月光">普通月光</option>
+                        <option value="膨胀月光">膨胀月光</option>
+                        <option value="天使月光">天使月光</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="basicFan">基础番数</label>
+                    <input type="number" id="basicFan" value="23" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="basicScore">基础分数</label>
+                    <input type="number" id="basicScore" value="1111100" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dy_times">盗印次数</label>
+                    <input type="number" id="dy_times" value="6" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="fz_times">负重次数</label>
+                    <input type="number" id="fz_times" value="3" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="yg_times">月光次数</label>
+                    <input type="number" id="yg_times" value="5" min="0">
+                </div>
+                
+                <button id="addCustomParam">
+                    <span class="add-icon">+</span> 添加自定义护身符
+                </button>
+                
+                <div id="customParamsContainer">
+                    <!-- 自定义护身符将在这里动态添加 -->
+                </div>
+                
+                <button id="calculateBtn">计算关卡极限</button>
+            </div>
+            
+            <div class="output-section">
+                <h2>计算结果</h2>
+                
+                <!-- 数量级对照表 -->
+                <div class="table-container">
+                    <div class="table-title">数量级对照表</div>
+                    <table class="magnitude-table">
+                        <thead>
+                            <tr>
+                                <th>单位</th>
+                                <th>数量级</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>万</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>亿</td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td>兆</td>
+                                <td>12</td>
+                            </tr>
+                            <tr>
+                                <td>京</td>
+                                <td>16</td>
+                            </tr>
+                            <tr>
+                                <td>垓</td>
+                                <td>20</td>
+                            </tr>
+                            <tr>
+                                <td>秭</td>
+                                <td>24</td>
+                            </tr>
+                            <tr>
+                                <td>穰</td>
+                                <td>28</td>
+                            </tr>
+                            <tr>
+                                <td>沟</td>
+                                <td>32</td>
+                            </tr>
+                            <tr>
+                                <td>涧</td>
+                                <td>36</td>
+                            </tr>
+                            <tr>
+                                <td>正</td>
+                                <td>40</td>
+                            </tr>
+                            <tr>
+                                <td>载</td>
+                                <td>44</td>
+                            </tr>
+                            <tr>
+                                <td>极</td>
+                                <td>48</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="result">
+                    <h3>当前配置的极限是：<span id="resultText">等待计算...</span></h3>
+                </div>
+                
+                <div class="output-log" id="outputLog">
+                    <div class="output-line">等待计算...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 定义常量
+        const FZ_TYPE_PZ = "膨胀负重";
+        const FZ_TYPE_TS = "天使负重";
+        const FZ_TYPE_NORMAL = "普通负重";
+        const YG_TYPE_PZ = "膨胀月光";
+        const YG_TYPE_TS = "天使月光";
+        const YG_TYPE_NORMAL = "普通月光";
+        const DY_TYPE_KW_PZ = "卡维膨胀盗印";
+        const DY_TYPE_OTHER_PZ = "其他卡膨胀盗印";
+        const DY_TYPE_NORMAL = "普通盗印";
+
+        // 数量级对照表
+        const MAGNITUDE_MAP = {
+            "万": 4,
+            "亿": 8,
+            "兆": 12,
+            "京": 16,
+            "垓": 20,
+            "秭": 24,
+            "穰": 28,
+            "沟": 32,
+            "涧": 36,
+            "正": 40,
+            "载": 44,
+            "极": 48
+        };
+
+        // 初始化关卡要求分数
+        const REQUIRED_SCORE = initRequiredScore();
+
+        // 获取DOM元素
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultText = document.getElementById('resultText');
+        const outputLog = document.getElementById('outputLog');
+        const addCustomParamBtn = document.getElementById('addCustomParam');
+        const customParamsContainer = document.getElementById('customParamsContainer');
+
+        // 自定义护身符计数器
+        let customParamCounter = 1;
+
+        // 初始化关卡要求分数
+        function initRequiredScore() {
+            const ORIGINAL_REQUIRED_SCORE = "1.00E+06,1.20E+07,9.08E+07,8.11E+08,8.43E+09,1.00E+11,1.35E+12,2.06E+13,3.48E+14,6.54E+15,1.36E+17,3.09E+18,7.68E+19,2.08E+21,6.64E+22,2.46E+24,1.05E+26,5.15E+27,2.82E+29,1.83E+31,1.31E+33,1.07E+35,9.72E+36,9.94E+38,1.14E+41,1.46E+43,2.08E+45,3.31E+47,5.85E+49,1.26E+52,3.00E+54,8.71E+56,2.79E+59,1.08E+62,4.63E+64,2.40E+67,1.37E+70,9.41E+72,7.15E+75,7.09E+78,9.17E+81,1.55E+85,3.40E+88,9.73E+91,3.63E+95,1.11E+99,1.11E+103,9.11E+106,9.72E+110,1.35E+115,2.81E+119,8.79E+123,4.12E+128,2.90E+134,3.06E+138,4.84E+143,1.15E+149,4.10E+154,2.19E+160,1.76E+166,2.11E+172,3.80E+178,1.03E+185,4.17E+191,2.54E+198,2.32E+205,3.18E+212,6.54E+219,2.02E+227,9.31E+234,6.46E+242,6.72E+250,1.05E+259,2.45E+267,8.60E+275,4.53E+284,3.58E+293,4.24E+302,5.7E310,5.7E318,5.7E326,5.7E334,5.7E342,5.7E350,5.7E359,5.7E368,5.7E377,5.7E386,5.7E395,5.7E405,5.7E415,5.7E425,5.7E435,5.7E445,5.7E455,5.7E466,5.7E477,5.7E488,5.7E499,9.999E510,9.999E522,9.999E534,9.999E546,9.999E558,9.999E571,9.999E584,9.999E597,9.999E611,9.999E625,9.999E639,9.999E654,9.999E669,9.999E684,9.999E699,9.999E715,9.999E731,9.999E748,9.999E765,9.999E783,9.999E801,9.999E820,9.999E839,9.999E859,9.999E879,9.999E900,9.999E921,9.999E943,9.999E966,9.999E990,9.999E1015,9.999E1041,9.999E1068,9.999E1096,2.9997E1126,9.999E1155,9.999E1186,9.999E1218,9.999E1251,9.999E1285,9.999E1320,9.999E1356,9.999E1393,9.999E1431,9.999E1470,9.999E1510,9.999E1551,9.999E1593,9.999E1636,9.999E1680,2.9997E1726,9.999E1771,9.999E1818,2.9997E1867,9.999E1915,9.999E1965,9.999E2016,9.999E2068,2.9997E2122,9.999E2175,9.999E2230,9.999E2286,9.999E2343,9.999E2401,9.999E2460";
+            const REQUIRED_SCORE = new Array(164);
+            const split = ORIGINAL_REQUIRED_SCORE.split(",");
+            for (let i = 0; i < split.length; i++) {
+                REQUIRED_SCORE[i] = new Decimal(split[i]);
+            }
+            return REQUIRED_SCORE;
+        }
+
+        // 科学计数法格式化
+        function formatScientific(number) {
+            if (number.isZero()) return "0.00";
+            
+            // 使用 toExponential() 方法获取科学计数法表示
+            const exponential = number.toExponential(2);
+            return exponential;
+        }
+
+        // 解析数值输入，支持数字、科学计数法和单位
+        function parseValue(input) {
+            // 如果输入是科学计数法，直接转换
+            if (input.includes('e') || input.includes('E')) {
+                return new Decimal(input);
+            }
+            
+            // 检查是否包含单位
+            let unit = null;
+            let numericPart = input;
+            
+            // 遍历单位映射表，检查输入是否包含单位
+            for (const unitChar in MAGNITUDE_MAP) {
+                if (input.includes(unitChar)) {
+                    unit = unitChar;
+                    numericPart = input.replace(unitChar, '');
+                    break;
+                }
+            }
+            
+            // 解析数值部分
+            const value = new Decimal(numericPart);
+            
+            // 如果有单位，乘以对应的数量级
+            if (unit) {
+                const magnitude = MAGNITUDE_MAP[unit];
+                return value.times(Decimal.pow(10, magnitude));
+            }
+            
+            // 如果没有单位，直接返回数值
+            return value;
+        }
+
+        // 执行当前关卡计算
+        function executeCurrentStage(curLevel, dy, fz, yg, lose_fz, lose_yg, eat_fog, dy_type, fz_type, yg_type, basicFan, basicScore, dy_times, fz_times, yg_times, customizedParams) {
+            let toNextStage = false;
+            let outputLines = [];
+            let isFirstLoop = true;
+            
+            while (!toNextStage) {
+                outputLines.push(`EX${curLevel}盗印：${formatScientific(dy)}`);
+                
+                // 考虑亏负重
+                if (lose_fz <= 0) {
+                    // 负重类型
+                    switch (fz_type) {
+                        case FZ_TYPE_NORMAL:
+                            fz = fz.times(1.5);
+                            break;
+                        case FZ_TYPE_TS:
+                            fz = fz.times(2);
+                            break;
+                        case FZ_TYPE_PZ:
+                            fz = fz.times(1.5 * 1.5);
+                            break;
+                    }
+                } else {
+                    lose_fz--;
+                }
+                outputLines.push(`EX${curLevel}负重：${formatScientific(fz)}`);
+                
+                // 考虑亏月光
+                if (lose_yg <= 0) {
+                    // 月光类型
+                    switch (yg_type) {
+                        case YG_TYPE_NORMAL:
+                            yg = yg.times(1.5);
+                            break;
+                        case YG_TYPE_TS:
+                            yg = yg.times(2);
+                            break;
+                        case YG_TYPE_PZ:
+                            yg = yg.times(1.5 * 1.5);
+                            break;
+                    }
+                } else {
+                    lose_yg--;
+                }
+                outputLines.push(`EX${curLevel}月光：${formatScientific(yg)}`);
+                
+                // 计算总番数和分数
+                let zhiShuFan = dy.pow(dy_times).times(fz.pow(fz_times)).times(yg.pow(yg_times));
+                
+                // 添加自定义护身符参数的计算
+                if (customizedParams && customizedParams.length > 0) {
+                    customizedParams.forEach((param, index) => {
+                        if (param.value && param.times) {
+                            zhiShuFan = zhiShuFan.times(param.value.pow(param.times));
+                            //outputLines.push(`自定义护身符${index + 1}：${formatScientific(param.value)}^${param.times}`);
+                        }
+                    });
+                }
+                
+                const totalFan = zhiShuFan.times(basicFan);
+                const totalScore = totalFan.times(basicScore);
+                
+                outputLines.push(`----EX${curLevel}分数：${formatScientific(totalScore)}`);
+                
+                // 检查是否能进入下一关
+                if (totalScore.lt(REQUIRED_SCORE[curLevel])) {
+                    toNextStage = true;
+                    outputLines.push(`<span class="highlight">无法达到EX${curLevel + 1}的要求分数 ${formatScientific(REQUIRED_SCORE[curLevel])}</span>`);
+                }
+                
+                curLevel = curLevel + 1;
+                
+                // 处理吃迷雾次数 - 只在第一次循环中处理
+                if (isFirstLoop && eat_fog > 0) {
+                    // 吃迷雾时，盗印成长次数为吃迷雾次数+1
+                    const growthTimes = eat_fog + 1;
+                    for (let i = 0; i < growthTimes; i++) {
+                        switch (dy_type) {
+                            case DY_TYPE_KW_PZ:
+                                dy = dy.times(Math.pow(1.3, 4));
+                                break;
+                            case DY_TYPE_OTHER_PZ:
+                                dy = dy.times(Math.pow(1.3, 2));
+                                break;
+                            case DY_TYPE_NORMAL:
+                                dy = dy.times(1.3);
+                                break;
+                        }
+                    }
+                    //outputLines.push(`<span class="highlight">使用${eat_fog}次吃迷雾，盗印成长${growthTimes}次</span>`);
+                    eat_fog = 0; // 吃迷雾次数设为0
+                } else {
+                    // 正常盗印成长
+                    switch (dy_type) {
+                        case DY_TYPE_KW_PZ:
+                            dy = dy.times(Math.pow(1.3, 4));
+                            break;
+                        case DY_TYPE_OTHER_PZ:
+                            dy = dy.times(Math.pow(1.3, 2));
+                            break;
+                        case DY_TYPE_NORMAL:
+                            dy = dy.times(1.3);
+                            break;
+                    }
+                }
+                
+                isFirstLoop = false; // 第一次循环结束
+                
+                // 防止无限循环
+                if (curLevel >= REQUIRED_SCORE.length) {
+                    toNextStage = true;
+                    outputLines.push(`<span class="highlight">已达到最高关卡EX${curLevel}</span>`);
+                }
+            }
+            
+            // 更新输出日志
+            outputLog.innerHTML = outputLines.map(line => `<div class="output-line">${line}</div>`).join('');
+            
+            return curLevel;
+        }
+
+        // 添加自定义护身符
+        function addCustomParam() {
+            const paramId = `customParam${customParamCounter}`;
+            
+            const customParamHTML = `
+                <div class="custom-param-group" id="${paramId}">
+                    <div class="custom-param-header">
+                        <input type="text" class="custom-param-name" value="自定义护身符${customParamCounter}">
+                        <button type="button" class="remove-custom-param" onclick="removeCustomParam('${paramId}')">×</button>
+                    </div>
+                    <div class="custom-param-inputs">
+                        <label>乘</label>
+                        <input type="text" value="1">
+                        <label>番</label>
+						<label>次数</label>
+						<input type="number" value="1" min="0" required>
+                    </div>
+                </div>
+            `;
+            
+            customParamsContainer.insertAdjacentHTML('beforeend', customParamHTML);
+            customParamCounter++;
+        }
+
+        // 删除自定义护身符
+        function removeCustomParam(paramId) {
+            const element = document.getElementById(paramId);
+            if (element) {
+                element.remove();
+            }
+        }
+
+        // 获取所有自定义护身符参数
+        function getCustomizedParams() {
+            const customParams = [];
+            const customParamGroups = document.querySelectorAll('.custom-param-group');
+            
+            customParamGroups.forEach((group, index) => {
+                const timesInput = group.querySelector('.custom-param-inputs input[type="number"]');
+                const valueInput = group.querySelector('.custom-param-inputs input[type="text"]');
+                
+                if (valueInput && timesInput) {
+                    try {
+                        const value = parseValue(valueInput.value);
+                        const times = parseInt(timesInput.value) || 0;
+                        
+                        if (value && !isNaN(times)) {
+                            customParams.push({
+                                value: value,
+                                times: times
+                            });
+                        }
+                    } catch (error) {
+                        console.error('解析自定义参数错误:', error);
+                    }
+                }
+            });
+            
+            return customParams;
+        }
+
+        // 添加自定义护身符按钮点击事件
+        addCustomParamBtn.addEventListener('click', addCustomParam);
+
+        // 计算按钮点击事件
+        calculateBtn.addEventListener('click', function() {
+            try {
+                // 获取输入值
+                const curLevel = parseInt(document.getElementById('curLevel').value);
+                const dy = parseValue(document.getElementById('dy').value);
+                const fz = parseValue(document.getElementById('fz').value);
+                const yg = parseValue(document.getElementById('yg').value);
+                const eat_fog = parseInt(document.getElementById('eat_fog').value);
+                const lose_fz = parseInt(document.getElementById('lose_fz').value);
+                const lose_yg = parseInt(document.getElementById('lose_yg').value);
+                const dy_type = document.getElementById('dy_type').value;
+                const fz_type = document.getElementById('fz_type').value;
+                const yg_type = document.getElementById('yg_type').value;
+                const basicFan = parseInt(document.getElementById('basicFan').value);
+                const basicScore = parseInt(document.getElementById('basicScore').value);
+                const dy_times = parseInt(document.getElementById('dy_times').value);
+                const fz_times = parseInt(document.getElementById('fz_times').value);
+                const yg_times = parseInt(document.getElementById('yg_times').value);
+                
+                // 获取自定义护身符参数
+                const customizedParams = getCustomizedParams();
+                
+                // 执行计算
+                const resultLevel = executeCurrentStage(
+                    curLevel, dy, fz, yg, 
+                    lose_fz, lose_yg, eat_fog,
+                    dy_type, fz_type, yg_type,
+                    basicFan, basicScore,
+                    dy_times, fz_times, yg_times,
+                    customizedParams
+                );
+                
+                // 显示结果
+                resultText.textContent = `EX${resultLevel - 1}`;
+            } catch (error) {
+                outputLog.innerHTML = `<div class="output-line highlight">输入格式错误：${error.message}</div>`;
+                resultText.textContent = "计算失败";
+            }
+        });
+    </script>
+</body>
+</html>
