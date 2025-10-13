@@ -12,14 +12,14 @@
             padding: 0;
             font-family: 'Microsoft YaHei', Arial, sans-serif;
         }
-        
+
         body {
             background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -28,61 +28,62 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
-        
+
         header {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: white;
             padding: 20px;
             text-align: center;
         }
-        
+
         h1 {
             margin-bottom: 10px;
         }
-        
+
         .description {
             font-size: 14px;
             opacity: 0.9;
         }
-        
+
         .content {
             display: flex;
             flex-wrap: wrap;
             padding: 20px;
         }
-        
+
         .input-section {
             flex: 1;
             min-width: 300px;
             padding: 20px;
             border-right: 1px solid #eee;
         }
-        
+
         .output-section {
             flex: 1;
             min-width: 300px;
             padding: 20px;
         }
-        
+
         .form-group {
             margin-bottom: 15px;
         }
-        
+
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #444;
         }
-        
-        input, select {
+
+        input,
+        select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
         }
-        
+
         button {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: white;
@@ -96,13 +97,13 @@
             margin-top: 10px;
             transition: all 0.3s;
         }
-        
+
         button:hover {
             opacity: 0.9;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        
+
         .result {
             background-color: #f8f9fa;
             padding: 15px;
@@ -110,12 +111,12 @@
             margin-top: 20px;
             border-left: 4px solid #2575fc;
         }
-        
+
         .result h3 {
             color: #2575fc;
             margin-bottom: 10px;
         }
-        
+
         .output-log {
             background-color: #2c3e50;
             color: #ecf0f1;
@@ -128,24 +129,24 @@
             line-height: 1.4;
             margin-top: 20px;
         }
-        
+
         .output-line {
             margin-bottom: 5px;
         }
-        
+
         .highlight {
             color: #f39c12;
             font-weight: bold;
         }
-        
+
         /* 表格样式 */
         .magnitude-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        
+
         .magnitude-table th {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: white;
@@ -153,38 +154,38 @@
             text-align: center;
             font-weight: bold;
         }
-        
+
         .magnitude-table td {
             padding: 10px 15px;
             text-align: center;
             border-bottom: 1px solid #e0e0e0;
         }
-        
+
         .magnitude-table tr:nth-child(even) {
             background-color: #f8f9fa;
         }
-        
+
         .magnitude-table tr:hover {
             background-color: #e9ecef;
         }
-        
+
         .table-container {
             margin-top: 20px;
         }
-        
+
         .table-title {
             font-size: 18px;
             color: #2575fc;
             margin-bottom: 10px;
             font-weight: bold;
         }
-        
+
         .format-examples {
             font-size: 12px;
             color: #666;
             margin-top: 5px;
         }
-        
+
         /* 自定义护身符样式 */
         .custom-param-group {
             background-color: #f8f9fa;
@@ -193,18 +194,18 @@
             margin-bottom: 15px;
             border: 1px solid #e0e0e0;
         }
-        
+
         .custom-param-header {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
-        
+
         .custom-param-name {
             flex: 1;
             margin-right: 10px;
         }
-        
+
         .remove-custom-param {
             background: #e74c3c;
             color: white;
@@ -218,23 +219,23 @@
             justify-content: center;
             font-size: 16px;
         }
-        
+
         .custom-param-inputs {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .custom-param-inputs label {
             margin-bottom: 0;
             white-space: nowrap;
         }
-        
+
         .custom-param-inputs input {
             width: auto;
             flex: 1;
         }
-        
+
         #addCustomParam {
             background: #27ae60;
             margin-top: 0;
@@ -243,479 +244,674 @@
             justify-content: center;
             gap: 8px;
         }
-        
+
         .add-icon {
             font-size: 18px;
             font-weight: bold;
         }
-        
+
+        /* 自定义策略样式 */
+        .strategy-section {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+
+        .strategy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .strategy-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .strategy-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .strategy-stage {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stage-title {
+            font-weight: bold;
+            color: #2575fc;
+            font-size: 16px;
+        }
+
+        .remove-stage {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .stage-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .stage-form-group {
+            margin-bottom: 8px;
+        }
+
+        .stage-form-group label {
+            font-size: 12px;
+            margin-bottom: 3px;
+            color: #666;
+        }
+
+        .stage-form-group input,
+        .stage-form-group select {
+            padding: 6px 8px;
+            font-size: 14px;
+        }
+
+        .strategy-presets {
+            margin-top: 15px;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* 实际开始关卡输入框样式 */
+        .actual-level-input {
+            width: 80px;
+            margin-left: 10px;
+        }
+
+        /* 提示信息样式 */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background-color: #fff;
+            color: #2575fc;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            transition: all 0.3s;
+            box-shadow: 0 0 0 1px #2575fc;
+        }
+
+        .tooltip-icon:hover {
+            background-color: #2575fc;
+            color: white;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 350px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             .content {
                 flex-direction: column;
             }
-            
+
             .input-section {
                 border-right: none;
                 border-bottom: 1px solid #eee;
             }
-            
+
             .custom-param-inputs {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .custom-param-inputs input {
                 width: 100%;
             }
+
+            .stage-content {
+                grid-template-columns: 1fr;
+            }
+
+            .actual-level-input {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 5px;
+            }
         }
-		/* 提示信息样式 */
-		.tooltip-container {
-		    position: relative;
-		    display: inline-block;
-		    margin-left: 8px;
-		}
-		
-		.tooltip-icon {
-		    display: inline-flex;
-		    align-items: center;
-		    justify-content: center;
-		    width: 18px;
-		    height: 18px;
-		    background-color: #fff;
-		    color: #2575fc;
-		    border-radius: 50%;
-		    font-size: 12px;
-		    font-weight: bold;
-		    cursor: help;
-		    transition: all 0.3s;
-		    box-shadow: 0 0 0 1px #2575fc;
-		}
-		
-		.tooltip-icon:hover {
-		    background-color: #2575fc;
-		    color: white;
-		}
-		
-		.tooltip-text {
-		    visibility: hidden;
-		    width: 200px;
-		    background-color: #333;
-		    color: #fff;
-		    text-align: center;
-		    border-radius: 6px;
-		    padding: 8px;
-		    position: absolute;
-		    z-index: 1;
-		    bottom: 125%;
-		    left: 50%;
-		    transform: translateX(-50%);
-		    opacity: 0;
-		    transition: opacity 0.3s;
-		    font-size: 12px;
-		    line-height: 1.4;
-		    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-		}
-		
-		.tooltip-text::after {
-		    content: "";
-		    position: absolute;
-		    top: 100%;
-		    left: 50%;
-		    margin-left: -5px;
-		    border-width: 5px;
-		    border-style: solid;
-		    border-color: #333 transparent transparent transparent;
-		}
-		
-		.tooltip-container:hover .tooltip-text {
-		    visibility: visible;
-		    opacity: 1;
-		}
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>青云之志3算极限关卡</h1>
-            <p class="description">
-                根据当前资源状态计算关卡推进极限
-                <span class="tooltip-container">
-                    <span class="tooltip-icon">ⓘ</span>
-                    <span class="tooltip-text">此计算器使用门槛为知道膨胀转传导玩法！</span>
-                </span>
-            </p>
-        </header>
-        
-        <div class="content">
-            <div class="input-section">
-                <h2>输入参数</h2>
-                
-                <div class="form-group">
-                    <label for="curLevel">当前关卡</label>
-                    <input type="number" id="curLevel" value="94" min="1" max="163">
-                </div>
-                
-                <div class="form-group">
-                    <label for="dy">盗印番数</label>
-                    <input type="text" id="dy" value="396.87沟">
-                    <div class="format-examples">支持格式：数字(396.87)、科学计数法(3.9687e34)、单位(396.87沟)</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="fz">负重番数</label>
-                    <input type="text" id="fz" value="1.87e36">
-                    <div class="format-examples">支持格式：数字、科学计数法、单位</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="yg">月光番数</label>
-                    <input type="text" id="yg" value="1.98e24">
-                    <div class="format-examples">支持格式：数字、科学计数法、单位</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="eat_fog">吃迷雾次数</label>
-                    <input type="number" id="eat_fog" value="0" min="0">
-                </div>
-                
-                <div class="form-group">
-                    <label for="lose_fz">亏负重次数</label>
-                    <input type="number" id="lose_fz" value="0" min="0">
-                </div>
-                
-                <div class="form-group">
-                    <label for="lose_yg">亏月光次数</label>
-                    <input type="number" id="lose_yg" value="0" min="0">
-                </div>
-                
-                <div class="form-group">
-                    <label for="dy_type">盗印类型</label>
-                    <select id="dy_type">
-                        <option value="普通盗印">普通盗印</option>
-                        <option value="卡维膨胀盗印">卡维膨胀盗印</option>
-                        <option value="其他卡膨胀盗印">其他卡膨胀盗印</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="fz_type">负重类型</label>
-                    <select id="fz_type">
-                        <option value="膨胀负重">膨胀负重</option>
-                        <option value="天使负重">天使负重</option>
-                        <option value="普通负重">普通负重</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="yg_type">月光类型</label>
-                    <select id="yg_type">
-                        <option value="普通月光">普通月光</option>
-                        <option value="膨胀月光">膨胀月光</option>
-                        <option value="天使月光">天使月光</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="basicFan">基础番数</label>
-                    <input type="number" id="basicFan" value="23" min="1">
-                </div>
-                
-                <div class="form-group">
-                    <label for="basicScore">基础分数</label>
-                    <input type="number" id="basicScore" value="1111100" min="1">
-                </div>
-                
-                <div class="form-group">
-                    <label for="dy_times">盗印次数</label>
-                    <input type="number" id="dy_times" value="6" min="0">
-                </div>
-                
-                <div class="form-group">
-                    <label for="fz_times">负重次数</label>
-                    <input type="number" id="fz_times" value="3" min="0">
-                </div>
-                
-                <div class="form-group">
-                    <label for="yg_times">月光次数</label>
-                    <input type="number" id="yg_times" value="5" min="0">
-                </div>
-                
-                <button id="addCustomParam">
-                    <span class="add-icon">+</span> 添加自定义护身符
-                </button>
-                
-                <div id="customParamsContainer">
-                    <!-- 自定义护身符将在这里动态添加 -->
-                </div>
-                
-                <button id="calculateBtn">计算关卡极限</button>
+<div class="container">
+    <header>
+        <h1>青云之志3算极限关卡</h1>
+        <p class="description">
+            根据当前资源状态计算关卡推进极限，支持多阶段自定义策略
+            <span class="tooltip-container">
+						<span class="tooltip-icon">ⓘ</span>
+						<span class="tooltip-text">此计算器使用门槛为知道膨胀转传导玩法！支持多阶段策略配置</span>
+					</span>
+        </p>
+    </header>
+
+    <div class="content">
+        <div class="input-section">
+            <h2>输入参数</h2>
+
+            <div class="form-group">
+                <label for="curLevel">当前关卡EX</label>
+                <input type="number" id="curLevel" value="1" min="1" max="163">
             </div>
-            
-            <div class="output-section">
-                <h2>计算结果</h2>
-                
-                <!-- 数量级对照表 -->
-                <div class="table-container">
-                    <div class="table-title">数量级对照表</div>
-                    <table class="magnitude-table">
-                        <thead>
-                            <tr>
-                                <th>单位</th>
-                                <th>数量级</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>万</td>
-                                <td>4</td>
-                            </tr>
-                            <tr>
-                                <td>亿</td>
-                                <td>8</td>
-                            </tr>
-                            <tr>
-                                <td>兆</td>
-                                <td>12</td>
-                            </tr>
-                            <tr>
-                                <td>京</td>
-                                <td>16</td>
-                            </tr>
-                            <tr>
-                                <td>垓</td>
-                                <td>20</td>
-                            </tr>
-                            <tr>
-                                <td>秭</td>
-                                <td>24</td>
-                            </tr>
-                            <tr>
-                                <td>穰</td>
-                                <td>28</td>
-                            </tr>
-                            <tr>
-                                <td>沟</td>
-                                <td>32</td>
-                            </tr>
-                            <tr>
-                                <td>涧</td>
-                                <td>36</td>
-                            </tr>
-                            <tr>
-                                <td>正</td>
-                                <td>40</td>
-                            </tr>
-                            <tr>
-                                <td>载</td>
-                                <td>44</td>
-                            </tr>
-                            <tr>
-                                <td>极</td>
-                                <td>48</td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+            <div class="form-group">
+                <label for="dy">盗印番数</label>
+                <input type="text" id="dy" value="144.61">
+                <div class="format-examples">支持格式：数字(396.87)、科学计数法(3.9687e34)、单位(396.87沟)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="fz">负重番数</label>
+                <input type="text" id="fz" value="378.36">
+                <div class="format-examples">支持格式：数字、科学计数法、单位</div>
+            </div>
+
+            <div class="form-group">
+                <label for="yg">月光番数</label>
+                <input type="text" id="yg" value="56.02">
+                <div class="format-examples">支持格式：数字、科学计数法、单位</div>
+            </div>
+
+            <div class="form-group">
+                <label for="eat_fog">吃迷雾次数</label>
+                <input type="number" id="eat_fog" value="0" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="lose_fz">亏负重次数</label>
+                <input type="number" id="lose_fz" value="0" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="lose_yg">亏月光次数</label>
+                <input type="number" id="lose_yg" value="0" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="dy_type">盗印类型</label>
+                <select id="dy_type">
+                    <option value="卡维膨胀盗印">卡维膨胀盗印</option>
+                    <option value="其他卡膨胀盗印">其他卡膨胀盗印</option>
+                    <option value="普通盗印">普通盗印</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fz_type">负重类型</label>
+                <select id="fz_type">
+                    <option value="膨胀负重">膨胀负重</option>
+                    <option value="天使负重">天使负重</option>
+                    <option value="普通负重">普通负重</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="yg_type">月光类型</label>
+                <select id="yg_type">
+                    <option value="普通月光">普通月光</option>
+                    <option value="膨胀月光">膨胀月光</option>
+                    <option value="天使月光">天使月光</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="basicFan">基础番数</label>
+                <input type="number" id="basicFan" value="19" min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="basicScore">基础分数</label>
+                <input type="number" id="basicScore" value="38" min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="dy_times">盗印次数</label>
+                <input type="number" id="dy_times" value="2" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="fz_times">负重次数</label>
+                <input type="number" id="fz_times" value="2" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="yg_times">月光次数</label>
+                <input type="number" id="yg_times" value="1" min="0">
+            </div>
+
+            <button id="addCustomParam">
+                <span class="add-icon">+</span> 添加自定义护身符
+            </button>
+
+            <div id="customParamsContainer">
+                <!-- 自定义护身符将在这里动态添加 -->
+            </div>
+
+            <button id="calculateBtn">计算关卡极限</button>
+
+            <!-- 自定义策略部分 -->
+            <div class="strategy-section">
+                <div class="strategy-header">
+                    <h2>自定义策略
+                        <span class="tooltip-container">
+									<span class="tooltip-icon">ⓘ</span>
+									<span
+                                            class="tooltip-text">1.每个阶段都以极限关卡转下一阶段，如果不是极限关卡转阶段，需要自己填下一阶段的实际开始关卡<br />2.不考虑标准配置的护身符之外其他护身符的影响</span>
+								</span>
+                    </h2>
+                    <div class="strategy-controls">
+                        <button class="strategy-btn" id="addStageBtn">+ 添加阶段</button>
+                    </div>
                 </div>
-                
-                <div class="result">
-                    <h3>当前配置的极限是：<span id="resultText">等待计算...</span></h3>
+
+                <div id="strategyStagesContainer">
+                    <!-- 策略阶段将在这里动态添加 -->
                 </div>
-                
-                <div class="output-log" id="outputLog">
-                    <div class="output-line">等待计算...</div>
+
+                <div class="strategy-presets">
+                    <h3>预设策略</h3>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-preset="standard" id="twoInflationBtn">两膨胀转传导</button>
+                    </div>
                 </div>
+            </div>
+
+            <button id="calculateStrategyBtn"
+                    style="background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);">执行策略计算</button>
+        </div>
+
+        <div class="output-section">
+            <h2>计算结果</h2>
+
+            <!-- 数量级对照表 -->
+            <div class="table-container">
+                <div class="table-title">数量级对照表</div>
+                <table class="magnitude-table">
+                    <thead>
+                    <tr>
+                        <th>单位</th>
+                        <th>数量级</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>万</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>亿</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>兆</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <td>京</td>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <td>垓</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>秭</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td>穰</td>
+                        <td>28</td>
+                    </tr>
+                    <tr>
+                        <td>沟</td>
+                        <td>32</td>
+                    </tr>
+                    <tr>
+                        <td>涧</td>
+                        <td>36</td>
+                    </tr>
+                    <tr>
+                        <td>正</td>
+                        <td>40</td>
+                    </tr>
+                    <tr>
+                        <td>载</td>
+                        <td>44</td>
+                    </tr>
+                    <tr>
+                        <td>极</td>
+                        <td>48</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="result">
+                <h3>当前配置的极限是：<span id="resultText">等待计算...</span></h3>
+            </div>
+
+            <div class="output-log" id="outputLog">
+                <div class="output-line">等待计算...</div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // 定义常量
-        const FZ_TYPE_PZ = "膨胀负重";
-        const FZ_TYPE_TS = "天使负重";
-        const FZ_TYPE_NORMAL = "普通负重";
-        const YG_TYPE_PZ = "膨胀月光";
-        const YG_TYPE_TS = "天使月光";
-        const YG_TYPE_NORMAL = "普通月光";
-        const DY_TYPE_KW_PZ = "卡维膨胀盗印";
-        const DY_TYPE_OTHER_PZ = "其他卡膨胀盗印";
-        const DY_TYPE_NORMAL = "普通盗印";
+<script>
+    // 定义常量
+    const FZ_TYPE_PZ = "膨胀负重";
+    const FZ_TYPE_TS = "天使负重";
+    const FZ_TYPE_NORMAL = "普通负重";
+    const YG_TYPE_PZ = "膨胀月光";
+    const YG_TYPE_TS = "天使月光";
+    const YG_TYPE_NORMAL = "普通月光";
+    const DY_TYPE_KW_PZ = "卡维膨胀盗印";
+    const DY_TYPE_OTHER_PZ = "其他卡膨胀盗印";
+    const DY_TYPE_NORMAL = "普通盗印";
 
-        // 数量级对照表
-        const MAGNITUDE_MAP = {
-            "万": 4,
-            "亿": 8,
-            "兆": 12,
-            "京": 16,
-            "垓": 20,
-            "秭": 24,
-            "穰": 28,
-            "沟": 32,
-            "涧": 36,
-            "正": 40,
-            "载": 44,
-            "极": 48
-        };
+    // 数量级对照表
+    const MAGNITUDE_MAP = {
+        "万": 4,
+        "亿": 8,
+        "兆": 12,
+        "京": 16,
+        "垓": 20,
+        "秭": 24,
+        "穰": 28,
+        "沟": 32,
+        "涧": 36,
+        "正": 40,
+        "载": 44,
+        "极": 48
+    };
 
-        // 初始化关卡要求分数
-        const REQUIRED_SCORE = initRequiredScore();
+    // 初始化关卡要求分数
+    const REQUIRED_SCORE = initRequiredScore();
 
-        // 获取DOM元素
-        const calculateBtn = document.getElementById('calculateBtn');
-        const resultText = document.getElementById('resultText');
-        const outputLog = document.getElementById('outputLog');
-        const addCustomParamBtn = document.getElementById('addCustomParam');
-        const customParamsContainer = document.getElementById('customParamsContainer');
+    // 获取DOM元素
+    const calculateBtn = document.getElementById('calculateBtn');
+    const calculateStrategyBtn = document.getElementById('calculateStrategyBtn');
+    const resultText = document.getElementById('resultText');
+    const outputLog = document.getElementById('outputLog');
+    const addCustomParamBtn = document.getElementById('addCustomParam');
+    const customParamsContainer = document.getElementById('customParamsContainer');
+    const addStageBtn = document.getElementById('addStageBtn');
+    const strategyStagesContainer = document.getElementById('strategyStagesContainer');
+    const twoInflationBtn = document.getElementById('twoInflationBtn');
 
-        // 自定义护身符计数器
-        let customParamCounter = 1;
+    // 获取顶部参数输入元素
+    const topCurLevel = document.getElementById('curLevel');
+    const topDy = document.getElementById('dy');
+    const topFz = document.getElementById('fz');
+    const topYg = document.getElementById('yg');
+    const topEatFog = document.getElementById('eat_fog');
+    const topLoseFz = document.getElementById('lose_fz');
+    const topLoseYg = document.getElementById('lose_yg');
+    const topDyType = document.getElementById('dy_type');
+    const topFzType = document.getElementById('fz_type');
+    const topYgType = document.getElementById('yg_type');
+    const topBasicFan = document.getElementById('basicFan');
+    const topBasicScore = document.getElementById('basicScore');
+    const topDyTimes = document.getElementById('dy_times');
+    const topFzTimes = document.getElementById('fz_times');
+    const topYgTimes = document.getElementById('yg_times');
 
-        // 初始化关卡要求分数
-        function initRequiredScore() {
-            const ORIGINAL_REQUIRED_SCORE = "1.00E+06,1.20E+07,9.08E+07,8.11E+08,8.43E+09,1.00E+11,1.35E+12,2.06E+13,3.48E+14,6.54E+15,1.36E+17,3.09E+18,7.68E+19,2.08E+21,6.64E+22,2.46E+24,1.05E+26,5.15E+27,2.82E+29,1.83E+31,1.31E+33,1.07E+35,9.72E+36,9.94E+38,1.14E+41,1.46E+43,2.08E+45,3.31E+47,5.85E+49,1.26E+52,3.00E+54,8.71E+56,2.79E+59,1.08E+62,4.63E+64,2.40E+67,1.37E+70,9.41E+72,7.15E+75,7.09E+78,9.17E+81,1.55E+85,3.40E+88,9.73E+91,3.63E+95,1.11E+99,1.11E+103,9.11E+106,9.72E+110,1.35E+115,2.81E+119,8.79E+123,4.12E+128,2.90E+134,3.06E+138,4.84E+143,1.15E+149,4.10E+154,2.19E+160,1.76E+166,2.11E+172,3.80E+178,1.03E+185,4.17E+191,2.54E+198,2.32E+205,3.18E+212,6.54E+219,2.02E+227,9.31E+234,6.46E+242,6.72E+250,1.05E+259,2.45E+267,8.60E+275,4.53E+284,3.58E+293,4.24E+302,5.7E310,5.7E318,5.7E326,5.7E334,5.7E342,5.7E350,5.7E359,5.7E368,5.7E377,5.7E386,5.7E395,5.7E405,5.7E415,5.7E425,5.7E435,5.7E445,5.7E455,5.7E466,5.7E477,5.7E488,5.7E499,9.999E510,9.999E522,9.999E534,9.999E546,9.999E558,9.999E571,9.999E584,9.999E597,9.999E611,9.999E625,9.999E639,9.999E654,9.999E669,9.999E684,9.999E699,9.999E715,9.999E731,9.999E748,9.999E765,9.999E783,9.999E801,9.999E820,9.999E839,9.999E859,9.999E879,9.999E900,9.999E921,9.999E943,9.999E966,9.999E990,9.999E1015,9.999E1041,9.999E1068,9.999E1096,2.9997E1126,9.999E1155,9.999E1186,9.999E1218,9.999E1251,9.999E1285,9.999E1320,9.999E1356,9.999E1393,9.999E1431,9.999E1470,9.999E1510,9.999E1551,9.999E1593,9.999E1636,9.999E1680,2.9997E1726,9.999E1771,9.999E1818,2.9997E1867,9.999E1915,9.999E1965,9.999E2016,9.999E2068,2.9997E2122,9.999E2175,9.999E2230,9.999E2286,9.999E2343,9.999E2401,9.999E2460";
-            const REQUIRED_SCORE = new Array(164);
-            const split = ORIGINAL_REQUIRED_SCORE.split(",");
-            for (let i = 0; i < split.length; i++) {
-                REQUIRED_SCORE[i] = new Decimal(split[i]);
-            }
-            return REQUIRED_SCORE;
+    // 自定义护身符计数器
+    let customParamCounter = 1;
+    // 阶段计数器
+    let stageCounter = 1;
+
+    // 初始化关卡要求分数
+    function initRequiredScore() {
+        const ORIGINAL_REQUIRED_SCORE =
+            "1.00E+06,1.20E+07,9.08E+07,8.11E+08,8.43E+09,1.00E+11,1.35E+12,2.06E+13,3.48E+14,6.54E+15,1.36E+17,3.09E+18,7.68E+19,2.08E+21,6.64E+22,2.46E+24,1.05E+26,5.15E+27,2.82E+29,1.83E+31,1.31E+33,1.07E+35,9.72E+36,9.94E+38,1.14E+41,1.46E+43,2.08E+45,3.31E+47,5.85E+49,1.26E+52,3.00E+54,8.71E+56,2.79E+59,1.08E+62,4.63E+64,2.40E+67,1.37E+70,9.41E+72,7.15E+75,7.09E+78,9.17E+81,1.55E+85,3.40E+88,9.73E+91,3.63E+95,1.11E+99,1.11E+103,9.11E+106,9.72E+110,1.35E+115,2.81E+119,8.79E+123,4.12E+128,2.90E+134,3.06E+138,4.84E+143,1.15E+149,4.10E+154,2.19E+160,1.76E+166,2.11E+172,3.80E+178,1.03E+185,4.17E+191,2.54E+198,2.32E+205,3.18E+212,6.54E+219,2.02E+227,9.31E+234,6.46E+242,6.72E+250,1.05E+259,2.45E+267,8.60E+275,4.53E+284,3.58E+293,4.24E+302,5.7E310,5.7E318,5.7E326,5.7E334,5.7E342,5.7E350,5.7E359,5.7E368,5.7E377,5.7E386,5.7E395,5.7E405,5.7E415,5.7E425,5.7E435,5.7E455,5.7E466,5.7E477,5.7E488,5.7E499,9.999E510,9.999E522,9.999E534,9.999E546,9.999E558,9.999E571,9.999E584,9.999E597,9.999E611,9.999E625,9.999E639,9.999E654,9.999E669,9.999E684,9.999E699,9.999E715,9.999E731,9.999E748,9.999E765,9.999E783,9.999E801,9.999E820,9.999E839,9.999E859,9.999E879,9.999E900,9.999E921,9.999E943,9.999E966,9.999E990,9.999E1015,9.999E1041,9.999E1068,9.999E1096,2.9997E1126,9.999E1155,9.999E1186,9.999E1218,9.999E1251,9.999E1285,9.999E1320,9.999E1356,9.999E1393,9.999E1431,9.999E1470,9.999E1510,9.999E1551,9.999E1593,9.999E1636,9.999E1680,2.9997E1726,9.999E1771,9.999E1818,2.9997E1867,9.999E1915,9.999E1965,9.999E2016,9.999E2068,2.9997E2122,9.999E2175,9.999E2230,9.999E2286,9.999E2343,9.999E2401,9.999E2460";
+        const REQUIRED_SCORE = new Array(164);
+        const split = ORIGINAL_REQUIRED_SCORE.split(",");
+        for (let i = 0; i < split.length; i++) {
+            REQUIRED_SCORE[i] = new Decimal(split[i]);
+        }
+        return REQUIRED_SCORE;
+    }
+
+    // 科学计数法格式化
+    function formatScientific(number) {
+        if (number.isZero()) return "0.00";
+
+        // 使用 toExponential() 方法获取科学计数法表示
+        const exponential = number.toExponential(2);
+        return exponential;
+    }
+
+    // 解析数值输入，支持数字、科学计数法和单位
+    function parseValue(input) {
+        // 如果输入是科学计数法，直接转换
+        if (input.includes('e') || input.includes('E')) {
+            return new Decimal(input);
         }
 
-        // 科学计数法格式化
-        function formatScientific(number) {
-            if (number.isZero()) return "0.00";
-            
-            // 使用 toExponential() 方法获取科学计数法表示
-            const exponential = number.toExponential(2);
-            return exponential;
+        // 检查是否包含单位
+        let unit = null;
+        let numericPart = input;
+
+        // 遍历单位映射表，检查输入是否包含单位
+        for (const unitChar in MAGNITUDE_MAP) {
+            if (input.includes(unitChar)) {
+                unit = unitChar;
+                numericPart = input.replace(unitChar, '');
+                break;
+            }
         }
 
-        // 解析数值输入，支持数字、科学计数法和单位
-        function parseValue(input) {
-            // 如果输入是科学计数法，直接转换
-            if (input.includes('e') || input.includes('E')) {
-                return new Decimal(input);
-            }
-            
-            // 检查是否包含单位
-            let unit = null;
-            let numericPart = input;
-            
-            // 遍历单位映射表，检查输入是否包含单位
-            for (const unitChar in MAGNITUDE_MAP) {
-                if (input.includes(unitChar)) {
-                    unit = unitChar;
-                    numericPart = input.replace(unitChar, '');
-                    break;
-                }
-            }
-            
-            // 解析数值部分
-            const value = new Decimal(numericPart);
-            
-            // 如果有单位，乘以对应的数量级
-            if (unit) {
-                const magnitude = MAGNITUDE_MAP[unit];
-                return value.times(Decimal.pow(10, magnitude));
-            }
-            
-            // 如果没有单位，直接返回数值
-            return value;
+        // 解析数值部分
+        const value = new Decimal(numericPart);
+
+        // 如果有单位，乘以对应的数量级
+        if (unit) {
+            const magnitude = MAGNITUDE_MAP[unit];
+            return value.times(Decimal.pow(10, magnitude));
         }
 
-        // 执行当前关卡计算
-        function executeCurrentStage(curLevel, dy, fz, yg, lose_fz, lose_yg, eat_fog, dy_type, fz_type, yg_type, basicFan, basicScore, dy_times, fz_times, yg_times, customizedParams) {
-            let toNextStage = false;
-            let outputLines = [];
-            let isFirstLoop = true;
-            
-            while (!toNextStage) {
-                outputLines.push(`EX${curLevel}盗印：${formatScientific(dy)}`);
-                
-                // 考虑亏负重
-                if (lose_fz <= 0) {
-                    // 负重类型
-                    switch (fz_type) {
-                        case FZ_TYPE_NORMAL:
-                            fz = fz.times(1.5);
-                            break;
-                        case FZ_TYPE_TS:
-                            fz = fz.times(2);
-                            break;
-                        case FZ_TYPE_PZ:
-                            fz = fz.times(1.5 * 1.5);
-                            break;
+        // 如果没有单位，直接返回数值
+        return value;
+    }
+
+    // 执行当前关卡计算
+    function executeCurrentStage(curLevel, actualLevel, nextStageActualLevel, dy, fz, yg, lose_fz, lose_yg, eat_fog,
+                                 dy_type, fz_type, yg_type, basicFan, basicScore, dy_times, fz_times, yg_times, customizedParams, stageName = ""
+    ) {
+        let toNextStage = false;
+        let outputLines = [];
+        let isFirstLoop = true;
+        let startLevel = curLevel;
+
+        // 如果有实际开始关卡，直接使用填写的值
+        if (actualLevel !== 0) {
+            curLevel = actualLevel;
+            startLevel = actualLevel;
+            outputLines.push(`<span class="highlight">使用实际开始关卡: EX${actualLevel}</span>`);
+        }
+
+        if (stageName) {
+            outputLines.push(`<span class="highlight">=== 阶段: ${stageName} ===</span>`);
+        }
+
+        while (!toNextStage) {
+            outputLines.push(`EX${curLevel}盗印：${formatScientific(dy)}`);
+
+            // 考虑亏负重
+            if (lose_fz <= 0) {
+                // 负重类型
+                switch (fz_type) {
+                    case FZ_TYPE_NORMAL:
+                        fz = fz.times(1.5);
+                        break;
+                    case FZ_TYPE_TS:
+                        fz = fz.times(2);
+                        break;
+                    case FZ_TYPE_PZ:
+                        fz = fz.times(1.5 * 1.5);
+                        break;
+                }
+            } else {
+                lose_fz--;
+            }
+            outputLines.push(`EX${curLevel}负重：${formatScientific(fz)}`);
+
+            // 考虑亏月光
+            if (lose_yg <= 0) {
+                // 月光类型
+                switch (yg_type) {
+                    case YG_TYPE_NORMAL:
+                        yg = yg.times(1.5);
+                        break;
+                    case YG_TYPE_TS:
+                        yg = yg.times(2);
+                        break;
+                    case YG_TYPE_PZ:
+                        yg = yg.times(1.5 * 1.5);
+                        break;
+                }
+            } else {
+                lose_yg--;
+            }
+            outputLines.push(`EX${curLevel}月光：${formatScientific(yg)}`);
+
+            // 计算总番数和分数
+            let zhiShuFan = dy.pow(dy_times).times(fz.pow(fz_times)).times(yg.pow(yg_times));
+
+            // 添加自定义护身符参数的计算
+            if (customizedParams && customizedParams.length > 0) {
+                customizedParams.forEach((param, index) => {
+                    if (param.value && param.times) {
+                        zhiShuFan = zhiShuFan.times(param.value.pow(param.times));
                     }
-                } else {
-                    lose_fz--;
+                });
+            }
+
+            const totalFan = zhiShuFan.times(basicFan);
+            const totalScore = totalFan.times(basicScore);
+
+            outputLines.push(`----EX${curLevel}分数：${formatScientific(totalScore)}`);
+
+            // 检查是否能进入下一关
+            if (totalScore.lt(REQUIRED_SCORE[curLevel])) {
+                toNextStage = true;
+                outputLines.push(
+                    `<span class="highlight">无法达到EX${curLevel + 1}的要求分数 ${formatScientific(REQUIRED_SCORE[curLevel])}</span>`
+                );
+                if (stageName) {
+                    // 修正推进关卡数计算逻辑，加1
+                    const stagesAdvanced = curLevel - startLevel + 1;
+                    outputLines.push(`<span class="highlight">本阶段推进: ${stagesAdvanced} 关</span>`);
                 }
-                outputLines.push(`EX${curLevel}负重：${formatScientific(fz)}`);
-                
-                // 考虑亏月光
-                if (lose_yg <= 0) {
-                    // 月光类型
-                    switch (yg_type) {
-                        case YG_TYPE_NORMAL:
-                            yg = yg.times(1.5);
-                            break;
-                        case YG_TYPE_TS:
-                            yg = yg.times(2);
-                            break;
-                        case YG_TYPE_PZ:
-                            yg = yg.times(1.5 * 1.5);
-                            break;
-                    }
-                } else {
-                    lose_yg--;
+            }
+
+            // 检查是否达到下一阶段的实际开始关卡-1（如果指定了下一阶段的实际开始关卡）
+            if (nextStageActualLevel !== 0 && curLevel >= nextStageActualLevel - 1) {
+                toNextStage = true;
+                outputLines.push(
+                    `<span class="highlight">已达到下一阶段实际开始关卡-1 (EX${nextStageActualLevel - 1})，结束当前阶段</span>`);
+                if (stageName) {
+                    const stagesAdvanced = curLevel - startLevel + 1;
+                    outputLines.push(`<span class="highlight">本阶段推进: ${stagesAdvanced} 关</span>`);
                 }
-                outputLines.push(`EX${curLevel}月光：${formatScientific(yg)}`);
-                
-                // 计算总番数和分数
-                let zhiShuFan = dy.pow(dy_times).times(fz.pow(fz_times)).times(yg.pow(yg_times));
-                
-                // 添加自定义护身符参数的计算
-                if (customizedParams && customizedParams.length > 0) {
-                    customizedParams.forEach((param, index) => {
-                        if (param.value && param.times) {
-                            zhiShuFan = zhiShuFan.times(param.value.pow(param.times));
-                            //outputLines.push(`自定义护身符${index + 1}：${formatScientific(param.value)}^${param.times}`);
-                        }
-                    });
-                }
-                
-                const totalFan = zhiShuFan.times(basicFan);
-                const totalScore = totalFan.times(basicScore);
-                
-                outputLines.push(`----EX${curLevel}分数：${formatScientific(totalScore)}`);
-                
-                // 检查是否能进入下一关
-                if (totalScore.lt(REQUIRED_SCORE[curLevel])) {
-                    toNextStage = true;
-                    outputLines.push(`<span class="highlight">无法达到EX${curLevel + 1}的要求分数 ${formatScientific(REQUIRED_SCORE[curLevel])}</span>`);
-                }
-                
-                curLevel = curLevel + 1;
-                
-                // 处理吃迷雾次数 - 只在第一次循环中处理
-                if (isFirstLoop && eat_fog > 0) {
-                    // 吃迷雾时，盗印成长次数为吃迷雾次数+1
-                    const growthTimes = eat_fog + 1;
-                    for (let i = 0; i < growthTimes; i++) {
-                        switch (dy_type) {
-                            case DY_TYPE_KW_PZ:
-                                dy = dy.times(Math.pow(1.3, 4));
-                                break;
-                            case DY_TYPE_OTHER_PZ:
-                                dy = dy.times(Math.pow(1.3, 2));
-                                break;
-                            case DY_TYPE_NORMAL:
-                                dy = dy.times(1.3);
-                                break;
-                        }
-                    }
-                    //outputLines.push(`<span class="highlight">使用${eat_fog}次吃迷雾，盗印成长${growthTimes}次</span>`);
-                    eat_fog = 0; // 吃迷雾次数设为0
-                } else {
-                    // 正常盗印成长
+            }
+
+            curLevel = curLevel + 1;
+
+            // 处理吃迷雾次数 - 只在第一次循环中处理
+            if (isFirstLoop && eat_fog > 0) {
+                // 吃迷雾时，盗印成长次数为吃迷雾次数+1
+                const growthTimes = eat_fog + 1;
+                for (let i = 0; i < growthTimes; i++) {
                     switch (dy_type) {
                         case DY_TYPE_KW_PZ:
                             dy = dy.times(Math.pow(1.3, 4));
@@ -728,126 +924,699 @@
                             break;
                     }
                 }
-                
-                isFirstLoop = false; // 第一次循环结束
-                
-                // 防止无限循环
-                if (curLevel >= REQUIRED_SCORE.length) {
-                    toNextStage = true;
-                    outputLines.push(`<span class="highlight">已达到最高关卡EX${curLevel}</span>`);
+                eat_fog = 0; // 吃迷雾次数设为0
+            } else {
+                // 正常盗印成长
+                switch (dy_type) {
+                    case DY_TYPE_KW_PZ:
+                        dy = dy.times(Math.pow(1.3, 4));
+                        break;
+                    case DY_TYPE_OTHER_PZ:
+                        dy = dy.times(Math.pow(1.3, 2));
+                        break;
+                    case DY_TYPE_NORMAL:
+                        dy = dy.times(1.3);
+                        break;
                 }
             }
-            
-            // 更新输出日志
-            outputLog.innerHTML = outputLines.map(line => `<div class="output-line">${line}</div>`).join('');
-            
-            return curLevel;
-        }
 
-        // 添加自定义护身符
-        function addCustomParam() {
-            const paramId = `customParam${customParamCounter}`;
-            
-            const customParamHTML = `
-                <div class="custom-param-group" id="${paramId}">
-                    <div class="custom-param-header">
-                        <input type="text" class="custom-param-name" value="自定义护身符${customParamCounter}">
-                        <button type="button" class="remove-custom-param" onclick="removeCustomParam('${paramId}')">×</button>
-                    </div>
-                    <div class="custom-param-inputs">
-                        <label>乘</label>
-                        <input type="text" value="1">
-                        <label>番</label>
-						<label>次数</label>
-						<input type="number" value="1" min="0" required>
-                    </div>
-                </div>
-            `;
-            
-            customParamsContainer.insertAdjacentHTML('beforeend', customParamHTML);
-            customParamCounter++;
-        }
+            isFirstLoop = false; // 第一次循环结束
 
-        // 删除自定义护身符
-        function removeCustomParam(paramId) {
-            const element = document.getElementById(paramId);
-            if (element) {
-                element.remove();
+            // 防止无限循环
+            if (curLevel >= REQUIRED_SCORE.length) {
+                toNextStage = true;
+                outputLines.push(`<span class="highlight">已达到最高关卡EX${curLevel}</span>`);
             }
         }
 
-        // 获取所有自定义护身符参数
-        function getCustomizedParams() {
-            const customParams = [];
-            const customParamGroups = document.querySelectorAll('.custom-param-group');
-            
-            customParamGroups.forEach((group, index) => {
-                const timesInput = group.querySelector('.custom-param-inputs input[type="number"]');
-                const valueInput = group.querySelector('.custom-param-inputs input[type="text"]');
-                
-                if (valueInput && timesInput) {
-                    try {
-                        const value = parseValue(valueInput.value);
-                        const times = parseInt(timesInput.value) || 0;
-                        
-                        if (value && !isNaN(times)) {
-                            customParams.push({
-                                value: value,
-                                times: times
-                            });
-                        }
-                    } catch (error) {
-                        console.error('解析自定义参数错误:', error);
+        return {
+            nextLevel: curLevel,
+            dy: dy,
+            fz: fz,
+            yg: yg,
+            outputLines: outputLines
+        };
+    }
+
+    // 添加自定义护身符
+    function addCustomParam() {
+        const paramId = `customParam${customParamCounter}`;
+
+        const customParamHTML = `
+        <div class="custom-param-group" id="${paramId}">
+            <div class="custom-param-header">
+                <input type="text" class="custom-param-name" value="自定义护身符${customParamCounter}">
+                <button type="button" class="remove-custom-param" onclick="removeCustomParam('${paramId}')">×</button>
+            </div>
+            <div class="custom-param-inputs">
+                <label>乘</label>
+                <input type="text" value="1">
+                <label>番</label>
+                <label>次数</label>
+                <input type="number" value="1" min="0" required>
+            </div>
+        </div>
+    `;
+
+        customParamsContainer.insertAdjacentHTML('beforeend', customParamHTML);
+        customParamCounter++;
+    }
+
+    // 删除自定义护身符
+    function removeCustomParam(paramId) {
+        const element = document.getElementById(paramId);
+        if (element) {
+            element.remove();
+        }
+    }
+
+    // 获取所有自定义护身符参数
+    function getCustomizedParams() {
+        const customParams = [];
+        const customParamGroups = document.querySelectorAll('.custom-param-group');
+
+        customParamGroups.forEach((group, index) => {
+            const timesInput = group.querySelector('.custom-param-inputs input[type="number"]');
+            const valueInput = group.querySelector('.custom-param-inputs input[type="text"]');
+
+            if (valueInput && timesInput) {
+                try {
+                    const value = parseValue(valueInput.value);
+                    const times = parseInt(timesInput.value) || 0;
+
+                    if (value && !isNaN(times)) {
+                        customParams.push({
+                            value: value,
+                            times: times
+                        });
                     }
+                } catch (error) {
+                    console.error('解析自定义参数错误:', error);
                 }
-            });
-            
-            return customParams;
-        }
-
-        // 添加自定义护身符按钮点击事件
-        addCustomParamBtn.addEventListener('click', addCustomParam);
-
-        // 计算按钮点击事件
-        calculateBtn.addEventListener('click', function() {
-            try {
-                // 获取输入值
-                const curLevel = parseInt(document.getElementById('curLevel').value);
-                const dy = parseValue(document.getElementById('dy').value);
-                const fz = parseValue(document.getElementById('fz').value);
-                const yg = parseValue(document.getElementById('yg').value);
-                const eat_fog = parseInt(document.getElementById('eat_fog').value);
-                const lose_fz = parseInt(document.getElementById('lose_fz').value);
-                const lose_yg = parseInt(document.getElementById('lose_yg').value);
-                const dy_type = document.getElementById('dy_type').value;
-                const fz_type = document.getElementById('fz_type').value;
-                const yg_type = document.getElementById('yg_type').value;
-                const basicFan = parseInt(document.getElementById('basicFan').value);
-                const basicScore = parseInt(document.getElementById('basicScore').value);
-                const dy_times = parseInt(document.getElementById('dy_times').value);
-                const fz_times = parseInt(document.getElementById('fz_times').value);
-                const yg_times = parseInt(document.getElementById('yg_times').value);
-                
-                // 获取自定义护身符参数
-                const customizedParams = getCustomizedParams();
-                
-                // 执行计算
-                const resultLevel = executeCurrentStage(
-                    curLevel, dy, fz, yg, 
-                    lose_fz, lose_yg, eat_fog,
-                    dy_type, fz_type, yg_type,
-                    basicFan, basicScore,
-                    dy_times, fz_times, yg_times,
-                    customizedParams
-                );
-                
-                // 显示结果
-                resultText.textContent = `EX${resultLevel - 1}`;
-            } catch (error) {
-                outputLog.innerHTML = `<div class="output-line highlight">输入格式错误：${error.message}</div>`;
-                resultText.textContent = "计算失败";
             }
         });
-    </script>
+
+        return customParams;
+    }
+
+    // 添加策略阶段
+    function addStrategyStage(stageData = null) {
+        const stageId = `stage${stageCounter}`;
+        const stageNumber = stageCounter;
+
+        // 获取顶部参数的当前值作为默认值
+        const defaultDyType = topDyType.value;
+        const defaultFzType = topFzType.value;
+        const defaultYgType = topYgType.value;
+        const defaultBasicFan = topBasicFan.value;
+        const defaultBasicScore = topBasicScore.value;
+        const defaultDyTimes = topDyTimes.value;
+        const defaultFzTimes = topFzTimes.value;
+        const defaultYgTimes = topYgTimes.value;
+        const defaultEatFog = topEatFog.value;
+        const defaultLoseFz = topLoseFz.value;
+        const defaultLoseYg = topLoseYg.value;
+
+        const stageHTML = `
+        <div class="strategy-stage" id="${stageId}">
+            <div class="stage-header">
+                <div class="stage-title">阶段 ${stageNumber}</div>
+                <button type="button" class="remove-stage" onclick="removeStage('${stageId}')">×</button>
+            </div>
+            <div class="stage-content">
+                <div class="stage-form-group">
+                    <label>阶段名称</label>
+                    <input type="text" class="stage-name" value="${stageData?.name || `阶段${stageNumber}`}" placeholder="阶段名称">
+                </div>
+                <div class="stage-form-group">
+                    <label>实际开始关卡</label>
+                    <input type="number" class="actual-level actual-level-input" value="${stageData?.actualLevel || ''}" placeholder="不填则使用前一阶段极限" min="1" max="163">
+                </div>
+                <div class="stage-form-group">
+                    <label>盗印类型</label>
+                    <select class="dy-type">
+                        <option value="普通盗印" ${(stageData?.dy_type || defaultDyType) === '普通盗印' ? 'selected' : ''}>普通盗印</option>
+                        <option value="卡维膨胀盗印" ${(stageData?.dy_type || defaultDyType) === '卡维膨胀盗印' ? 'selected' : ''}>卡维膨胀盗印</option>
+                        <option value="其他卡膨胀盗印" ${(stageData?.dy_type || defaultDyType) === '其他卡膨胀盗印' ? 'selected' : ''}>其他卡膨胀盗印</option>
+                    </select>
+                </div>
+                <div class="stage-form-group">
+                    <label>负重类型</label>
+                    <select class="fz-type">
+                        <option value="膨胀负重" ${(stageData?.fz_type || defaultFzType) === '膨胀负重' ? 'selected' : ''}>膨胀负重</option>
+                        <option value="天使负重" ${(stageData?.fz_type || defaultFzType) === '天使负重' ? 'selected' : ''}>天使负重</option>
+                        <option value="普通负重" ${(stageData?.fz_type || defaultFzType) === '普通负重' ? 'selected' : ''}>普通负重</option>
+                    </select>
+                </div>
+                <div class="stage-form-group">
+                    <label>月光类型</label>
+                    <select class="yg-type">
+                        <option value="普通月光" ${(stageData?.yg_type || defaultYgType) === '普通月光' ? 'selected' : ''}>普通月光</option>
+                        <option value="膨胀月光" ${(stageData?.yg_type || defaultYgType) === '膨胀月光' ? 'selected' : ''}>膨胀月光</option>
+                        <option value="天使月光" ${(stageData?.yg_type || defaultYgType) === '天使月光' ? 'selected' : ''}>天使月光</option>
+                    </select>
+                </div>
+                <div class="stage-form-group">
+                    <label>基础番数</label>
+                    <input type="number" class="basic-fan" value="${stageData?.basicFan || defaultBasicFan}" min="1">
+                </div>
+                <div class="stage-form-group">
+                    <label>基础分数</label>
+                    <input type="number" class="basic-score" value="${stageData?.basicScore || defaultBasicScore}" min="1">
+                </div>
+                <div class="stage-form-group">
+                    <label>盗印次数</label>
+                    <input type="number" class="dy-times" value="${stageData?.dy_times || defaultDyTimes}" min="0">
+                </div>
+                <div class="stage-form-group">
+                    <label>负重次数</label>
+                    <input type="number" class="fz-times" value="${stageData?.fz_times || defaultFzTimes}" min="0">
+                </div>
+                <div class="stage-form-group">
+                    <label>月光次数</label>
+                    <input type="number" class="yg-times" value="${stageData?.yg_times || defaultYgTimes}" min="0">
+                </div>
+                <div class="stage-form-group">
+                    <label>吃迷雾次数</label>
+                    <input type="number" class="eat-fog" value="${stageData?.eat_fog || defaultEatFog}" min="0">
+                </div>
+                <div class="stage-form-group">
+                    <label>亏负重次数</label>
+                    <input type="number" class="lose-fz" value="${stageData?.lose_fz || defaultLoseFz}" min="0">
+                </div>
+                <div class="stage-form-group">
+                    <label>亏月光次数</label>
+                    <input type="number" class="lose-yg" value="${stageData?.lose_yg || defaultLoseYg}" min="0">
+                </div>
+            </div>
+        </div>
+    `;
+
+        strategyStagesContainer.insertAdjacentHTML('beforeend', stageHTML);
+
+        // 如果是第一个阶段，设置双向绑定
+        if (stageNumber === 1) {
+            setupStage1Binding(stageId);
+        }
+
+        stageCounter++;
+    }
+
+    // 设置阶段1与顶部参数的双向绑定
+    function setupStage1Binding(stageId) {
+        const stageElement = document.getElementById(stageId);
+
+        // 获取阶段1的元素
+        const stageDyType = stageElement.querySelector('.dy-type');
+        const stageFzType = stageElement.querySelector('.fz-type');
+        const stageYgType = stageElement.querySelector('.yg-type');
+        const stageBasicFan = stageElement.querySelector('.basic-fan');
+        const stageBasicScore = stageElement.querySelector('.basic-score');
+        const stageDyTimes = stageElement.querySelector('.dy-times');
+        const stageFzTimes = stageElement.querySelector('.fz-times');
+        const stageYgTimes = stageElement.querySelector('.yg-times');
+        const stageEatFog = stageElement.querySelector('.eat-fog');
+        const stageLoseFz = stageElement.querySelector('.lose-fz');
+        const stageLoseYg = stageElement.querySelector('.lose-yg');
+
+        // 阶段1 -> 顶部参数
+        stageDyType.addEventListener('change', () => topDyType.value = stageDyType.value);
+        stageFzType.addEventListener('change', () => topFzType.value = stageFzType.value);
+        stageYgType.addEventListener('change', () => topYgType.value = stageYgType.value);
+        stageBasicFan.addEventListener('input', () => topBasicFan.value = stageBasicFan.value);
+        stageBasicScore.addEventListener('input', () => topBasicScore.value = stageBasicScore.value);
+        stageDyTimes.addEventListener('input', () => topDyTimes.value = stageDyTimes.value);
+        stageFzTimes.addEventListener('input', () => topFzTimes.value = stageFzTimes.value);
+        stageYgTimes.addEventListener('input', () => topYgTimes.value = stageYgTimes.value);
+        stageEatFog.addEventListener('input', () => topEatFog.value = stageEatFog.value);
+        stageLoseFz.addEventListener('input', () => topLoseFz.value = stageLoseFz.value);
+        stageLoseYg.addEventListener('input', () => topLoseYg.value = stageLoseYg.value);
+
+        // 顶部参数 -> 阶段1
+        topDyType.addEventListener('change', () => stageDyType.value = topDyType.value);
+        topFzType.addEventListener('change', () => stageFzType.value = topFzType.value);
+        topYgType.addEventListener('change', () => stageYgType.value = topYgType.value);
+        topBasicFan.addEventListener('input', () => stageBasicFan.value = topBasicFan.value);
+        topBasicScore.addEventListener('input', () => stageBasicScore.value = topBasicScore.value);
+        topDyTimes.addEventListener('input', () => stageDyTimes.value = topDyTimes.value);
+        topFzTimes.addEventListener('input', () => stageFzTimes.value = topFzTimes.value);
+        topYgTimes.addEventListener('input', () => stageYgTimes.value = topYgTimes.value);
+        topEatFog.addEventListener('input', () => stageEatFog.value = topEatFog.value);
+        topLoseFz.addEventListener('input', () => stageLoseFz.value = topLoseFz.value);
+        topLoseYg.addEventListener('input', () => stageLoseYg.value = topLoseYg.value);
+    }
+
+    // 删除阶段
+    function removeStage(stageId) {
+        const element = document.getElementById(stageId);
+        if (element) {
+            element.remove();
+            // 重新编号所有阶段
+            renumberStages();
+        }
+    }
+
+    // 重新编号阶段
+    function renumberStages() {
+        const stages = document.querySelectorAll('.strategy-stage');
+        stageCounter = 1;
+        stages.forEach((stage, index) => {
+            const title = stage.querySelector('.stage-title');
+            const nameInput = stage.querySelector('.stage-name');
+            title.textContent = `阶段 ${index + 1}`;
+            if (nameInput.value === `阶段${stageCounter}` || nameInput.value.includes('阶段')) {
+                nameInput.value = `阶段${index + 1}`;
+            }
+
+            // 如果是第一个阶段，重新设置双向绑定
+            if (index === 0) {
+                setupStage1Binding(stage.id);
+            }
+
+            stageCounter++;
+        });
+    }
+
+    // 获取所有阶段配置
+    function getAllStages() {
+        const stages = [];
+        const stageElements = document.querySelectorAll('.strategy-stage');
+
+        stageElements.forEach((stageElement) => {
+            const stageData = {
+                name: stageElement.querySelector('.stage-name').value,
+                actualLevel: parseInt(stageElement.querySelector('.actual-level').value) || 0,
+                dy_type: stageElement.querySelector('.dy-type').value,
+                fz_type: stageElement.querySelector('.fz-type').value,
+                yg_type: stageElement.querySelector('.yg-type').value,
+                basicFan: parseInt(stageElement.querySelector('.basic-fan').value),
+                basicScore: parseInt(stageElement.querySelector('.basic-score').value),
+                dy_times: parseInt(stageElement.querySelector('.dy-times').value),
+                fz_times: parseInt(stageElement.querySelector('.fz-times').value),
+                yg_times: parseInt(stageElement.querySelector('.yg-times').value),
+                eat_fog: parseInt(stageElement.querySelector('.eat-fog').value),
+                lose_fz: parseInt(stageElement.querySelector('.lose-fz').value),
+                lose_yg: parseInt(stageElement.querySelector('.lose-yg').value)
+            };
+
+            stages.push(stageData);
+        });
+
+        return stages;
+    }
+
+    // 两膨胀转传导策略配置
+    const twoInflationStrategy = [{
+        name: "改传导卡维",
+        actualLevel: 0,
+        dy_type: "卡维膨胀盗印",
+        fz_type: "膨胀负重",
+        yg_type: "普通月光",
+        basicFan: 19,
+        basicScore: 38,
+        dy_times: 2,
+        fz_times: 2,
+        yg_times: 1,
+        eat_fog: 0,
+        lose_fz: 0,
+        lose_yg: 0
+    },
+        {
+            name: "改岚星",
+            actualLevel: 0,
+            dy_type: "其他卡膨胀盗印",
+            fz_type: "膨胀负重",
+            yg_type: "天使月光",
+            basicFan: 23,
+            basicScore: 38,
+            dy_times: 3,
+            fz_times: 2,
+            yg_times: 1,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "岚星入链",
+            actualLevel: 0,
+            dy_type: "其他卡膨胀盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 38,
+            dy_times: 3,
+            fz_times: 2,
+            yg_times: 1,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "月光入链",
+            actualLevel: 0,
+            dy_type: "其他卡膨胀盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 38,
+            dy_times: 3,
+            fz_times: 2,
+            yg_times: 3,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "盗印入链",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 4,
+            fz_times: 2,
+            yg_times: 3,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "天恩入链",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 5,
+            fz_times: 2,
+            yg_times: 4,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "天恩移到盗印前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 6,
+            fz_times: 2,
+            yg_times: 4,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "天恩移到月光前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 6,
+            fz_times: 2,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "负重入链",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 5,
+            fz_times: 6,
+            yg_times: 4,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "天恩移到负重前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 5,
+            fz_times: 7,
+            yg_times: 4,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "天恩移到盗印前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 6,
+            fz_times: 7,
+            yg_times: 4,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "天恩移到月光前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 6,
+            fz_times: 7,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "八链成型",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 6,
+            fz_times: 8,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "负重移到盗印前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 7,
+            fz_times: 8,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        },
+        {
+            name: "最终阶段",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 23,
+            basicScore: 100000,
+            dy_times: 7,
+            fz_times: 8,
+            yg_times: 6,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0
+        }
+    ];
+
+    // 应用两膨胀转传导策略
+    function applyTwoInflationStrategy() {
+        // 清除所有现有阶段
+        strategyStagesContainer.innerHTML = '';
+        stageCounter = 1;
+
+        // 添加新阶段
+        twoInflationStrategy.forEach(stageData => {
+            addStrategyStage(stageData);
+        });
+
+        // 显示提示信息
+        alert("此为膨胀盗印+膨胀负重+普通月光的标准策略，吸星按照1万星币来算");
+    }
+
+    // 事件监听
+    addCustomParamBtn.addEventListener('click', addCustomParam);
+    addStageBtn.addEventListener('click', () => addStrategyStage());
+    twoInflationBtn.addEventListener('click', applyTwoInflationStrategy);
+
+    // 单次计算按钮点击事件
+    calculateBtn.addEventListener('click', function() {
+        try {
+            // 获取输入值
+            const curLevel = parseInt(document.getElementById('curLevel').value);
+            const dy = parseValue(document.getElementById('dy').value);
+            const fz = parseValue(document.getElementById('fz').value);
+            const yg = parseValue(document.getElementById('yg').value);
+            const eat_fog = parseInt(document.getElementById('eat_fog').value);
+            const lose_fz = parseInt(document.getElementById('lose_fz').value);
+            const lose_yg = parseInt(document.getElementById('lose_yg').value);
+            const dy_type = document.getElementById('dy_type').value;
+            const fz_type = document.getElementById('fz_type').value;
+            const yg_type = document.getElementById('yg_type').value;
+            const basicFan = parseInt(document.getElementById('basicFan').value);
+            const basicScore = parseInt(document.getElementById('basicScore').value);
+            const dy_times = parseInt(document.getElementById('dy_times').value);
+            const fz_times = parseInt(document.getElementById('fz_times').value);
+            const yg_times = parseInt(document.getElementById('yg_times').value);
+
+            // 获取自定义护身符参数
+            const customizedParams = getCustomizedParams();
+
+            // 执行计算
+            const result = executeCurrentStage(
+                curLevel, 0, 0, dy, fz, yg,
+                lose_fz, lose_yg, eat_fog,
+                dy_type, fz_type, yg_type,
+                basicFan, basicScore,
+                dy_times, fz_times, yg_times,
+                customizedParams,
+                "当前"
+            );
+
+            // 更新输出日志
+            outputLog.innerHTML = result.outputLines.map(line => `<div class="output-line">${line}</div>`).join(
+                '');
+
+            // 显示结果
+            resultText.textContent = `EX${result.nextLevel - 1}`;
+        } catch (error) {
+            outputLog.innerHTML = `<div class="output-line highlight">输入格式错误：${error.message}</div>`;
+            resultText.textContent = "计算失败";
+        }
+    });
+
+    // 策略计算按钮点击事件
+    calculateStrategyBtn.addEventListener('click', function() {
+        try {
+            // 获取初始参数
+            const curLevel = parseInt(document.getElementById('curLevel').value);
+            let dy = parseValue(document.getElementById('dy').value);
+            let fz = parseValue(document.getElementById('fz').value);
+            let yg = parseValue(document.getElementById('yg').value);
+
+            // 获取所有阶段配置
+            const stages = getAllStages();
+
+            let currentLevel = curLevel;
+            let allOutputLines = [];
+
+            // 如果没有阶段，使用默认单阶段计算
+            if (stages.length === 0) {
+                allOutputLines.push(`<span class="highlight">未配置策略阶段，使用默认计算</span>`);
+                const result = executeCurrentStage(
+                    currentLevel, 0, 0, dy, fz, yg,
+                    0, 0, 0,
+                    "普通盗印", "膨胀负重", "普通月光",
+                    23, 1111100,
+                    6, 3, 5,
+                    [],
+                    "默认阶段"
+                );
+
+                allOutputLines = allOutputLines.concat(result.outputLines);
+                currentLevel = result.nextLevel;
+                dy = result.dy;
+                fz = result.fz;
+                yg = result.yg;
+            } else {
+                // 按顺序执行每个阶段
+                for (let i = 0; i < stages.length; i++) {
+                    const stage = stages[i];
+
+                    // 获取下一阶段的实际开始关卡（如果有的话）
+                    const nextStageActualLevel = i + 1 < stages.length ? stages[i + 1].actualLevel : 0;
+
+                    const result = executeCurrentStage(
+                        currentLevel, stage.actualLevel, nextStageActualLevel, dy, fz, yg,
+                        stage.lose_fz, stage.lose_yg, stage.eat_fog,
+                        stage.dy_type, stage.fz_type, stage.yg_type,
+                        stage.basicFan, stage.basicScore,
+                        stage.dy_times, stage.fz_times, stage.yg_times,
+                        [], // 策略计算不使用自定义护身符
+                        stage.name
+                    );
+
+                    allOutputLines = allOutputLines.concat(result.outputLines);
+                    currentLevel = result.nextLevel;
+                    dy = result.dy;
+                    fz = result.fz;
+                    yg = result.yg;
+
+                    // 如果已经达到极限，提前结束
+                    if (currentLevel >= REQUIRED_SCORE.length) {
+                        break;
+                    }
+                }
+            }
+
+            // 更新输出日志
+            outputLog.innerHTML = allOutputLines.map(line => `<div class="output-line">${line}</div>`).join('');
+
+            // 显示结果
+            resultText.textContent = `EX${currentLevel - 1}`;
+
+        } catch (error) {
+            outputLog.innerHTML = `<div class="output-line highlight">输入格式错误：${error.message}</div>`;
+            resultText.textContent = "计算失败";
+        }
+    });
+
+    // 初始化时添加一个默认阶段
+    window.onload = function() {
+        // 设置顶部参数的默认值
+        topCurLevel.value = "1";
+        topDy.value = "144.61";
+        topFz.value = "378.36";
+        topYg.value = "56.02";
+        topDyType.value = "卡维膨胀盗印";
+        topFzType.value = "膨胀负重";
+        topYgType.value = "普通月光";
+        topBasicFan.value = "19";
+        topBasicScore.value = "38";
+        topDyTimes.value = "2";
+        topFzTimes.value = "2";
+        topYgTimes.value = "1";
+        topEatFog.value = "0";
+        topLoseFz.value = "0";
+        topLoseYg.value = "0";
+
+        // 添加默认阶段，使用顶部参数的默认值
+        addStrategyStage();
+    };
+</script>
 </body>
 </html>
