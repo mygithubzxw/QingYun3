@@ -429,6 +429,66 @@
             opacity: 1;
         }
 
+        /* 新增的阶段自定义护身符样式 */
+        .stage-custom-param-group {
+            background-color: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stage-custom-param-inputs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .stage-custom-param-inputs input {
+            padding: 6px 8px;
+            font-size: 14px;
+        }
+
+        .stage-custom-param-inputs label {
+            margin-bottom: 0;
+            white-space: nowrap;
+            font-size: 12px;
+        }
+
+        .stage-remove-custom-param {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .stage-custom-params-container {
+            margin-top: 10px;
+        }
+
+        .add-stage-custom-param-btn {
+            background: #27ae60;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 10px;
+            font-size: 12px;
+            width: auto;
+        }
+
         @media (max-width: 768px) {
             .content {
                 flex-direction: column;
@@ -456,6 +516,15 @@
                 width: 100%;
                 margin-left: 0;
                 margin-top: 5px;
+            }
+
+            .stage-custom-param-inputs {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stage-custom-param-inputs input {
+                width: 100%;
             }
         }
     </style>
@@ -717,40 +786,12 @@
     // 初始化关卡要求分数
     const REQUIRED_SCORE = initRequiredScore();
 
-    // 获取DOM元素
-    const calculateBtn = document.getElementById('calculateBtn');
-    const calculateStrategyBtn = document.getElementById('calculateStrategyBtn');
-    const resultText = document.getElementById('resultText');
-    const outputLog = document.getElementById('outputLog');
-    const addCustomParamBtn = document.getElementById('addCustomParam');
-    const customParamsContainer = document.getElementById('customParamsContainer');
-    const addStageBtn = document.getElementById('addStageBtn');
-    const strategyStagesContainer = document.getElementById('strategyStagesContainer');
-    const twoInflationBtn = document.getElementById('twoInflationBtn');
-
-    // 获取顶部参数输入元素
-    const topCurLevel = document.getElementById('curLevel');
-    const topDy = document.getElementById('dy');
-    const topFz = document.getElementById('fz');
-    const topYg = document.getElementById('yg');
-    const topEatFog = document.getElementById('eat_fog');
-    const topLoseFz = document.getElementById('lose_fz');
-    const topLoseYg = document.getElementById('lose_yg');
-    const topDyType = document.getElementById('dy_type');
-    const topFzType = document.getElementById('fz_type');
-    const topYgType = document.getElementById('yg_type');
-    const topBasicFan = document.getElementById('basicFan');
-    const topBasicScore = document.getElementById('basicScore');
-    const topDyTimes = document.getElementById('dy_times');
-    const topFzTimes = document.getElementById('fz_times');
-    const topYgTimes = document.getElementById('yg_times');
-
     // 自定义护身符计数器
     let customParamCounter = 1;
     // 阶段计数器
     let stageCounter = 1;
-    //是否有下一个阶段
-    var hasNextStage = true;
+    // 是否有下一个阶段
+    let hasNextStage = true;
 
     // 初始化关卡要求分数
     function initRequiredScore() {
@@ -767,24 +808,18 @@
     // 科学计数法格式化
     function formatScientific(number) {
         if (number.isZero()) return "0.00";
-
-        // 使用 toExponential() 方法获取科学计数法表示
-        const exponential = number.toExponential(2);
-        return exponential;
+        return number.toExponential(2);
     }
 
     // 解析数值输入，支持数字、科学计数法和单位
     function parseValue(input) {
-        // 如果输入是科学计数法，直接转换
         if (input.includes('e') || input.includes('E')) {
             return new Decimal(input);
         }
 
-        // 检查是否包含单位
         let unit = null;
         let numericPart = input;
 
-        // 遍历单位映射表，检查输入是否包含单位
         for (const unitChar in MAGNITUDE_MAP) {
             if (input.includes(unitChar)) {
                 unit = unitChar;
@@ -793,17 +828,19 @@
             }
         }
 
-        // 解析数值部分
         const value = new Decimal(numericPart);
 
-        // 如果有单位，乘以对应的数量级
         if (unit) {
             const magnitude = MAGNITUDE_MAP[unit];
             return value.times(Decimal.pow(10, magnitude));
         }
 
-        // 如果没有单位，直接返回数值
         return value;
+    }
+
+    // 获取数值，如果为空则返回0
+    function getValueOrDefault(value, defaultValue = 0) {
+        return value === '' ? defaultValue : value;
     }
 
     // 执行当前关卡计算
@@ -814,8 +851,9 @@
         let outputLines = [];
         let isFirstLoop = true;
         let startLevel = curLevel;
-        //如果上一个阶段结束了，没有下一个阶段，直接返回
-        if (!hasNextStage){
+
+        // 如果上一个阶段结束了，没有下一个阶段，直接返回
+        if (!hasNextStage) {
             return {
                 nextLevel: curLevel,
                 dy: dy,
@@ -894,7 +932,7 @@
 
             outputLines.push(`----EX${curLevel}分数：${formatScientific(totalScore)}`);
 
-            //检查当前关卡是否能通过,如果不能通过，就没有下一关阶段了
+            // 检查当前关卡是否能通过,如果不能通过，就没有下一关阶段了
             if (totalScore.lt(REQUIRED_SCORE[curLevel - 1])) {
                 outputLines.push(
                     `<span class="highlight">无法达到EX${curLevel}的要求分数 ${formatScientific(REQUIRED_SCORE[curLevel - 1])}</span>`
@@ -1058,22 +1096,194 @@
         const paramId = `customParam${customParamCounter}`;
 
         const customParamHTML = `
-        <div class="custom-param-group" id="${paramId}">
-            <div class="custom-param-header">
-                <input type="text" class="custom-param-name" value="自定义护身符${customParamCounter}">
-                <button type="button" class="remove-custom-param" onclick="removeCustomParam('${paramId}')">×</button>
-            </div>
-            <div class="custom-param-inputs">
-                <label>乘</label>
-                <input type="text" value="1">
-                <label>番</label>
-                <label>次数</label>
-                <input type="number" value="1" min="0" required>
-            </div>
+    <div class="custom-param-group" id="${paramId}">
+        <div class="custom-param-header">
+            <input type="text" class="custom-param-name" value="自定义护身符${customParamCounter}">
+            <button type="button" class="remove-custom-param" onclick="removeCustomParam('${paramId}')">×</button>
         </div>
-    `;
+        <div class="custom-param-inputs">
+            <label>乘</label>
+            <input type="text" class="custom-param-value" value="1">
+            <label>番</label>
+            <label>次数</label>
+            <input type="number" class="custom-param-times" value="1" min="0" required>
+        </div>
+    </div>
+`;
 
-        customParamsContainer.insertAdjacentHTML('beforeend', customParamHTML);
+        document.getElementById('customParamsContainer').insertAdjacentHTML('beforeend', customParamHTML);
+
+        // 绑定输入事件，实现双向同步
+        const paramElement = document.getElementById(paramId);
+        const nameInput = paramElement.querySelector('.custom-param-name');
+        const valueInput = paramElement.querySelector('.custom-param-value');
+        const timesInput = paramElement.querySelector('.custom-param-times');
+
+        // 监听输入变化，同步到阶段1
+        [nameInput, valueInput, timesInput].forEach(input => {
+            input.addEventListener('input', function () {
+                syncTopCustomParamsToStage1();
+            });
+        });
+
+        customParamCounter++;
+
+        // 同步到阶段1
+        syncTopCustomParamsToStage1();
+    }
+
+    // 同步顶部自定义护身符到阶段1
+    function syncTopCustomParamsToStage1() {
+        const stage1 = document.querySelector('.strategy-stage');
+        if (!stage1) return;
+
+        const stageCustomParamsContainer = stage1.querySelector('.stage-custom-params-container');
+        if (!stageCustomParamsContainer) return;
+
+        // 清空阶段1的自定义护身符
+        stageCustomParamsContainer.innerHTML = '';
+
+        // 获取顶部的自定义护身符
+        const topCustomParams = document.querySelectorAll('.custom-param-group');
+
+        // 重新添加所有自定义护身符到阶段1
+        topCustomParams.forEach((param, index) => {
+            const nameInput = param.querySelector('.custom-param-name');
+            const valueInput = param.querySelector('.custom-param-inputs input[type="text"]');
+            const timesInput = param.querySelector('.custom-param-inputs input[type="number"]');
+
+            if (nameInput && valueInput && timesInput) {
+                addStageCustomParamToContainer(
+                    stageCustomParamsContainer,
+                    nameInput.value,
+                    valueInput.value,
+                    timesInput.value
+                );
+            }
+        });
+    }
+
+    // 添加阶段自定义护身符到指定容器
+    function addStageCustomParamToContainer(container, name = "", value = "1", times = "1") {
+        const paramId = `stageCustomParam${Date.now()}`;
+
+        const customParamHTML = `
+    <div class="stage-custom-param-group" id="${paramId}">
+        <div class="stage-custom-param-inputs">
+            <input type="text" class="stage-custom-param-name" value="${name}" placeholder="护身符名称">
+            <label>乘</label>
+            <input type="text" class="stage-custom-param-value" value="${value}">
+            <label>番</label>
+            <label>次数</label>
+            <input type="number" class="stage-custom-param-times" value="${times}" min="0" required>
+        </div>
+        <button type="button" class="stage-remove-custom-param" onclick="removeStageCustomParam('${paramId}')">×</button>
+    </div>
+`;
+
+        container.insertAdjacentHTML('beforeend', customParamHTML);
+
+        // 绑定输入事件，实现双向同步
+        const paramElement = document.getElementById(paramId);
+        const nameInput = paramElement.querySelector('.stage-custom-param-name');
+        const valueInput = paramElement.querySelector('.stage-custom-param-value');
+        const timesInput = paramElement.querySelector('.stage-custom-param-times');
+
+        // 监听输入变化，同步到顶部
+        [nameInput, valueInput, timesInput].forEach(input => {
+            input.addEventListener('input', function () {
+                syncStage1CustomParamsToTop();
+            });
+        });
+
+        return paramId;
+    }
+
+    // 添加阶段自定义护身符
+    function addStageCustomParam(stageId) {
+        const container = document.getElementById(`stageCustomParams-${stageId}`);
+        if (!container) return;
+
+        // 获取当前阶段的自定义护身符数量，用于命名
+        const currentCount = container.querySelectorAll('.stage-custom-param-group').length + 1;
+        const paramId = addStageCustomParamToContainer(
+            container,
+            `自定义护身符${currentCount}`,
+            "1",
+            "1"
+        );
+
+        // 如果是阶段1，同步到顶部
+        if (stageId === 'stage1') {
+            syncStage1CustomParamsToTop();
+        }
+    }
+
+    // 同步阶段1自定义护身符到顶部
+    function syncStage1CustomParamsToTop() {
+        const stage1 = document.querySelector('.strategy-stage');
+        if (!stage1) return;
+
+        const stageCustomParamsContainer = stage1.querySelector('.stage-custom-params-container');
+        if (!stageCustomParamsContainer) return;
+
+        // 清空顶部的自定义护身符
+        document.getElementById('customParamsContainer').innerHTML = '';
+
+        // 获取阶段1的自定义护身符
+        const stageCustomParams = stageCustomParamsContainer.querySelectorAll('.stage-custom-param-group');
+
+        // 重新添加所有自定义护身符到顶部
+        stageCustomParams.forEach((param, index) => {
+            const nameInput = param.querySelector('.stage-custom-param-name');
+            const valueInput = param.querySelector('.stage-custom-param-value');
+            const timesInput = param.querySelector('.stage-custom-param-times');
+
+            if (nameInput && valueInput && timesInput) {
+                addCustomParamToTop(
+                    nameInput.value,
+                    valueInput.value,
+                    timesInput.value
+                );
+            }
+        });
+    }
+
+    // 添加自定义护身符到顶部
+    function addCustomParamToTop(name = "", value = "1", times = "1") {
+        const paramId = `customParam${customParamCounter}`;
+
+        const customParamHTML = `
+    <div class="custom-param-group" id="${paramId}">
+        <div class="custom-param-header">
+            <input type="text" class="custom-param-name" value="${name}">
+            <button type="button" class="remove-custom-param" onclick="removeCustomParam('${paramId}')">×</button>
+        </div>
+        <div class="custom-param-inputs">
+            <label>乘</label>
+            <input type="text" class="custom-param-value" value="${value}">
+            <label>番</label>
+            <label>次数</label>
+            <input type="number" class="custom-param-times" value="${times}" min="0" required>
+        </div>
+    </div>
+`;
+
+        document.getElementById('customParamsContainer').insertAdjacentHTML('beforeend', customParamHTML);
+
+        // 绑定输入事件，实现双向同步
+        const paramElement = document.getElementById(paramId);
+        const nameInput = paramElement.querySelector('.custom-param-name');
+        const valueInput = paramElement.querySelector('.custom-param-value');
+        const timesInput = paramElement.querySelector('.custom-param-times');
+
+        // 监听输入变化，同步到阶段1
+        [nameInput, valueInput, timesInput].forEach(input => {
+            input.addEventListener('input', function () {
+                syncTopCustomParamsToStage1();
+            });
+        });
+
         customParamCounter++;
     }
 
@@ -1082,36 +1292,22 @@
         const element = document.getElementById(paramId);
         if (element) {
             element.remove();
+            // 同步到阶段1
+            syncTopCustomParamsToStage1();
         }
     }
 
-    // 获取所有自定义护身符参数
-    function getCustomizedParams() {
-        const customParams = [];
-        const customParamGroups = document.querySelectorAll('.custom-param-group');
-
-        customParamGroups.forEach((group, index) => {
-            const timesInput = group.querySelector('.custom-param-inputs input[type="number"]');
-            const valueInput = group.querySelector('.custom-param-inputs input[type="text"]');
-
-            if (valueInput && timesInput) {
-                try {
-                    const value = parseValue(valueInput.value);
-                    const times = parseInt(timesInput.value) || 0;
-
-                    if (value && !isNaN(times)) {
-                        customParams.push({
-                            value: value,
-                            times: times
-                        });
-                    }
-                } catch (error) {
-                    console.error('解析自定义参数错误:', error);
-                }
+    // 删除阶段自定义护身符
+    function removeStageCustomParam(paramId) {
+        const element = document.getElementById(paramId);
+        if (element) {
+            element.remove();
+            // 如果是阶段1，同步到顶部
+            const stage1 = document.querySelector('.strategy-stage');
+            if (stage1 && element.closest('.strategy-stage') === stage1) {
+                syncStage1CustomParamsToTop();
             }
-        });
-
-        return customParams;
+        }
     }
 
     // 添加策略阶段
@@ -1120,17 +1316,17 @@
         const stageNumber = stageCounter;
 
         // 获取顶部参数的当前值作为默认值
-        const defaultDyType = topDyType.value;
-        const defaultFzType = topFzType.value;
-        const defaultYgType = topYgType.value;
-        const defaultBasicFan = topBasicFan.value;
-        const defaultBasicScore = topBasicScore.value;
-        const defaultDyTimes = topDyTimes.value;
-        const defaultFzTimes = topFzTimes.value;
-        const defaultYgTimes = topYgTimes.value;
-        const defaultEatFog = topEatFog.value;
-        const defaultLoseFz = topLoseFz.value;
-        const defaultLoseYg = topLoseYg.value;
+        const defaultDyType = document.getElementById('dy_type').value;
+        const defaultFzType = document.getElementById('fz_type').value;
+        const defaultYgType = document.getElementById('yg_type').value;
+        const defaultBasicFan = document.getElementById('basicFan').value;
+        const defaultBasicScore = document.getElementById('basicScore').value;
+        const defaultDyTimes = document.getElementById('dy_times').value;
+        const defaultFzTimes = document.getElementById('fz_times').value;
+        const defaultYgTimes = document.getElementById('yg_times').value;
+        const defaultEatFog = document.getElementById('eat_fog').value;
+        const defaultLoseFz = document.getElementById('lose_fz').value;
+        const defaultLoseYg = document.getElementById('lose_yg').value;
 
         const stageHTML = `
         <div class="strategy-stage" id="${stageId}">
@@ -1203,15 +1399,26 @@
                     <label>亏月光次数</label>
                     <input type="number" class="lose-yg" value="${stageData?.lose_yg || defaultLoseYg}" min="0">
                 </div>
+                <div class="stage-form-group" style="grid-column: 1 / -1;">
+                    <button type="button" class="add-stage-custom-param-btn strategy-btn" onclick="addStageCustomParam('${stageId}')">
+                        <span class="add-icon">+</span> 添加自定义护身符
+                    </button>
+                    <div class="stage-custom-params-container" id="stageCustomParams-${stageId}">
+                        <!-- 阶段自定义护身符将在这里动态添加 -->
+                    </div>
+                </div>
             </div>
         </div>
     `;
 
-        strategyStagesContainer.insertAdjacentHTML('beforeend', stageHTML);
+        document.getElementById('strategyStagesContainer').insertAdjacentHTML('beforeend', stageHTML);
 
         // 如果是第一个阶段，设置双向绑定
         if (stageNumber === 1) {
             setupStage1Binding(stageId);
+
+            // 同步顶部的自定义护身符到阶段1
+            syncTopCustomParamsToStage1();
         }
 
         stageCounter++;
@@ -1235,30 +1442,42 @@
         const stageLoseYg = stageElement.querySelector('.lose-yg');
 
         // 阶段1 -> 顶部参数
-        stageDyType.addEventListener('change', () => topDyType.value = stageDyType.value);
-        stageFzType.addEventListener('change', () => topFzType.value = stageFzType.value);
-        stageYgType.addEventListener('change', () => topYgType.value = stageYgType.value);
-        stageBasicFan.addEventListener('input', () => topBasicFan.value = stageBasicFan.value);
-        stageBasicScore.addEventListener('input', () => topBasicScore.value = stageBasicScore.value);
-        stageDyTimes.addEventListener('input', () => topDyTimes.value = stageDyTimes.value);
-        stageFzTimes.addEventListener('input', () => topFzTimes.value = stageFzTimes.value);
-        stageYgTimes.addEventListener('input', () => topYgTimes.value = stageYgTimes.value);
-        stageEatFog.addEventListener('input', () => topEatFog.value = stageEatFog.value);
-        stageLoseFz.addEventListener('input', () => topLoseFz.value = stageLoseFz.value);
-        stageLoseYg.addEventListener('input', () => topLoseYg.value = stageLoseYg.value);
+        stageDyType.addEventListener('change', () => document.getElementById('dy_type').value = stageDyType.value);
+        stageFzType.addEventListener('change', () => document.getElementById('fz_type').value = stageFzType.value);
+        stageYgType.addEventListener('change', () => document.getElementById('yg_type').value = stageYgType.value);
+        stageBasicFan.addEventListener('input', () => document.getElementById('basicFan').value = stageBasicFan.value);
+        stageBasicScore.addEventListener('input', () => document.getElementById('basicScore').value = stageBasicScore
+            .value);
+        stageDyTimes.addEventListener('input', () => document.getElementById('dy_times').value = stageDyTimes.value);
+        stageFzTimes.addEventListener('input', () => document.getElementById('fz_times').value = stageFzTimes.value);
+        stageYgTimes.addEventListener('input', () => document.getElementById('yg_times').value = stageYgTimes.value);
+        stageEatFog.addEventListener('input', () => document.getElementById('eat_fog').value = stageEatFog.value);
+        stageLoseFz.addEventListener('input', () => document.getElementById('lose_fz').value = stageLoseFz.value);
+        stageLoseYg.addEventListener('input', () => document.getElementById('lose_yg').value = stageLoseYg.value);
 
         // 顶部参数 -> 阶段1
-        topDyType.addEventListener('change', () => stageDyType.value = topDyType.value);
-        topFzType.addEventListener('change', () => stageFzType.value = topFzType.value);
-        topYgType.addEventListener('change', () => stageYgType.value = topYgType.value);
-        topBasicFan.addEventListener('input', () => stageBasicFan.value = topBasicFan.value);
-        topBasicScore.addEventListener('input', () => stageBasicScore.value = topBasicScore.value);
-        topDyTimes.addEventListener('input', () => stageDyTimes.value = topDyTimes.value);
-        topFzTimes.addEventListener('input', () => stageFzTimes.value = topFzTimes.value);
-        topYgTimes.addEventListener('input', () => stageYgTimes.value = topYgTimes.value);
-        topEatFog.addEventListener('input', () => stageEatFog.value = topEatFog.value);
-        topLoseFz.addEventListener('input', () => stageLoseFz.value = topLoseFz.value);
-        topLoseYg.addEventListener('input', () => stageLoseYg.value = topLoseYg.value);
+        document.getElementById('dy_type').addEventListener('change', () => stageDyType.value = document.getElementById(
+            'dy_type').value);
+        document.getElementById('fz_type').addEventListener('change', () => stageFzType.value = document.getElementById(
+            'fz_type').value);
+        document.getElementById('yg_type').addEventListener('change', () => stageYgType.value = document.getElementById(
+            'yg_type').value);
+        document.getElementById('basicFan').addEventListener('input', () => stageBasicFan.value = document
+            .getElementById('basicFan').value);
+        document.getElementById('basicScore').addEventListener('input', () => stageBasicScore.value = document
+            .getElementById('basicScore').value);
+        document.getElementById('dy_times').addEventListener('input', () => stageDyTimes.value = document.getElementById(
+            'dy_times').value);
+        document.getElementById('fz_times').addEventListener('input', () => stageFzTimes.value = document.getElementById(
+            'fz_times').value);
+        document.getElementById('yg_times').addEventListener('input', () => stageYgTimes.value = document.getElementById(
+            'yg_times').value);
+        document.getElementById('eat_fog').addEventListener('input', () => stageEatFog.value = document.getElementById(
+            'eat_fog').value);
+        document.getElementById('lose_fz').addEventListener('input', () => stageLoseFz.value = document.getElementById(
+            'lose_fz').value);
+        document.getElementById('lose_yg').addEventListener('input', () => stageLoseYg.value = document.getElementById(
+            'lose_yg').value);
     }
 
     // 删除阶段
@@ -1298,6 +1517,9 @@
         const stageElements = document.querySelectorAll('.strategy-stage');
 
         stageElements.forEach((stageElement) => {
+            const stageId = stageElement.id;
+            const customizedParams = getStageCustomizedParams(stageId);
+
             const stageData = {
                 name: stageElement.querySelector('.stage-name').value,
                 actualLevel: parseInt(stageElement.querySelector('.actual-level').value) || 0,
@@ -1309,15 +1531,80 @@
                 dy_times: parseInt(stageElement.querySelector('.dy-times').value),
                 fz_times: parseInt(stageElement.querySelector('.fz-times').value),
                 yg_times: parseInt(stageElement.querySelector('.yg-times').value),
-                eat_fog: parseInt(stageElement.querySelector('.eat-fog').value),
-                lose_fz: parseInt(stageElement.querySelector('.lose-fz').value),
-                lose_yg: parseInt(stageElement.querySelector('.lose-yg').value)
+                eat_fog: parseInt(getValueOrDefault(stageElement.querySelector('.eat-fog').value, 0)),
+                lose_fz: parseInt(getValueOrDefault(stageElement.querySelector('.lose-fz').value, 0)),
+                lose_yg: parseInt(getValueOrDefault(stageElement.querySelector('.lose-yg').value, 0)),
+                customizedParams: customizedParams
             };
 
             stages.push(stageData);
         });
 
         return stages;
+    }
+
+    // 获取阶段自定义护身符参数
+    function getStageCustomizedParams(stageId) {
+        const container = document.getElementById(`stageCustomParams-${stageId}`);
+        if (!container) return [];
+
+        const customParams = [];
+        const customParamGroups = container.querySelectorAll('.stage-custom-param-group');
+
+        customParamGroups.forEach((group, index) => {
+            const timesInput = group.querySelector('.stage-custom-param-times');
+            const valueInput = group.querySelector('.stage-custom-param-value');
+
+            if (valueInput && timesInput) {
+                try {
+                    const value = parseValue(valueInput.value);
+                    const times = parseInt(timesInput.value) || 0;
+
+                    if (value && !isNaN(times)) {
+                        customParams.push({
+                            value: value,
+                            times: times
+                        });
+                    }
+                } catch (error) {
+                    console.error('解析阶段自定义参数错误:', error);
+                }
+            }
+        });
+
+        return customParams;
+    }
+
+    // 获取所有自定义护身符参数
+    function getCustomizedParams() {
+        const customParams = [];
+        const customParamGroups = document.querySelectorAll('.custom-param-group');
+
+        customParamGroups.forEach((group, index) => {
+            const timesInput = group.querySelector('.custom-param-times');
+            const valueInput = group.querySelector('.custom-param-value');
+            const nameInput = group.querySelector('.custom-param-name');
+
+            if (valueInput && timesInput && nameInput) {
+                try {
+                    const value = parseValue(valueInput.value);
+                    const times = parseInt(timesInput.value) || 0;
+                    const name = nameInput.value;
+
+                    if (value && !isNaN(times)) {
+                        customParams.push({
+                            name: name,
+                            value: value,
+                            times: times
+                        });
+                    }
+                } catch (error) {
+                    console.error('解析自定义参数错误:', error);
+                }
+            }
+        });
+
+        return customParams;
     }
 
     // 两膨胀转传导策略配置
@@ -1551,7 +1838,7 @@
     // 应用两膨胀转传导策略
     function applyTwoInflationStrategy() {
         // 清除所有现有阶段
-        strategyStagesContainer.innerHTML = '';
+        document.getElementById('strategyStagesContainer').innerHTML = '';
         stageCounter = 1;
 
         // 添加新阶段
@@ -1560,111 +1847,92 @@
         });
 
         // 显示提示信息
-        alert("此为膨胀盗印+膨胀负重+普通月光的标准策略，吸星按照1万星币来算");
+        alert("此为膨胀盗印+膨胀负重+普通月光的标准策略；\n阶段2的实际开始关卡就是改出传导卡维的那关，如果为空，则表示没改出传导卡维，就不会执行后续阶段了；\n吸星按照1万星币来算");
     }
 
-    // 事件监听
-    addCustomParamBtn.addEventListener('click', addCustomParam);
-    addStageBtn.addEventListener('click', () => addStrategyStage());
-    twoInflationBtn.addEventListener('click', applyTwoInflationStrategy);
+    // 初始化函数
+    function init() {
+        // 事件监听
+        document.getElementById('addCustomParam').addEventListener('click', addCustomParam);
+        document.getElementById('addStageBtn').addEventListener('click', () => addStrategyStage());
+        document.getElementById('twoInflationBtn').addEventListener('click', applyTwoInflationStrategy);
 
-    // 单次计算按钮点击事件
-    calculateBtn.addEventListener('click', function () {
-        try {
-            // 获取输入值
-            const curLevel = parseInt(document.getElementById('curLevel').value);
-            const dy = parseValue(document.getElementById('dy').value);
-            const fz = parseValue(document.getElementById('fz').value);
-            const yg = parseValue(document.getElementById('yg').value);
-            const eat_fog = parseInt(document.getElementById('eat_fog').value);
-            const lose_fz = parseInt(document.getElementById('lose_fz').value);
-            const lose_yg = parseInt(document.getElementById('lose_yg').value);
-            const dy_type = document.getElementById('dy_type').value;
-            const fz_type = document.getElementById('fz_type').value;
-            const yg_type = document.getElementById('yg_type').value;
-            const basicFan = parseInt(document.getElementById('basicFan').value);
-            const basicScore = parseInt(document.getElementById('basicScore').value);
-            const dy_times = parseInt(document.getElementById('dy_times').value);
-            const fz_times = parseInt(document.getElementById('fz_times').value);
-            const yg_times = parseInt(document.getElementById('yg_times').value);
+        // 单次计算按钮点击事件
+        document.getElementById('calculateBtn').addEventListener('click', function () {
+            try {
+                // 获取输入值，如果为空则默认为0
+                const curLevel = parseInt(document.getElementById('curLevel').value);
+                const dy = parseValue(document.getElementById('dy').value);
+                const fz = parseValue(document.getElementById('fz').value);
+                const yg = parseValue(document.getElementById('yg').value);
+                const eat_fog = parseInt(getValueOrDefault(document.getElementById('eat_fog').value, 0));
+                const lose_fz = parseInt(getValueOrDefault(document.getElementById('lose_fz').value, 0));
+                const lose_yg = parseInt(getValueOrDefault(document.getElementById('lose_yg').value, 0));
+                const dy_type = document.getElementById('dy_type').value;
+                const fz_type = document.getElementById('fz_type').value;
+                const yg_type = document.getElementById('yg_type').value;
+                const basicFan = parseInt(document.getElementById('basicFan').value);
+                const basicScore = parseInt(document.getElementById('basicScore').value);
+                const dy_times = parseInt(document.getElementById('dy_times').value);
+                const fz_times = parseInt(document.getElementById('fz_times').value);
+                const yg_times = parseInt(document.getElementById('yg_times').value);
 
-            // 获取自定义护身符参数
-            const customizedParams = getCustomizedParams();
+                // 获取自定义护身符参数
+                const customizedParams = getCustomizedParams();
 
-            // 执行计算
-            const result = executeCurrentStage(
-                curLevel, 0, 0, dy, fz, yg,
-                lose_fz, lose_yg, eat_fog,
-                dy_type, fz_type, yg_type,
-                basicFan, basicScore,
-                dy_times, fz_times, yg_times,
-                customizedParams,
-                "当前"
-            );
-
-            // 更新输出日志
-            outputLog.innerHTML = result.outputLines.map(line => `<div class="output-line">${line}</div>`).join(
-                '');
-
-            // 显示结果
-            resultText.textContent = `EX${result.nextLevel - 1}`;
-        } catch (error) {
-            outputLog.innerHTML = `<div class="output-line highlight">输入格式错误：${error.message}</div>`;
-            resultText.textContent = "计算失败";
-        }
-    });
-
-    // 策略计算按钮点击事件
-    calculateStrategyBtn.addEventListener('click', function () {
-        try {
-            // 重置 hasNextStage
-            hasNextStage = true;
-            // 获取初始参数
-            const curLevel = parseInt(document.getElementById('curLevel').value);
-            let dy = parseValue(document.getElementById('dy').value);
-            let fz = parseValue(document.getElementById('fz').value);
-            let yg = parseValue(document.getElementById('yg').value);
-
-            // 获取所有阶段配置
-            const stages = getAllStages();
-
-            let currentLevel = curLevel;
-            let allOutputLines = [];
-
-            // 如果没有阶段，使用默认单阶段计算
-            if (stages.length === 0) {
-                allOutputLines.push(`<span class="highlight">未配置策略阶段，使用默认计算</span>`);
+                // 执行计算
                 const result = executeCurrentStage(
-                    currentLevel, 0, 0, dy, fz, yg,
-                    0, 0, 0,
-                    "普通盗印", "膨胀负重", "普通月光",
-                    23, 1111100,
-                    6, 3, 5,
-                    [],
-                    "默认阶段"
+                    curLevel, 0, 0, dy, fz, yg,
+                    lose_fz, lose_yg, eat_fog,
+                    dy_type, fz_type, yg_type,
+                    basicFan, basicScore,
+                    dy_times, fz_times, yg_times,
+                    customizedParams,
+                    "当前"
                 );
 
-                allOutputLines = allOutputLines.concat(result.outputLines);
-                currentLevel = result.nextLevel;
-                dy = result.dy;
-                fz = result.fz;
-                yg = result.yg;
-            } else {
-                // 按顺序执行每个阶段
-                for (let i = 0; i < stages.length; i++) {
-                    const stage = stages[i];
+                // 更新输出日志
+                document.getElementById('outputLog').innerHTML = result.outputLines.map(line =>
+                    `<div class="output-line">${line}</div>`).join(
+                    '');
 
-                    // 获取下一阶段的实际开始关卡（如果有的话）
-                    const nextStageActualLevel = i + 1 < stages.length ? stages[i + 1].actualLevel : 0;
+                // 显示结果
+                document.getElementById('resultText').textContent = `EX${result.nextLevel - 1}`;
+            } catch (error) {
+                document.getElementById('outputLog').innerHTML =
+                    `<div class="output-line highlight">输入格式错误：${error.message}</div>`;
+                document.getElementById('resultText').textContent = "计算失败";
+            }
+        });
 
+        // 策略计算按钮点击事件
+        document.getElementById('calculateStrategyBtn').addEventListener('click', function () {
+            try {
+                // 重置 hasNextStage
+                hasNextStage = true;
+                // 获取初始参数
+                const curLevel = parseInt(document.getElementById('curLevel').value);
+                let dy = parseValue(document.getElementById('dy').value);
+                let fz = parseValue(document.getElementById('fz').value);
+                let yg = parseValue(document.getElementById('yg').value);
+
+                // 获取所有阶段配置
+                const stages = getAllStages();
+
+                let currentLevel = curLevel;
+                let allOutputLines = [];
+
+                // 如果没有阶段，使用默认单阶段计算
+                if (stages.length === 0) {
+                    allOutputLines.push(`<span class="highlight">未配置策略阶段，使用默认计算</span>`);
                     const result = executeCurrentStage(
-                        currentLevel, stage.actualLevel, nextStageActualLevel, dy, fz, yg,
-                        stage.lose_fz, stage.lose_yg, stage.eat_fog,
-                        stage.dy_type, stage.fz_type, stage.yg_type,
-                        stage.basicFan, stage.basicScore,
-                        stage.dy_times, stage.fz_times, stage.yg_times,
-                        [], // 策略计算不使用自定义护身符
-                        stage.name
+                        currentLevel, 0, 0, dy, fz, yg,
+                        0, 0, 0,
+                        "普通盗印", "膨胀负重", "普通月光",
+                        23, 1111100,
+                        6, 3, 5,
+                        [],
+                        "默认阶段"
                     );
 
                     allOutputLines = allOutputLines.concat(result.outputLines);
@@ -1672,48 +1940,74 @@
                     dy = result.dy;
                     fz = result.fz;
                     yg = result.yg;
+                } else {
+                    // 按顺序执行每个阶段
+                    for (let i = 0; i < stages.length; i++) {
+                        const stage = stages[i];
 
-                    // 如果已经达到极限，提前结束
-                    if (currentLevel >= REQUIRED_SCORE.length) {
-                        break;
+                        // 获取下一阶段的实际开始关卡（如果有的话）
+                        const nextStageActualLevel = i + 1 < stages.length ? stages[i + 1].actualLevel : 0;
+
+                        const result = executeCurrentStage(
+                            currentLevel, stage.actualLevel, nextStageActualLevel, dy, fz, yg,
+                            stage.lose_fz, stage.lose_yg, stage.eat_fog,
+                            stage.dy_type, stage.fz_type, stage.yg_type,
+                            stage.basicFan, stage.basicScore,
+                            stage.dy_times, stage.fz_times, stage.yg_times,
+                            stage.customizedParams, // 使用阶段的自定义护身符
+                            stage.name
+                        );
+
+                        allOutputLines = allOutputLines.concat(result.outputLines);
+                        currentLevel = result.nextLevel;
+                        dy = result.dy;
+                        fz = result.fz;
+                        yg = result.yg;
+
+                        // 如果已经达到极限，提前结束
+                        if (currentLevel >= REQUIRED_SCORE.length) {
+                            break;
+                        }
                     }
                 }
+
+                // 更新输出日志
+                document.getElementById('outputLog').innerHTML = allOutputLines.map(line =>
+                    `<div class="output-line">${line}</div>`).join('');
+
+                // 显示结果
+                document.getElementById('resultText').textContent = `EX${currentLevel - 1}`;
+
+            } catch (error) {
+                document.getElementById('outputLog').innerHTML =
+                    `<div class="output-line highlight">输入格式错误：${error.message}</div>`;
+                document.getElementById('resultText').textContent = "计算失败";
             }
+        });
 
-            // 更新输出日志
-            outputLog.innerHTML = allOutputLines.map(line => `<div class="output-line">${line}</div>`).join('');
-
-            // 显示结果
-            resultText.textContent = `EX${currentLevel - 1}`;
-
-        } catch (error) {
-            outputLog.innerHTML = `<div class="output-line highlight">输入格式错误：${error.message}</div>`;
-            resultText.textContent = "计算失败";
-        }
-    });
-
-    // 初始化时添加一个默认阶段
-    window.onload = function () {
         // 设置顶部参数的默认值
-        topCurLevel.value = "1";
-        topDy.value = "144.61";
-        topFz.value = "378.36";
-        topYg.value = "56.02";
-        topDyType.value = "卡维膨胀盗印";
-        topFzType.value = "膨胀负重";
-        topYgType.value = "普通月光";
-        topBasicFan.value = "19";
-        topBasicScore.value = "38";
-        topDyTimes.value = "2";
-        topFzTimes.value = "2";
-        topYgTimes.value = "1";
-        topEatFog.value = "0";
-        topLoseFz.value = "0";
-        topLoseYg.value = "0";
+        document.getElementById('curLevel').value = "1";
+        document.getElementById('dy').value = "144.61";
+        document.getElementById('fz').value = "378.36";
+        document.getElementById('yg').value = "56.02";
+        document.getElementById('dy_type').value = "卡维膨胀盗印";
+        document.getElementById('fz_type').value = "膨胀负重";
+        document.getElementById('yg_type').value = "普通月光";
+        document.getElementById('basicFan').value = "19";
+        document.getElementById('basicScore').value = "38";
+        document.getElementById('dy_times').value = "2";
+        document.getElementById('fz_times').value = "2";
+        document.getElementById('yg_times').value = "1";
+        document.getElementById('eat_fog').value = "0";
+        document.getElementById('lose_fz').value = "0";
+        document.getElementById('lose_yg').value = "0";
 
         // 添加默认阶段，使用顶部参数的默认值
         addStrategyStage();
-    };
+    }
+
+    // 页面加载完成后初始化
+    window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
