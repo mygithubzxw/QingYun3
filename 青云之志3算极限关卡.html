@@ -544,10 +544,12 @@
 
     <div class="content">
         <div class="input-section">
-            <h2>输入参数            <span class="tooltip-container">
+            <h2>输入参数
+                <span class="tooltip-container">
 						<span class="tooltip-icon">ⓘ</span>
 						<span class="tooltip-text">商店阶段</span>
-					</span></h2>
+					</span>
+            </h2>
 
             <div class="form-group">
                 <label for="curLevel">当前关卡EX</label>
@@ -1043,37 +1045,25 @@
 
             curLevel = curLevel + 1;
 
+            // 正常盗印成长
+            switch (dy_type) {
+                case DY_TYPE_KW_PZ:
+                    dy = dy.times(Math.pow(1.3, 4));
+                    break;
+                case DY_TYPE_OTHER_PZ:
+                    dy = dy.times(Math.pow(1.3, 2));
+                    break;
+                case DY_TYPE_NORMAL:
+                    dy = dy.times(1.3);
+                    break;
+            }
+
             // 处理吃迷雾次数 - 只在第一次循环中处理
             if (isFirstLoop && eat_fog > 0) {
-                // 吃迷雾时，盗印成长次数为吃迷雾次数+1
-                const growthTimes = eat_fog + 1;
-                for (let i = 0; i < growthTimes; i++) {
-                    switch (dy_type) {
-                        case DY_TYPE_KW_PZ:
-                            dy = dy.times(Math.pow(1.3, 4));
-                            break;
-                        case DY_TYPE_OTHER_PZ:
-                            dy = dy.times(Math.pow(1.3, 2));
-                            break;
-                        case DY_TYPE_NORMAL:
-                            dy = dy.times(1.3);
-                            break;
-                    }
+                for (let i = 0; i < eat_fog; i++) {
+                    dy = dy.times(Math.pow(1.3, 2));
                 }
                 eat_fog = 0; // 吃迷雾次数设为0
-            } else {
-                // 正常盗印成长
-                switch (dy_type) {
-                    case DY_TYPE_KW_PZ:
-                        dy = dy.times(Math.pow(1.3, 4));
-                        break;
-                    case DY_TYPE_OTHER_PZ:
-                        dy = dy.times(Math.pow(1.3, 2));
-                        break;
-                    case DY_TYPE_NORMAL:
-                        dy = dy.times(1.3);
-                        break;
-                }
             }
 
             isFirstLoop = false; // 第一次循环结束
@@ -1631,7 +1621,7 @@
             actualLevel: 0,
             dy_type: "其他卡膨胀盗印",
             fz_type: "膨胀负重",
-            yg_type: "天使月光",
+            yg_type: "普通月光",
             basicFan: 23,
             basicScore: 38,
             dy_times: 2,
