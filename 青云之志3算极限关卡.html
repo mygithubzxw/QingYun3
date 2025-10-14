@@ -1382,15 +1382,15 @@
                 </div>
                 <div class="stage-form-group">
                     <label>吃迷雾次数</label>
-                    <input type="number" class="eat-fog" value="${stageData?.eat_fog || defaultEatFog}" min="0">
+                    <input type="number" class="eat-fog" value="${stageData?.eat_fog ?? defaultEatFog}" min="0">
                 </div>
                 <div class="stage-form-group">
                     <label>亏负重次数</label>
-                    <input type="number" class="lose-fz" value="${stageData?.lose_fz || defaultLoseFz}" min="0">
+                    <input type="number" class="lose-fz" value="${stageData?.lose_fz ?? defaultLoseFz}" min="0">
                 </div>
                 <div class="stage-form-group">
                     <label>亏月光次数</label>
-                    <input type="number" class="lose-yg" value="${stageData?.lose_yg || defaultLoseYg}" min="0">
+                    <input type="number" class="lose-yg" value="${stageData?.lose_yg ?? defaultLoseYg}" min="0">
                 </div>
                 <div class="stage-form-group" style="grid-column: 1 / -1;">
                     <button type="button" class="add-stage-custom-param-btn strategy-btn" onclick="addStageCustomParam('${stageId}')">
@@ -1847,7 +1847,7 @@
     function init() {
         // 事件监听
         document.getElementById('addCustomParam').addEventListener('click', addCustomParam);
-        document.getElementById('addStageBtn').addEventListener('click', () => addStrategyStage());
+        document.getElementById('addStageBtn').addEventListener('click', () => addStrategyStage({eat_fog: 0,lose_fz: 0,lose_yg: 0}));
         document.getElementById('twoInflationBtn').addEventListener('click', applyTwoInflationStrategy);
 
         // 单次计算按钮点击事件
