@@ -742,6 +742,28 @@
                 max-width: 200px;
             }
         }
+
+        /* 眼睛图标样式 */
+        .toggle-eye {
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .toggle-eye.open {
+            opacity: 1;
+        }
+
+        .toggle-eye.closed {
+            opacity: 0.5;
+        }
+
+        /* 表格隐藏时的样式 */
+        .magnitude-table.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -937,8 +959,11 @@
 
             <!-- 数量级对照表 -->
             <div class="table-container">
-                <div class="table-title">数量级对照表</div>
-                <table class="magnitude-table">
+                <div class="table-title">
+                    数量级对照表
+                    <span class="toggle-eye open" id="toggleMagnitudeTable" title="点击隐藏表格">👁️</span>
+                </div>
+                <table class="magnitude-table" id="magnitudeTable">
                     <thead>
                     <tr>
                         <th>单位</th>
@@ -2429,6 +2454,28 @@
 
         // 添加默认阶段，使用顶部参数的默认值
         addStrategyStage();
+
+        // 在init函数中添加眼睛图标的点击事件监听
+        document.getElementById('toggleMagnitudeTable').addEventListener('click', function() {
+            const table = document.getElementById('magnitudeTable');
+            const eye = document.getElementById('toggleMagnitudeTable');
+
+            if (table.classList.contains('hidden')) {
+                // 显示表格
+                table.classList.remove('hidden');
+                eye.classList.remove('closed');
+                eye.classList.add('open');
+                eye.title = "点击隐藏表格";
+                eye.textContent = "👁️"; // 睁眼图标
+            } else {
+                // 隐藏表格
+                table.classList.add('hidden');
+                eye.classList.remove('open');
+                eye.classList.add('closed');
+                eye.title = "点击显示表格";
+                eye.textContent = "🙈"; // 闭眼图标
+            }
+        });
     }
 
     // 页面加载完成后初始化
