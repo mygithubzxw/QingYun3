@@ -764,6 +764,11 @@
         .magnitude-table.hidden {
             display: none;
         }
+
+        /* 护身符内容隐藏样式 */
+        .talisman-content.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -1637,6 +1642,147 @@
         }
     }
 
+    // 更新阶段护身符内容显示状态
+    function updateStageTalismanContent(stageElement, talismanType, isEnabled) {
+        const content = stageElement.querySelector(`.talisman-card:nth-child(${getTalismanCardIndex(talismanType)}) .talisman-content`);
+        if (content) {
+            if (isEnabled) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+        }
+    }
+
+    // 获取护身符卡片在阶段中的索引
+    function getTalismanCardIndex(talismanType) {
+        const types = { dy: 3, fz: 4, yg: 5 }; // 阶段内容中护身符卡片的顺序
+        return types[talismanType] || 3;
+    }
+
+    // 更新顶部护身符内容显示状态
+    function updateTopTalismanContent(talismanType, isEnabled) {
+        const content = document.querySelector(`#${talismanType}TalismanCard .talisman-content`);
+        if (content) {
+            if (isEnabled) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+        }
+    }
+
+    // 同步顶部护身符状态到阶段1
+    function syncTalismanStateToStage1() {
+        const stage1 = document.querySelector('.strategy-stage');
+        if (!stage1) return;
+
+        const stageDyEnabled = stage1.querySelector('.stage-dy-enabled');
+        const stageFzEnabled = stage1.querySelector('.stage-fz-enabled');
+        const stageYgEnabled = stage1.querySelector('.stage-yg-enabled');
+
+        if (stageDyEnabled) {
+            stageDyEnabled.checked = document.getElementById('dyTalismanEnabled').checked;
+            updateStageTalismanContent(stage1, 'dy', stageDyEnabled.checked);
+        }
+
+        if (stageFzEnabled) {
+            stageFzEnabled.checked = document.getElementById('fzTalismanEnabled').checked;
+            updateStageTalismanContent(stage1, 'fz', stageFzEnabled.checked);
+        }
+
+        if (stageYgEnabled) {
+            stageYgEnabled.checked = document.getElementById('ygTalismanEnabled').checked;
+            updateStageTalismanContent(stage1, 'yg', stageYgEnabled.checked);
+        }
+    }
+
+    // 同步阶段1护身符状态到顶部
+    function syncStage1TalismanStateToTop() {
+        const stage1 = document.querySelector('.strategy-stage');
+        if (!stage1) return;
+
+        const stageDyEnabled = stage1.querySelector('.stage-dy-enabled');
+        const stageFzEnabled = stage1.querySelector('.stage-fz-enabled');
+        const stageYgEnabled = stage1.querySelector('.stage-yg-enabled');
+
+        if (stageDyEnabled) {
+            document.getElementById('dyTalismanEnabled').checked = stageDyEnabled.checked;
+            updateTopTalismanContent('dy', stageDyEnabled.checked);
+        }
+
+        if (stageFzEnabled) {
+            document.getElementById('fzTalismanEnabled').checked = stageFzEnabled.checked;
+            updateTopTalismanContent('fz', stageFzEnabled.checked);
+        }
+
+        if (stageYgEnabled) {
+            document.getElementById('ygTalismanEnabled').checked = stageYgEnabled.checked;
+            updateTopTalismanContent('yg', stageYgEnabled.checked);
+        }
+    }
+
+    // 在init函数中添加护身符开关的监听事件
+    function setupTalismanToggles() {
+        // 顶部护身符开关
+        document.getElementById('dyTalismanEnabled').addEventListener('change', function() {
+            const content = document.querySelector('#dyTalismanCard .talisman-content');
+            if (this.checked) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+
+            // 同步到阶段1
+            syncTalismanStateToStage1();
+        });
+
+        document.getElementById('fzTalismanEnabled').addEventListener('change', function() {
+            const content = document.querySelector('#fzTalismanCard .talisman-content');
+            if (this.checked) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+
+            // 同步到阶段1
+            syncTalismanStateToStage1();
+        });
+
+        document.getElementById('ygTalismanEnabled').addEventListener('change', function() {
+            const content = document.querySelector('#ygTalismanCard .talisman-content');
+            if (this.checked) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+
+            // 同步到阶段1
+            syncTalismanStateToStage1();
+        });
+    }
+
+    // 为策略阶段容器添加事件委托，处理阶段内护身符开关的变化
+    function setupStageTalismanToggles() {
+        document.getElementById('strategyStagesContainer').addEventListener('change', function(e) {
+            if (e.target.classList.contains('stage-dy-enabled') ||
+                e.target.classList.contains('stage-fz-enabled') ||
+                e.target.classList.contains('stage-yg-enabled')) {
+
+                const stageElement = e.target.closest('.strategy-stage');
+                const talismanType = e.target.classList.contains('stage-dy-enabled') ? 'dy' :
+                    e.target.classList.contains('stage-fz-enabled') ? 'fz' : 'yg';
+
+                updateStageTalismanContent(stageElement, talismanType, e.target.checked);
+
+                // 如果是阶段1，同步到顶部
+                if (stageElement.id === 'stage1') {
+                    syncStage1TalismanStateToTop();
+                }
+            }
+        });
+    }
+
     // 添加策略阶段
     function addStrategyStage(stageData = null) {
         const stageId = `stage${stageCounter}`;
@@ -1782,6 +1928,25 @@
     `;
 
         document.getElementById('strategyStagesContainer').insertAdjacentHTML('beforeend', stageHTML);
+        // 设置阶段护身符内容的初始显示状态
+        const stageElement = document.getElementById(stageId);
+        if (stageElement) {
+            const stageDyEnabled = stageElement.querySelector('.stage-dy-enabled');
+            const stageFzEnabled = stageElement.querySelector('.stage-fz-enabled');
+            const stageYgEnabled = stageElement.querySelector('.stage-yg-enabled');
+
+            if (stageDyEnabled) {
+                updateStageTalismanContent(stageElement, 'dy', stageDyEnabled.checked);
+            }
+
+            if (stageFzEnabled) {
+                updateStageTalismanContent(stageElement, 'fz', stageFzEnabled.checked);
+            }
+
+            if (stageYgEnabled) {
+                updateStageTalismanContent(stageElement, 'yg', stageYgEnabled.checked);
+            }
+        }
 
         // 如果是第一个阶段，设置双向绑定
         if (stageNumber === 1) {
@@ -2476,6 +2641,19 @@
                 eye.textContent = "🙈"; // 闭眼图标
             }
         });
+
+        // 设置护身符开关监听
+        setupTalismanToggles();
+        setupStageTalismanToggles();
+
+        // 设置护身符内容的初始显示状态
+        const dyEnabled = document.getElementById('dyTalismanEnabled').checked;
+        const fzEnabled = document.getElementById('fzTalismanEnabled').checked;
+        const ygEnabled = document.getElementById('ygTalismanEnabled').checked;
+
+        updateTopTalismanContent('dy', dyEnabled);
+        updateTopTalismanContent('fz', fzEnabled);
+        updateTopTalismanContent('yg', ygEnabled);
     }
 
     // 页面加载完成后初始化
