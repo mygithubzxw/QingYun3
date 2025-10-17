@@ -248,11 +248,11 @@
             border-radius: 50%;
         }
 
-        input:checked+.toggle-slider {
+        input:checked + .toggle-slider {
             background-color: #2575fc;
         }
 
-        input:checked+.toggle-slider:before {
+        input:checked + .toggle-slider:before {
             transform: translateX(26px);
         }
 
@@ -738,7 +738,7 @@
             }
 
             /* 确保在护身符卡片之后的基础参数正确排列 */
-            .stage-content>.stage-form-group:not(.talisman-card) {
+            .stage-content > .stage-form-group:not(.talisman-card) {
                 max-width: 200px;
             }
         }
@@ -767,6 +767,19 @@
 
         /* 护身符内容隐藏样式 */
         .talisman-content.hidden {
+            display: none;
+        }
+
+        /* 关卡分数对照表容器样式 */
+        .score-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        /* 表格隐藏样式 */
+        .score-table-container.hidden {
             display: none;
         }
     </style>
@@ -929,10 +942,10 @@
                     <h2>自定义策略
                         <span class="tooltip-container">
 									<span class="tooltip-icon">ⓘ</span>
-									<span class="tooltip-text">1.支持从任意阶段开始自定义策略<br />
-										2.第一个阶段默认同步上面的参数<br />
-										3.不考虑标准配置的护身符之外其他护身符的影响<br />
-										4.每个阶段默认以极限关卡转下一阶段，需要自己根据实际情况填下一阶段的实际开始关卡<br />
+									<span class="tooltip-text">1.支持从任意阶段开始自定义策略<br/>
+										2.第一个阶段默认同步上面的参数<br/>
+										3.不考虑标准配置的护身符之外其他护身符的影响<br/>
+										4.每个阶段默认以极限关卡转下一阶段，需要自己根据实际情况填下一阶段的实际开始关卡<br/>
 										5.如果以改传导卡维作为开始阶段，下一个改岚星阶段的实际开始关卡需要自己填，否则认为没改出传导卡维G了
 									</span>
 								</span>
@@ -949,7 +962,9 @@
                 <div class="strategy-presets">
                     <h3>预设策略</h3>
                     <div class="preset-buttons">
-                        <button class="preset-btn" data-preset="standard" id="twoInflationBtn">膨胀盗印膨胀负重普通月光</button>
+                        <button class="preset-btn" data-preset="standard" id="twoInflationBtn">
+                            膨胀盗印膨胀负重普通月光
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1027,6 +1042,26 @@
                     </tbody>
                 </table>
             </div>
+            <!-- 关卡分数对照表 -->
+            <div class="table-container">
+                <div class="table-title">
+                    关卡分数对照表
+                    <span class="toggle-eye closed" id="toggleScoreTable" title="点击显示表格">🙈</span>
+                </div>
+                <div class="score-table-container hidden">
+                    <table class="magnitude-table" id="scoreTable">
+                        <thead>
+                        <tr>
+                            <th>关卡</th>
+                            <th>分数</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 表格内容将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <div class="result">
                 <h3>当前配置的极限是：<span id="resultText">等待计算...</span></h3>
@@ -1080,13 +1115,17 @@
     // 初始化关卡要求分数
     function initRequiredScore() {
         const ORIGINAL_REQUIRED_SCORE =
-            "1.00E+06,1.20E+07,9.08E+07,8.11E+08,8.43E+09,1.00E+11,1.35E+12,2.06E+13,3.48E+14,6.54E+15,1.36E+17,3.09E+18,7.68E+19,2.08E+21,6.64E+22,2.46E+24,1.05E+26,5.15E+27,2.82E+29,1.83E+31,1.31E+33,1.07E+35,9.72E+36,9.94E+38,1.14E+41,1.46E+43,2.08E+45,3.31E+47,5.85E+49,1.26E+52,3.00E+54,8.71E+56,2.79E+59,1.08E+62,4.63E+64,2.40E+67,1.37E+70,9.41E+72,7.15E+75,7.09E+78,9.17E+81,1.55E+85,3.40E+88,9.73E+91,3.63E+95,1.11E+99,1.11E+103,9.11E+106,9.72E+110,1.35E+115,2.81E+119,8.79E+123,4.12E+128,2.90E+134,3.06E+138,4.84E+143,1.15E+149,4.10E+154,2.19E+160,1.76E+166,2.11E+172,3.80E+178,1.03E+185,4.17E+191,2.54E+198,2.32E+205,3.18E+212,6.54E+219,2.02E+227,9.31E+234,6.46E+242,6.72E+250,1.05E+259,2.45E+267,8.60E+275,4.53E+284,3.58E+293,4.24E+302,5.7E310,5.7E318,5.7E326,5.7E334,5.7E342,5.7E350,5.7E359,5.7E368,5.7E377,5.7E386,5.7E395,5.7E405,5.7E415,5.7E425,5.7E435,5.7E455,5.7E466,5.7E477,5.7E488,5.7E499,9.999E510,9.999E522,9.999E534,9.999E546,9.999E558,9.999E571,9.999E584,9.999E597,9.999E611,9.999E625,9.999E639,9.999E654,9.999E669,9.999E684,9.999E699,9.999E715,9.999E731,9.999E748,9.999E765,9.999E783,9.999E801,9.999E820,9.999E839,9.999E859,9.999E879,9.999E900,9.999E921,9.999E943,9.999E966,9.999E990,9.999E1015,9.999E1041,9.999E1068,9.999E1096,2.9997E1126,9.999E1155,9.999E1186,9.999E1218,9.999E1251,9.999E1285,9.999E1320,9.999E1356,9.999E1393,9.999E1431,9.999E1470,9.999E1510,9.999E1551,9.999E1593,9.999E1636,9.999E1680,2.9997E1726,9.999E1771,9.999E1818,2.9997E1867,9.999E1915,9.999E1965,9.999E2016,9.999E2068,2.9997E2122,9.999E2175,9.999E2230,9.999E2286,9.999E2343,9.999E2401,9.999E2460";
+            "1.00E+06,1.20E+07,9.08E+07,8.11E+08,8.43E+09,1.00E+11,1.35E+12,2.06E+13,3.48E+14,6.54E+15,1.36E+17,3.09E+18,7.68E+19,2.08E+21,6.64E+22,2.46E+24,1.05E+26,5.15E+27,2.82E+29,1.83E+31,1.31E+33,1.07E+35,9.72E+36,9.94E+38,1.14E+41,1.46E+43,2.08E+45,3.31E+47,5.85E+49,1.26E+52,3.00E+54,8.71E+56,2.79E+59,1.08E+62,4.63E+64,2.40E+67,1.37E+70,9.41E+72,7.15E+75,7.09E+78,9.17E+81,1.55E+85,3.40E+88,9.73E+91,3.63E+95,1.11E+99,1.11E+103,9.11E+106,9.72E+110,1.35E+115,2.81E+119,8.79E+123,4.12E+128,2.90E+134,3.06E+138,4.84E+143,1.15E+149,4.10E+154,2.19E+160,1.76E+166,2.11E+172,3.80E+178,1.03E+185,4.17E+191,2.54E+198,2.32E+205,3.18E+212,6.54E+219,2.02E+227,9.31E+234,6.46E+242,6.72E+250,1.05E+259,2.45E+267,8.60E+275,4.53E+284,3.58E+293,4.24E+302,5.7E310,5.7E318,5.7E326,5.7E334,5.7E342,5.7E350,5.7E359,5.7E368,5.7E377,5.7E386,5.7E395,5.7E405,5.7E415,5.7E425,5.7E435,5.7E445,5.7E455,5.7E466,5.7E477,5.7E488,5.7E499,9.999E510,9.999E522,9.999E534,9.999E546,9.999E558,9.999E571,9.999E584,9.999E597,9.999E611,9.999E625,9.999E639,9.999E654,9.999E669,9.999E684,9.999E699,9.999E715,9.999E731,9.999E748,9.999E765,9.999E783,9.999E801,9.999E820,9.999E839,9.999E859,9.999E879,9.999E900,9.999E921,9.999E943,9.999E966,9.999E990,9.999E1015,9.999E1041,9.999E1068,9.999E1096,2.9997E1126,9.999E1155,9.999E1186,9.999E1218,9.999E1251,9.999E1285,9.999E1320,9.999E1356,9.999E1393,9.999E1431,9.999E1470,9.999E1510,9.999E1551,9.999E1593,9.999E1636,9.999E1680,2.9997E1726,9.999E1771,9.999E1818,2.9997E1867,9.999E1915,9.999E1965,9.999E2016,9.999E2068,2.9997E2122,9.999E2175,9.999E2230,9.999E2286,9.999E2343,9.999E2401,9.999E2460";
         const REQUIRED_SCORE = new Array(164);
         const split = ORIGINAL_REQUIRED_SCORE.split(",");
         for (let i = 0; i < split.length; i++) {
             REQUIRED_SCORE[i] = new Decimal(split[i]);
         }
         return REQUIRED_SCORE;
+    }
+
+    for (let i = 0; i < REQUIRED_SCORE.length; i++) {
+        console.log("EX" + (i + 1) + ":" + formatScientific(REQUIRED_SCORE[i]));
     }
 
     // 科学计数法格式化
@@ -1247,13 +1286,13 @@
             if (talismanEnabled.yg && !yg_first) {
                 zhiShuFan = zhiShuFan.times(yg.pow(yg_times));
             }
-            if (talismanEnabled?.dy_first){
+            if (talismanEnabled?.dy_first) {
                 dy_first = false;
             }
-            if (talismanEnabled?.fz_first){
+            if (talismanEnabled?.fz_first) {
                 fz_first = false;
             }
-            if (talismanEnabled?.yg_first){
+            if (talismanEnabled?.yg_first) {
                 yg_first = false;
             }
 
@@ -1271,10 +1310,10 @@
 
             outputLines.push(`----EX${curLevel}分数：${formatScientific(totalScore)}`);
 
-            // 检查当前关卡是否能通过,如果不能通过，就没有下一关阶段了
+            // 检查当前关卡是否能通过,如果不能通过，就没有下一阶段了
             if (totalScore.lt(REQUIRED_SCORE[curLevel - 1])) {
                 outputLines.push(
-                    `<span class="highlight">无法达到EX${curLevel}的要求分数 ${formatScientific(REQUIRED_SCORE[curLevel - 1])}</span>`
+                    `<span class="highlight">无法达到EX${curLevel}的要求分数 ${REQUIRED_SCORE[curLevel - 1]}</span>`
                 );
                 if (stageName) {
                     // 修正推进关卡数计算逻辑
@@ -1373,7 +1412,7 @@
             if (simulatedTotalScore.lt(REQUIRED_SCORE[curLevel])) {
                 toNextStage = true;
                 outputLines.push(
-                    `<span class="highlight">无法达到EX${curLevel + 1}的要求分数 ${formatScientific(REQUIRED_SCORE[curLevel])}</span>`
+                    `<span class="highlight">无法达到EX${curLevel + 1}的要求分数 ${REQUIRED_SCORE[curLevel]}</span>`
                 );
                 if (stageName) {
                     // 修正推进关卡数计算逻辑，加1
@@ -1466,7 +1505,7 @@
 
         // 监听输入变化，同步到阶段1
         [nameInput, valueInput, timesInput].forEach(input => {
-            input.addEventListener('input', function() {
+            input.addEventListener('input', function () {
                 syncTopCustomParamsToStage1();
             });
         });
@@ -1536,7 +1575,7 @@
 
         // 监听输入变化，同步到顶部
         [nameInput, valueInput, timesInput].forEach(input => {
-            input.addEventListener('input', function() {
+            input.addEventListener('input', function () {
                 syncStage1CustomParamsToTop();
             });
         });
@@ -1624,7 +1663,7 @@
 
         // 监听输入变化，同步到阶段1
         [nameInput, valueInput, timesInput].forEach(input => {
-            input.addEventListener('input', function() {
+            input.addEventListener('input', function () {
                 syncTopCustomParamsToStage1();
             });
         });
@@ -1669,7 +1708,7 @@
 
     // 获取护身符卡片在阶段中的索引
     function getTalismanCardIndex(talismanType) {
-        const types = { dy: 3, fz: 4, yg: 5 }; // 阶段内容中护身符卡片的顺序
+        const types = {dy: 3, fz: 4, yg: 5}; // 阶段内容中护身符卡片的顺序
         return types[talismanType] || 3;
     }
 
@@ -1738,7 +1777,7 @@
     // 在init函数中添加护身符开关的监听事件
     function setupTalismanToggles() {
         // 顶部护身符开关
-        document.getElementById('dyTalismanEnabled').addEventListener('change', function() {
+        document.getElementById('dyTalismanEnabled').addEventListener('change', function () {
             const content = document.querySelector('#dyTalismanCard .talisman-content');
             if (this.checked) {
                 content.classList.remove('hidden');
@@ -1750,7 +1789,7 @@
             syncTalismanStateToStage1();
         });
 
-        document.getElementById('fzTalismanEnabled').addEventListener('change', function() {
+        document.getElementById('fzTalismanEnabled').addEventListener('change', function () {
             const content = document.querySelector('#fzTalismanCard .talisman-content');
             if (this.checked) {
                 content.classList.remove('hidden');
@@ -1762,7 +1801,7 @@
             syncTalismanStateToStage1();
         });
 
-        document.getElementById('ygTalismanEnabled').addEventListener('change', function() {
+        document.getElementById('ygTalismanEnabled').addEventListener('change', function () {
             const content = document.querySelector('#ygTalismanCard .talisman-content');
             if (this.checked) {
                 content.classList.remove('hidden');
@@ -1777,7 +1816,7 @@
 
     // 为策略阶段容器添加事件委托，处理阶段内护身符开关的变化
     function setupStageTalismanToggles() {
-        document.getElementById('strategyStagesContainer').addEventListener('change', function(e) {
+        document.getElementById('strategyStagesContainer').addEventListener('change', function (e) {
             if (e.target.classList.contains('stage-dy-enabled') ||
                 e.target.classList.contains('stage-fz-enabled') ||
                 e.target.classList.contains('stage-yg-enabled')) {
@@ -2461,6 +2500,210 @@
         alert("此为膨胀盗印+膨胀负重+普通月光的标准策略；\n阶段2的实际开始关卡就是改出传导卡维的那关，如果为空，则表示没改出传导卡维，就不会执行后续阶段了；\n吸星按照1万星币来算");
     }
 
+    // 关卡分数数据
+    const LEVEL_SCORE_DATA = [
+        {level: "Ex1", score: "1.00E+06"},
+        {level: "Ex2", score: "1.20E+07"},
+        {level: "Ex3", score: "9.08E+07"},
+        {level: "Ex4", score: "8.11E+08"},
+        {level: "Ex5", score: "8.43E+09"},
+        {level: "Ex6", score: "1.00E+11"},
+        {level: "Ex7", score: "1.35E+12"},
+        {level: "Ex8", score: "2.06E+13"},
+        {level: "Ex9", score: "3.48E+14"},
+        {level: "Ex10", score: "6.54E+15"},
+        {level: "Ex11", score: "1.36E+17"},
+        {level: "Ex12", score: "3.09E+18"},
+        {level: "Ex13", score: "7.68E+19"},
+        {level: "Ex14", score: "2.08E+21"},
+        {level: "Ex15", score: "6.64E+22"},
+        {level: "Ex16", score: "2.46E+24"},
+        {level: "Ex17", score: "1.05E+26"},
+        {level: "Ex18", score: "5.15E+27"},
+        {level: "Ex19", score: "2.82E+29"},
+        {level: "Ex20", score: "1.83E+31"},
+        {level: "Ex21", score: "1.31E+33"},
+        {level: "Ex22", score: "1.07E+35"},
+        {level: "Ex23", score: "9.72E+36"},
+        {level: "Ex24", score: "9.94E+38"},
+        {level: "Ex25", score: "1.14E+41"},
+        {level: "Ex26", score: "1.46E+43"},
+        {level: "Ex27", score: "2.08E+45"},
+        {level: "Ex28", score: "3.31E+47"},
+        {level: "Ex29", score: "5.85E+49"},
+        {level: "Ex30", score: "1.26E+52"},
+        {level: "Ex31", score: "3.00E+54"},
+        {level: "Ex32", score: "8.71E+56"},
+        {level: "Ex33", score: "2.79E+59"},
+        {level: "Ex34", score: "1.08E+62"},
+        {level: "Ex35", score: "4.63E+64"},
+        {level: "Ex36", score: "2.40E+67"},
+        {level: "Ex37", score: "1.37E+70"},
+        {level: "Ex38", score: "9.41E+72"},
+        {level: "Ex39", score: "7.15E+75"},
+        {level: "Ex40", score: "7.09E+78"},
+        {level: "Ex41", score: "9.17E+81"},
+        {level: "Ex42", score: "1.55E+85"},
+        {level: "Ex43", score: "3.40E+88"},
+        {level: "Ex44", score: "9.73E+91"},
+        {level: "Ex45", score: "3.63E+95"},
+        {level: "Ex46", score: "1.11E+99"},
+        {level: "Ex47", score: "1.11E+103"},
+        {level: "Ex48", score: "9.11E+106"},
+        {level: "Ex49", score: "9.72E+110"},
+        {level: "Ex50", score: "1.35E+115"},
+        {level: "Ex51", score: "2.81E+119"},
+        {level: "Ex52", score: "8.79E+123"},
+        {level: "Ex53", score: "4.12E+128"},
+        {level: "Ex54", score: "2.90E+134"},
+        {level: "Ex55", score: "3.06E+138"},
+        {level: "Ex56", score: "4.84E+143"},
+        {level: "Ex57", score: "1.15E+149"},
+        {level: "Ex58", score: "4.10E+154"},
+        {level: "Ex59", score: "2.19E+160"},
+        {level: "Ex60", score: "1.76E+166"},
+        {level: "Ex61", score: "2.11E+172"},
+        {level: "Ex62", score: "3.80E+178"},
+        {level: "Ex63", score: "1.03E+185"},
+        {level: "Ex64", score: "4.17E+191"},
+        {level: "Ex65", score: "2.54E+198"},
+        {level: "Ex66", score: "2.32E+205"},
+        {level: "Ex67", score: "3.18E+212"},
+        {level: "Ex68", score: "6.54E+219"},
+        {level: "Ex69", score: "2.02E+227"},
+        {level: "Ex70", score: "9.31E+234"},
+        {level: "Ex71", score: "6.46E+242"},
+        {level: "Ex72", score: "6.72E+250"},
+        {level: "Ex73", score: "1.05E+259"},
+        {level: "Ex74", score: "2.45E+267"},
+        {level: "Ex75", score: "8.60E+275"},
+        {level: "Ex76", score: "4.53E+284"},
+        {level: "Ex77", score: "3.58E+293"},
+        {level: "Ex78", score: "4.24E+302"},
+        {level: "Ex79", score: "5.7E310"},
+        {level: "Ex80", score: "5.7E318"},
+        {level: "Ex81", score: "5.7E326"},
+        {level: "Ex82", score: "5.7E334"},
+        {level: "Ex83", score: "5.7E342"},
+        {level: "Ex84", score: "5.7E350"},
+        {level: "Ex85", score: "5.7E359"},
+        {level: "Ex86", score: "5.7E368"},
+        {level: "Ex87", score: "5.7E377"},
+        {level: "Ex88", score: "5.7E386"},
+        {level: "Ex89", score: "5.7E395"},
+        {level: "Ex90", score: "5.7E405"},
+        {level: "Ex91", score: "5.7E415"},
+        {level: "Ex92", score: "5.7E425"},
+        {level: "Ex93", score: "5.7E435"},
+        {level: "Ex94", score: "5.7E445"},
+        {level: "Ex95", score: "5.7E455"},
+        {level: "Ex96", score: "5.7E466"},
+        {level: "Ex97", score: "5.7E477"},
+        {level: "Ex98", score: "5.7E488"},
+        {level: "Ex99", score: "5.7E499"},
+        {level: "Ex100", score: "9.999E510"},
+        {level: "Ex101", score: "9.999E522"},
+        {level: "Ex102", score: "9.999E534"},
+        {level: "Ex103", score: "9.999E546"},
+        {level: "Ex104", score: "9.999E558"},
+        {level: "Ex105", score: "9.999E571"},
+        {level: "Ex106", score: "9.999E584"},
+        {level: "Ex107", score: "9.999E597"},
+        {level: "Ex108", score: "9.999E611"},
+        {level: "Ex109", score: "9.999E625"},
+        {level: "Ex110", score: "9.999E639"},
+        {level: "Ex111", score: "9.999E654"},
+        {level: "Ex112", score: "9.999E669"},
+        {level: "Ex113", score: "9.999E684"},
+        {level: "Ex114", score: "9.999E699"},
+        {level: "Ex115", score: "9.999E715"},
+        {level: "Ex116", score: "9.999E731"},
+        {level: "Ex117", score: "9.999E748"},
+        {level: "Ex118", score: "9.999E765"},
+        {level: "Ex119", score: "9.999E783"},
+        {level: "Ex120", score: "9.999E801"},
+        {level: "Ex121", score: "9.999E820"},
+        {level: "Ex122", score: "9.999E839"},
+        {level: "Ex123", score: "9.999E859"},
+        {level: "Ex124", score: "9.999E879"},
+        {level: "Ex125", score: "9.999E900"},
+        {level: "Ex126", score: "9.999E921"},
+        {level: "Ex127", score: "9.999E943"},
+        {level: "Ex128", score: "9.999E966"},
+        {level: "Ex129", score: "9.999E990"},
+        {level: "Ex130", score: "9.999E1015"},
+        {level: "Ex131", score: "9.999E1041"},
+        {level: "Ex132", score: "9.999E1068"},
+        {level: "Ex133", score: "9.999E1096"},
+        {level: "Ex134", score: "2.9997E1126"},
+        {level: "Ex135", score: "9.999E1155"},
+        {level: "Ex136", score: "9.999E1186"},
+        {level: "Ex137", score: "9.999E1218"},
+        {level: "Ex138", score: "9.999E1251"},
+        {level: "Ex139", score: "9.999E1285"},
+        {level: "Ex140", score: "9.999E1320"},
+        {level: "Ex141", score: "9.999E1356"},
+        {level: "Ex142", score: "9.999E1393"},
+        {level: "Ex143", score: "9.999E1431"},
+        {level: "Ex144", score: "9.999E1470"},
+        {level: "Ex145", score: "9.999E1510"},
+        {level: "Ex146", score: "9.999E1551"},
+        {level: "Ex147", score: "9.999E1593"},
+        {level: "Ex148", score: "9.999E1636"},
+        {level: "Ex149", score: "9.999E1680"},
+        {level: "Ex150", score: "2.9997E1726"},
+        {level: "Ex151", score: "9.999E1771"},
+        {level: "Ex152", score: "9.999E1818"},
+        {level: "Ex153", score: "2.9997E1867"},
+        {level: "Ex154", score: "9.999E1915"},
+        {level: "Ex155", score: "9.999E1965"},
+        {level: "Ex156", score: "9.999E2016"},
+        {level: "Ex157", score: "9.999E2068"},
+        {level: "Ex158", score: "2.9997E2122"},
+        {level: "Ex159", score: "9.999E2175"},
+        {level: "Ex160", score: "9.999E2230"},
+        {level: "Ex161", score: "9.999E2286"},
+        {level: "Ex162", score: "9.999E2343"},
+        {level: "Ex163", score: "9.999E2401"},
+        {level: "Ex164", score: "9.999E2460"}
+    ];
+
+    // 初始化关卡分数表格
+    function initScoreTable() {
+        const tableBody = document.querySelector('#scoreTable tbody');
+        tableBody.innerHTML = '';
+
+        LEVEL_SCORE_DATA.forEach(data => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${data.level}</td>
+            <td>${data.score}</td>
+        `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // 关卡分数表格切换功能
+    function setupScoreTableToggle() {
+        document.getElementById('toggleScoreTable').addEventListener('click', function () {
+            const tableContainer = document.querySelector('.score-table-container');
+            const eye = document.getElementById('toggleScoreTable');
+
+            if (tableContainer.classList.contains('hidden')) {
+                // 显示表格
+                tableContainer.classList.remove('hidden');
+                eye.textContent = "👁️"; // 睁眼图标
+                eye.title = "点击隐藏表格";
+            } else {
+                // 隐藏表格
+                tableContainer.classList.add('hidden');
+                eye.textContent = "🙈"; // 闭眼图标
+                eye.title = "点击显示表格";
+            }
+        });
+    }
+
+
     // 初始化函数
     function init() {
         // 事件监听
@@ -2473,7 +2716,7 @@
         document.getElementById('twoInflationBtn').addEventListener('click', applyTwoInflationStrategy);
 
         // 单次计算按钮点击事件
-        document.getElementById('calculateBtn').addEventListener('click', function() {
+        document.getElementById('calculateBtn').addEventListener('click', function () {
             try {
                 // 获取输入值，如果为空则默认为0
                 const curLevel = parseInt(document.getElementById('curLevel').value);
@@ -2525,7 +2768,7 @@
         });
 
         // 策略计算按钮点击事件
-        document.getElementById('calculateStrategyBtn').addEventListener('click', function() {
+        document.getElementById('calculateStrategyBtn').addEventListener('click', function () {
             try {
                 // 重置 hasNextStage
                 hasNextStage = true;
@@ -2579,17 +2822,17 @@
                         // 对于后续阶段，根据护身符启用状态确定初始值
                         if (i > 0) {
                             // 如果当前阶段启用了某个护身符，但上一个阶段没有启用，则将该护身符的值设为1
-                            if (stage.dy_enabled && !stages[i-1].dy_enabled) {
+                            if (stage.dy_enabled && !stages[i - 1].dy_enabled) {
                                 dy = new Decimal(1);
                                 talismanEnabled.dy_first = true;
                                 allOutputLines.push(`<span class="highlight">盗印护身符从本阶段开始启用，初始值设为1</span>`);
                             }
-                            if (stage.fz_enabled && !stages[i-1].fz_enabled) {
+                            if (stage.fz_enabled && !stages[i - 1].fz_enabled) {
                                 fz = new Decimal(1);
                                 talismanEnabled.fz_first = true;
                                 allOutputLines.push(`<span class="highlight">负重护身符从本阶段开始启用，初始值设为1</span>`);
                             }
-                            if (stage.yg_enabled && !stages[i-1].yg_enabled) {
+                            if (stage.yg_enabled && !stages[i - 1].yg_enabled) {
                                 yg = new Decimal(1);
                                 talismanEnabled.yg_first = true;
                                 allOutputLines.push(`<span class="highlight">月光护身符从本阶段开始启用，初始值设为1</span>`);
@@ -2655,7 +2898,7 @@
         addStrategyStage();
 
         // 在init函数中添加眼睛图标的点击事件监听
-        document.getElementById('toggleMagnitudeTable').addEventListener('click', function() {
+        document.getElementById('toggleMagnitudeTable').addEventListener('click', function () {
             const table = document.getElementById('magnitudeTable');
             const eye = document.getElementById('toggleMagnitudeTable');
 
@@ -2688,6 +2931,10 @@
         updateTopTalismanContent('dy', dyEnabled);
         updateTopTalismanContent('fz', fzEnabled);
         updateTopTalismanContent('yg', ygEnabled);
+
+        // 初始化关卡分数表格
+        initScoreTable();
+        setupScoreTableToggle();
     }
 
     // 页面加载完成后初始化
