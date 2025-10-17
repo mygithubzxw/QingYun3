@@ -965,6 +965,7 @@
                         <button class="preset-btn" data-preset="standard" id="twoInflationBtn">
                             膨胀盗印膨胀负重普通月光
                         </button>
+                        <button class="preset-btn" data-preset="singleDyHacker" id="singleDyHackerBtn">单盗印黑客</button>
                     </div>
                 </div>
             </div>
@@ -2500,6 +2501,140 @@
         alert("此为膨胀盗印+膨胀负重+普通月光的标准策略；\n阶段2的实际开始关卡就是改出传导卡维的那关，如果为空，则表示没改出传导卡维，就不会执行后续阶段了；\n吸星按照1万星币来算");
     }
 
+    // 单盗印黑客策略配置
+    const singleDyHackerStrategy = [
+        {
+            name: "卡维+膨胀盗印+黑客",
+            actualLevel: 0,
+            dy_type: "卡维膨胀盗印",
+            basicFan: 19,
+            basicScore: 38,
+            dy_times: 3,
+            eat_fog: 0,
+            dy_enabled: true,
+            fz_enabled: false,
+            yg_enabled: false
+        },
+        {
+            name: "岚星入链",
+            actualLevel: 0,
+            dy_type: "卡维膨胀盗印",
+            basicFan: 19,
+            basicScore: 38,
+            dy_times: 4,
+            eat_fog: 0,
+            dy_enabled: true,
+            fz_enabled: false,
+            yg_enabled: false
+        },
+        {
+            name: "刷出传导卡维的那关",
+            actualLevel: 0,
+            dy_type: "其他卡膨胀盗印",
+            basicFan: 19,
+            basicScore: 38,
+            dy_times: 4,
+            eat_fog: 0,
+            dy_enabled: true,
+            fz_enabled: false,
+            yg_enabled: false
+        },
+        {
+            name: "天恩入链",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 38,
+            dy_times: 4,
+            eat_fog: 0,
+            dy_enabled: true,
+            fz_enabled: false,
+            yg_enabled: false
+        },
+        {
+            name: "负重入链",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            basicFan: 19,
+            basicScore: 38,
+            dy_times: 5,
+            fz_times: 4,
+            eat_fog: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: false
+        },
+        {
+            name: "吸星入链",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            basicFan: 19,
+            basicScore: 100000,
+            dy_times: 6,
+            fz_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: false
+        },
+        {
+            name: "月光入链",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 100000,
+            dy_times: 7,
+            fz_times: 6,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: true
+        },
+        {
+            name: "8链成型",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 100000,
+            dy_times: 8,
+            fz_times: 7,
+            yg_times: 6,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: true
+        }
+    ];
+
+    // 应用单盗印黑客策略
+    function applySingleDyHackerStrategy() {
+        // 清除所有现有阶段
+        document.getElementById('strategyStagesContainer').innerHTML = '';
+        stageCounter = 1;
+
+        // 添加新阶段
+        singleDyHackerStrategy.forEach(stageData => {
+            addStrategyStage(stageData);
+        });
+
+        // 显示提示信息
+        alert("此为单盗印黑客基础策略；\n转到下一个阶段的实际开始关卡需要自己根据实际情况填写；\n吸星入链按1万星币来算；\n不考虑天恩往前移的步骤");
+    }
+
     // 关卡分数数据
     const LEVEL_SCORE_DATA = [
         {level: "Ex1", score: "1.00E+06"},
@@ -2716,7 +2851,10 @@
             lose_fz: 0,
             lose_yg: 0
         }));
+
+        // 预设策略按钮事件监听
         document.getElementById('twoInflationBtn').addEventListener('click', applyTwoInflationStrategy);
+        document.getElementById('singleDyHackerBtn').addEventListener('click', applySingleDyHackerStrategy);
 
         // 单次计算按钮点击事件
         document.getElementById('calculateBtn').addEventListener('click', function () {
