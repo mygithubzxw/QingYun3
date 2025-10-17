@@ -1150,6 +1150,10 @@
         let isFirstLoop = true;
         let startLevel = curLevel;
 
+        let dy_first = talismanEnabled.dy_first;
+        let fz_first = talismanEnabled.fz_first;
+        let yg_first = talismanEnabled.yg_first;
+
         // 如果上一个阶段结束了，没有下一个阶段，直接返回
         if (!hasNextStage) {
             return {
@@ -1233,15 +1237,24 @@
             // 计算总番数和分数
             let zhiShuFan = new Decimal(1);
 
-            // 只在护身符启用时计算对应部分
-            if (talismanEnabled.dy) {
+            // 只在护身符启用时计算对应部分，护身符启用并且不是第一次启用
+            if (talismanEnabled.dy && !dy_first) {
                 zhiShuFan = zhiShuFan.times(dy.pow(dy_times));
             }
-            if (talismanEnabled.fz) {
+            if (talismanEnabled.fz && !fz_first) {
                 zhiShuFan = zhiShuFan.times(fz.pow(fz_times));
             }
-            if (talismanEnabled.yg) {
+            if (talismanEnabled.yg && !yg_first) {
                 zhiShuFan = zhiShuFan.times(yg.pow(yg_times));
+            }
+            if (talismanEnabled?.dy_first){
+                dy_first = false;
+            }
+            if (talismanEnabled?.fz_first){
+                fz_first = false;
+            }
+            if (talismanEnabled?.yg_first){
+                yg_first = false;
             }
 
             // 添加自定义护身符参数的计算
@@ -2561,6 +2574,27 @@
                             fz: stage.fz_enabled,
                             yg: stage.yg_enabled
                         };
+
+                        // 对于阶段1，使用顶部输入的初始值
+                        // 对于后续阶段，根据护身符启用状态确定初始值
+                        if (i > 0) {
+                            // 如果当前阶段启用了某个护身符，但上一个阶段没有启用，则将该护身符的值设为1
+                            if (stage.dy_enabled && !stages[i-1].dy_enabled) {
+                                dy = new Decimal(1);
+                                talismanEnabled.dy_first = true;
+                                allOutputLines.push(`<span class="highlight">盗印护身符从本阶段开始启用，初始值设为1</span>`);
+                            }
+                            if (stage.fz_enabled && !stages[i-1].fz_enabled) {
+                                fz = new Decimal(1);
+                                talismanEnabled.fz_first = true;
+                                allOutputLines.push(`<span class="highlight">负重护身符从本阶段开始启用，初始值设为1</span>`);
+                            }
+                            if (stage.yg_enabled && !stages[i-1].yg_enabled) {
+                                yg = new Decimal(1);
+                                talismanEnabled.yg_first = true;
+                                allOutputLines.push(`<span class="highlight">月光护身符从本阶段开始启用，初始值设为1</span>`);
+                            }
+                        }
 
                         const result = executeCurrentStage(
                             currentLevel, stage.actualLevel, nextStageActualLevel, dy, fz, yg,
