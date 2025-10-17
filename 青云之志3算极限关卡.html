@@ -837,9 +837,10 @@
                     <div class="talisman-form-group">
                         <label for="dy_type">盗印类型</label>
                         <select id="dy_type">
-                            <option value="卡维膨胀盗印">卡维膨胀盗印</option>
-                            <option value="其他卡膨胀盗印">其他卡膨胀盗印</option>
-                            <option value="普通盗印">普通盗印</option>
+                            <option value="卡维膨胀盗印">卡维膨胀盗印1.3^4</option>
+                            <option value="其他卡膨胀盗印">其他卡膨胀盗印1.3^2</option>
+                            <option value="普通盗印">普通盗印1.3</option>
+                            <option value="黑客只变盗印">黑客只变盗印1.3^6</option>
                         </select>
                     </div>
                     <div class="talisman-form-group">
@@ -1089,6 +1090,7 @@
     const DY_TYPE_KW_PZ = "卡维膨胀盗印";
     const DY_TYPE_OTHER_PZ = "其他卡膨胀盗印";
     const DY_TYPE_NORMAL = "普通盗印";
+    const DY_TYPE_HACKER_ONLY = "黑客只变盗印";
 
     // 数量级对照表
     const MAGNITUDE_MAP = {
@@ -1350,6 +1352,9 @@
                     case DY_TYPE_NORMAL:
                         simulatedDy = simulatedDy.times(1.3);
                         break;
+                    case DY_TYPE_HACKER_ONLY:
+                        simulatedDy = simulatedDy.times(Math.pow(1.3, 6));
+                        break;
                 }
             }
 
@@ -1446,6 +1451,9 @@
                         break;
                     case DY_TYPE_NORMAL:
                         dy = dy.times(1.3);
+                        break;
+                    case DY_TYPE_HACKER_ONLY:
+                        dy = dy.times(Math.pow(1.3, 6));
                         break;
                 }
 
@@ -1886,9 +1894,10 @@
                         <div class="stage-form-group">
                             <label>盗印类型</label>
                             <select class="dy-type">
-                                <option value="普通盗印" ${(stageData?.dy_type || defaultDyType) === '普通盗印' ? 'selected' : ''}>普通盗印</option>
-                                <option value="卡维膨胀盗印" ${(stageData?.dy_type || defaultDyType) === '卡维膨胀盗印' ? 'selected' : ''}>卡维膨胀盗印</option>
-                                <option value="其他卡膨胀盗印" ${(stageData?.dy_type || defaultDyType) === '其他卡膨胀盗印' ? 'selected' : ''}>其他卡膨胀盗印</option>
+                                <option value="普通盗印" ${(stageData?.dy_type || defaultDyType) === '普通盗印' ? 'selected' : ''}>普通盗印1.3</option>
+                                <option value="卡维膨胀盗印" ${(stageData?.dy_type || defaultDyType) === '卡维膨胀盗印' ? 'selected' : ''}>卡维膨胀盗印1.3^4</option>
+                                <option value="其他卡膨胀盗印" ${(stageData?.dy_type || defaultDyType) === '其他卡膨胀盗印' ? 'selected' : ''}>其他卡膨胀盗印1.3^2</option>
+                                <option value="黑客只变盗印" ${(stageData?.dy_type || defaultDyType) === '黑客只变盗印' ? 'selected' : ''}>黑客只变盗印1.3^6</option>
                             </select>
                         </div>
                         <div class="stage-form-group">
@@ -2506,7 +2515,7 @@
         {
             name: "卡维+膨胀盗印+黑客",
             actualLevel: 0,
-            dy_type: "卡维膨胀盗印",
+            dy_type: "黑客只变盗印",
             basicFan: 19,
             basicScore: 38,
             dy_times: 3,
@@ -2516,12 +2525,12 @@
             yg_enabled: false
         },
         {
-            name: "岚星入链",
+            name: "开始刷传导卡维",
             actualLevel: 0,
             dy_type: "卡维膨胀盗印",
             basicFan: 19,
             basicScore: 38,
-            dy_times: 4,
+            dy_times: 3,
             eat_fog: 0,
             dy_enabled: true,
             fz_enabled: false,
@@ -2533,7 +2542,7 @@
             dy_type: "其他卡膨胀盗印",
             basicFan: 19,
             basicScore: 38,
-            dy_times: 4,
+            dy_times: 3,
             eat_fog: 0,
             dy_enabled: true,
             fz_enabled: false,
@@ -2632,7 +2641,7 @@
         });
 
         // 显示提示信息
-        alert("此为单盗印黑客基础策略；\n卡维加膨胀盗印阶段，黑客变盗印吃一个印章效果等同于盗印吃一个迷雾，都是成长1.69，所以这个策略中，黑客变一个回合盗印，可以算作吃一次迷雾;" +
+        alert("此为单盗印黑客基础策略" +
             "\n转到下一个阶段的实际开始关卡需要自己根据实际情况填写；\n吸星入链按1万星币来算；\n不考虑天恩往前移的步骤");
     }
 
