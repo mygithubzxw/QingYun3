@@ -5,7 +5,787 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>青云之志3算极限关卡</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.2/decimal.min.js"></script>
+    <!-- Vercel Analytics -->
+    <!-- Vercel 原生分析（部署后自动工作） -->
+    <script defer src="/_vercel/insights/script.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
 
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+
+        .output-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border-left: 4px solid #2575fc;
+        }
+
+        .result h3 {
+            color: #2575fc;
+            margin-bottom: 10px;
+        }
+
+        .output-log {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 20px;
+        }
+
+        .output-line {
+            margin-bottom: 5px;
+        }
+
+        .highlight {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        /* 表格样式 */
+        .magnitude-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .magnitude-table th {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 12px 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .magnitude-table td {
+            padding: 10px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .magnitude-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .magnitude-table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        .table-title {
+            font-size: 18px;
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .format-examples {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* 护身符卡片样式 */
+        .talisman-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .talisman-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .talisman-title {
+            font-weight: bold;
+            color: #2575fc;
+            font-size: 18px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #2575fc;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .talisman-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .talisman-form-group {
+            margin-bottom: 10px;
+        }
+
+        .talisman-form-group label {
+            font-size: 14px;
+            margin-bottom: 3px;
+            color: #666;
+        }
+
+        .talisman-form-group input,
+        .talisman-form-group select {
+            padding: 8px 10px;
+            font-size: 14px;
+        }
+
+        /* 自定义护身符样式 */
+        .custom-param-group {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .custom-param-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .custom-param-name {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .remove-custom-param {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .custom-param-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .custom-param-inputs label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .custom-param-inputs input {
+            width: auto;
+            flex: 1;
+        }
+
+        #addCustomParam {
+            background: #27ae60;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-icon {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* 自定义策略样式 */
+        .strategy-section {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+
+        .strategy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .strategy-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .strategy-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .strategy-stage {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stage-title {
+            font-weight: bold;
+            color: #2575fc;
+            font-size: 16px;
+        }
+
+        .remove-stage {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .stage-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .stage-form-group {
+            margin-bottom: 8px;
+        }
+
+        .stage-form-group label {
+            font-size: 12px;
+            margin-bottom: 3px;
+            color: #666;
+        }
+
+        .stage-form-group input,
+        .stage-form-group select {
+            padding: 6px 8px;
+            font-size: 14px;
+        }
+
+        .strategy-presets {
+            margin-top: 15px;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* 实际开始关卡输入框样式 */
+        .actual-level-input {
+            width: 80px;
+            margin-left: 10px;
+        }
+
+        /* 提示信息样式 */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background-color: #fff;
+            color: #2575fc;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            transition: all 0.3s;
+            box-shadow: 0 0 0 1px #2575fc;
+        }
+
+        .tooltip-icon:hover {
+            background-color: #2575fc;
+            color: white;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 350px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* 新增的阶段自定义护身符样式 */
+        .stage-custom-param-group {
+            background-color: #f8f9fa;
+            padding: 10px 12px;
+            /* 增加内边距，让内部元素不拥挤 */
+            border-radius: 4px;
+            margin-bottom: 8px;
+            /* 每个容器之间留间距 */
+            border: 1px solid #e0e0e0;
+            display: flex;
+            /* 用 flex 布局确保元素横向排列 */
+            align-items: center;
+            /* 垂直居中内部元素 */
+            width: 100%;
+            /* 占满外层容器宽度 */
+            box-sizing: border-box;
+            /* 确保 padding 不影响宽度 */
+            gap: 12px;
+            /* 增加内部元素间距，避免挤压 */
+            flex-wrap: nowrap;
+            /* PC端强制不换行，确保一行显示完整 */
+        }
+
+
+        .stage-custom-param-inputs {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            /* 输入框之间留足间距 */
+            flex: 1;
+            /* 占据容器剩余所有空间，确保能包裹输入框 */
+            flex-wrap: nowrap;
+            /* 强制不换行 */
+        }
+
+        .stage-custom-param-inputs input {
+            padding: 6px 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            /* 防止输入框被压缩 */
+        }
+
+        .stage-custom-param-inputs .stage-custom-param-name {
+            width: 140px;
+            /* 名称输入框固定宽度，足够显示“自定义护身符X” */
+            min-width: 140px;
+            /* PC端不允许缩小 */
+        }
+
+        .stage-custom-param-inputs .stage-custom-param-value {
+            width: 100px;
+            /* 倍数输入框宽度 */
+            min-width: 100px;
+        }
+
+        .stage-custom-param-inputs .stage-custom-param-times {
+            width: 80px;
+            /* 次数输入框宽度 */
+            min-width: 80px;
+        }
+
+        .stage-custom-param-inputs label {
+            margin-bottom: 0;
+            white-space: nowrap;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        /* 删除按钮样式 - 确保在最右侧 */
+        .stage-remove-custom-param {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            /* 防止按钮被压缩 */
+            margin-left: auto;
+            /* 关键：将按钮推到最右侧 */
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+
+            .custom-param-inputs {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .custom-param-inputs input {
+                width: 100%;
+            }
+
+            .stage-content {
+                grid-template-columns: 1fr;
+            }
+
+            .actual-level-input {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 5px;
+            }
+
+            .stage-custom-param-inputs {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stage-custom-param-inputs input {
+                width: 100%;
+            }
+
+            .talisman-content {
+                grid-template-columns: 1fr;
+            }
+
+            .stage-custom-param-group {
+                overflow-x: auto;
+                /* 允许水平滚动 */
+                padding: 8px;
+            }
+
+            .stage-custom-param-inputs {
+                flex-wrap: nowrap;
+                /* 禁止换行 */
+            }
+
+            .stage-custom-param-inputs input {
+                min-width: 80px;
+                /* 移动端最小宽度 */
+            }
+
+            .stage-custom-param-group {
+                gap: 15px;
+                /* PC端增加间距，更美观 */
+            }
+
+            .stage-custom-param-inputs {
+                gap: 15px;
+            }
+
+            /* 确保基础番数/分数与护身符卡片布局协调 */
+            .stage-form-group.basic-fan-group,
+            .stage-form-group.basic-score-group {
+                grid-column: span 1;
+                /* PC端让基础番数/分数并排显示 */
+                max-width: none;
+                /* 取消宽度限制，避免挤压 */
+            }
+        }
+
+        .stage-custom-params-container {
+            margin-top: 10px;
+            width: 100%;
+            /* 确保容器占满父元素宽度 */
+            box-sizing: border-box;
+            /* 避免 padding 撑大容器 */
+            padding: 4px 0;
+            /* 上下留少量内边距，避免元素贴边 */
+        }
+
+        .add-stage-custom-param-btn {
+            background: #27ae60;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 10px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        .stage-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        /* 确保基础番数和基础分数在护身符卡片之后单独成行 */
+        .stage-form-group[style*="grid-column"] {
+            grid-column: 1 / -1;
+        }
+
+        /* 为护身符卡片设置特定的网格列跨度 */
+        .talisman-card {
+            grid-column: 1 / -1;
+        }
+
+        /* 确保基础番数和基础分数在护身符卡片之后显示 */
+        .stage-form-group:not(.talisman-card) {
+            grid-column: span 1;
+        }
+
+        /* 在PC端，让基础番数和基础分数并排显示 */
+        @media (min-width: 769px) {
+
+            .stage-form-group.basic-fan-group,
+            .stage-form-group.basic-score-group {
+                grid-column: span 1;
+            }
+
+            /* 确保在护身符卡片之后的基础参数正确排列 */
+            .stage-content > .stage-form-group:not(.talisman-card) {
+                max-width: 200px;
+            }
+        }
+
+        /* 眼睛图标样式 */
+        .toggle-eye {
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .toggle-eye.open {
+            opacity: 1;
+        }
+
+        .toggle-eye.closed {
+            opacity: 0.5;
+        }
+
+        /* 表格隐藏时的样式 */
+        .magnitude-table.hidden {
+            display: none;
+        }
+
+        /* 护身符内容隐藏样式 */
+        .talisman-content.hidden {
+            display: none;
+        }
+
+        /* 关卡分数对照表容器样式 */
+        .score-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        /* 表格隐藏样式 */
+        .score-table-container.hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -348,9 +1128,6 @@
         return REQUIRED_SCORE;
     }
 
-    for (let i = 0; i < REQUIRED_SCORE.length; i++) {
-        console.log("EX" + (i + 1) + ":" + formatScientific(REQUIRED_SCORE[i]));
-    }
 
     // 科学计数法格式化
     function formatScientific(number) {
