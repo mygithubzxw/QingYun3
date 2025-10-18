@@ -2898,6 +2898,9 @@
                 // 获取护身符启用状态
                 const talismanEnabled = getTalismanEnabledStates();
 
+                //单阶段计算时hasNextStage恒为true
+                hasNextStage = true;
+
                 // 执行计算
                 const result = executeCurrentStage(
                     curLevel, 0, 0, dy, fz, yg,
