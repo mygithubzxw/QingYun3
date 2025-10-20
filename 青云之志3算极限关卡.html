@@ -786,6 +786,60 @@
         .score-table-container.hidden {
             display: none;
         }
+
+        /* 单位转换器样式 */
+        .unit-converter-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-top: 10px;
+        }
+
+        .unit-converter-container.hidden {
+            display: none;
+        }
+
+        .unit-converter-container .form-group {
+            margin-bottom: 15px;
+        }
+
+        .unit-converter-container input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .unit-converter-container button {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .unit-converter-container button:hover {
+            opacity: 0.9;
+        }
+
+        .unit-converter-container .result {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border-left: 4px solid #2575fc;
+        }
+
+        .unit-converter-container .result h3 {
+            color: #2575fc;
+            margin: 0;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -1082,13 +1136,31 @@
                 </div>
             </div>
 
+            <!-- 单位转换科学计数法 -->
+            <div class="table-container">
+                <div class="table-title">
+                    单位转换科学计数法
+                    <span class="toggle-eye closed" id="toggleUnitConverter" title="点击显示转换器">🙈</span>
+                </div>
+                <div class="unit-converter-container hidden">
+                    <div class="form-group">
+                        <label for="unitInput">单位输入</label>
+                        <input type="text" id="unitInput" placeholder="例如：117.99涧极极极极极">
+                    </div>
+                    <div class="result">
+                        <h3>转换结果：<span id="conversionResult">等待输入...</span></h3>
+                    </div>
+                    <button id="convertUnitBtn">单位转换</button>
+                </div>
+            </div>
+
             <div class="result">
                 <h3>
                     <span class="tooltip-container">
                         <span class="tooltip-icon">ⓘ</span>
                         <span class="tooltip-text">控制台日志说明：<br/>
                             1.每一关，盗印番数显示和商店参数一致，因为盗印成长就代表到下一关了;负重和月光是关卡内成长，根据配置的类型和亏N次，计算成长后的番数<br/>
-                            2.总分数和游戏内有微小误差，但是最多差一个数量级，原因如下：由于此计算器最早的关卡只支持到EX1，输入游戏内参数开始计算，而游戏内只显示小数点后2位，
+                            2.总分数和游戏内有微小误差，但是几乎不会差一个数量级，原因如下：由于此计算器最早的关卡只支持到EX1，输入游戏内参数开始计算，而游戏内只显示小数点后2位，
                                 而它实际计算时不止小数点后两位，存在精度损失问题，不管是理论还是实测，精度损失带来的影响非常小，可以忽略不计<br/>
                             3.设计成从EX1开始的原因：我在设计此计算器的时候考虑过精度问题，如果从获取护身符的关卡就开始记录成长，就可以数据完全一致，但是在阵容成型前变数太多，护身符类型、
                                 是否Plus、某个关卡可能亏掉某个护身符的成长等等，会大量增加使用成本，没有必要，而大部分主流玩法在EX1左右成型
@@ -2893,6 +2965,92 @@
         });
     }
 
+    // 单位转换功能
+    function setupUnitConverter() {
+        // 切换显示/隐藏
+        document.getElementById('toggleUnitConverter').addEventListener('click', function() {
+            const container = document.querySelector('.unit-converter-container');
+            const eye = document.getElementById('toggleUnitConverter');
+
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                eye.textContent = "👁️";
+                eye.title = "点击隐藏转换器";
+            } else {
+                container.classList.add('hidden');
+                eye.textContent = "🙈";
+                eye.title = "点击显示转换器";
+            }
+        });
+
+        // 转换按钮点击事件
+        document.getElementById('convertUnitBtn').addEventListener('click', convertUnit);
+
+        // 输入框回车事件
+        document.getElementById('unitInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convertUnit();
+            }
+        });
+    }
+
+    // 单位转换函数
+    function convertUnit() {
+        const input = document.getElementById('unitInput').value.trim();
+        const resultElement = document.getElementById('conversionResult');
+
+        if (!input) {
+            resultElement.textContent = "请输入要转换的单位值";
+            resultElement.style.color = "#e74c3c";
+            return;
+        }
+
+        try {
+            const result = parseComplexUnit(input);
+            resultElement.textContent = formatScientific(result);
+            resultElement.style.color = "#27ae60";
+        } catch (error) {
+            resultElement.textContent = `转换错误: ${error.message}`;
+            resultElement.style.color = "#e74c3c";
+        }
+    }
+
+    // 解析复杂单位（支持连续单位如"涧极极极极极"）
+    function parseComplexUnit(input) {
+        // 先尝试直接解析
+        try {
+            return parseValue(input);
+        } catch (e) {
+            // 如果直接解析失败，尝试解析连续单位
+        }
+
+        // 匹配数字部分和单位部分
+        const match = input.match(/^([\d.]+)([\u4e00-\u9fa5]+)$/);
+        if (!match) {
+            throw new Error('输入格式不正确，请使用"数字+单位"格式，如"117.99涧"');
+        }
+
+        const numericPart = match[1];
+        const unitPart = match[2];
+
+        // 解析数字部分
+        const numericValue = new Decimal(numericPart);
+
+        // 解析单位部分（支持连续单位）
+        let totalMagnitude = 0;
+        for (let i = 0; i < unitPart.length; i++) {
+            const unitChar = unitPart[i];
+            if (MAGNITUDE_MAP.hasOwnProperty(unitChar)) {
+                totalMagnitude += MAGNITUDE_MAP[unitChar];
+            } else {
+                throw new Error(`未知单位: "${unitChar}"`);
+            }
+        }
+
+        // 计算最终值
+        return numericValue.times(Decimal.pow(10, totalMagnitude));
+    }
+
 
     // 初始化函数
     function init() {
@@ -3131,6 +3289,9 @@
         // 初始化关卡分数表格
         initScoreTable();
         setupScoreTableToggle();
+
+        // 初始化单位转换器
+        setupUnitConverter();
     }
 
     // 页面加载完成后初始化
