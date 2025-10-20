@@ -1483,9 +1483,23 @@
                 }
 
                 // 处理吃迷雾次数 - 只在第一次循环中处理
-                if (isFirstLoop && eat_fog > 0) {
+                if (talismanEnabled.dy && isFirstLoop && eat_fog > 0) {
                     for (let i = 0; i < eat_fog; i++) {
-                        dy = dy.times(Math.pow(1.3, 2));
+                        //还是需要根据盗印的印章类型计算吃迷雾的成长，膨胀盗印是1.3^2，普通盗印是1.3
+                        switch (dy_type) {
+                            case DY_TYPE_KW_PZ:
+                                dy = dy.times(Math.pow(1.3, 2));
+                                break;
+                            case DY_TYPE_OTHER_PZ:
+                                dy = dy.times(Math.pow(1.3, 2));
+                                break;
+                            case DY_TYPE_NORMAL:
+                                dy = dy.times(1.3);
+                                break;
+                            case DY_TYPE_HACKER_ONLY:
+                                dy = dy.times(Math.pow(1.3, 2));
+                                break;
+                        }
                     }
                     eat_fog = 0; // 吃迷雾次数设为0
                 }
