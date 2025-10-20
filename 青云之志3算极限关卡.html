@@ -3182,14 +3182,17 @@
                             if (stage.dy_enabled && !stages[i - 1].dy_enabled) {
                                 dy = new Decimal(1);
                                 talismanEnabled.dy_first = true;
+                                allOutputLines.push(`<span class="highlight">盗印护身符开始启用</span>`);
                             }
                             if (stage.fz_enabled && !stages[i - 1].fz_enabled) {
                                 fz = new Decimal(1);
                                 talismanEnabled.fz_first = true;
+                                allOutputLines.push(`<span class="highlight">负重护身符开始启用</span>`);
                             }
                             if (stage.yg_enabled && !stages[i - 1].yg_enabled) {
                                 yg = new Decimal(1);
                                 talismanEnabled.yg_first = true;
+                                allOutputLines.push(`<span class="highlight">月光护身符开始启用</span>`);
                             }
                         }
 
