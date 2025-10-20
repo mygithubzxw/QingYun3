@@ -982,7 +982,8 @@
                         <button class="preset-btn" data-preset="standard" id="twoInflationBtn">
                             膨胀盗印膨胀负重普通月光
                         </button>
-                        <button class="preset-btn" data-preset="singleDyHacker" id="singleDyHackerBtn">单盗印黑客</button>
+                        <button class="preset-btn" data-preset="singleDyHacker" id="singleDyHackerBtn">单盗印黑客
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2131,6 +2132,32 @@
             .getElementById('ygTalismanEnabled').checked);
     }
 
+    // 新增：立即同步阶段1的值到顶部
+    function syncStage1ToTop(stageData) {
+        document.getElementById('dy_type').value =              stageData.dy_type;
+        document.getElementById('fz_type').value =              stageData.fz_type;
+        document.getElementById('yg_type').value =              stageData.yg_type;
+        document.getElementById('basicFan').value =             stageData.basicFan;
+        document.getElementById('basicScore').value =           stageData.basicScore;
+        document.getElementById('dy_times').value =             stageData.dy_times || 0;
+        document.getElementById('fz_times').value =             stageData.fz_times || 0;
+        document.getElementById('yg_times').value =             stageData.yg_times || 0;
+        document.getElementById('eat_fog').value =              stageData.eat_fog || 0;
+        document.getElementById('lose_fz').value =              stageData.lose_fz || 0;
+        document.getElementById('lose_yg').value =              stageData.lose_yg || 0;
+        document.getElementById('dyTalismanEnabled').checked =  stageData.dy_enabled;
+        document.getElementById('fzTalismanEnabled').checked =  stageData.fz_enabled;
+        document.getElementById('ygTalismanEnabled').checked =  stageData.yg_enabled;
+
+        // 更新顶部护身符显示状态
+        updateTopTalismanContent('dy', stageData.dy_enabled);
+        updateTopTalismanContent('fz', stageData.fz_enabled);
+        updateTopTalismanContent('yg', stageData.yg_enabled);
+
+        // 同步自定义护身符
+        syncStage1CustomParamsToTop();
+    }
+
     // 删除阶段
     function removeStage(stageId) {
         const element = document.getElementById(stageId);
@@ -2545,6 +2572,8 @@
             addStrategyStage(stageData);
         });
 
+        syncStage1ToTop(twoInflationStrategy[0]);
+
         // 显示提示信息
         alert("此为膨胀盗印+膨胀负重+普通月光的标准策略；\n阶段2的实际开始关卡就是改出传导卡维的那关，如果为空，则表示没改出传导卡维，就不会执行后续阶段了；\n吸星按照1万星币来算");
     }
@@ -2678,6 +2707,8 @@
         singleDyHackerStrategy.forEach(stageData => {
             addStrategyStage(stageData);
         });
+
+        syncStage1ToTop(singleDyHackerStrategy[0]);
 
         // 显示提示信息
         alert("此为单盗印黑客基础策略" +
