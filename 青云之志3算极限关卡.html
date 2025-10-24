@@ -840,6 +840,79 @@
             margin: 0;
             font-size: 16px;
         }
+
+        /* 青云之志快捷键模块样式 */
+        .shortcut-module-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-top: 10px;
+        }
+
+        .shortcut-module-container.hidden {
+            display: none;
+        }
+
+        .shortcut-content h3 {
+            color: #2575fc;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .shortcut-content p {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .download-info {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #2575fc;
+        }
+
+        .download-link {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .download-link a {
+            color: #2575fc;
+            text-decoration: none;
+            word-break: break-all;
+            margin-left: 5px;
+        }
+
+        .download-link a:hover {
+            text-decoration: underline;
+        }
+
+        .password-info {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .shortcut-features {
+            margin-top: 15px;
+        }
+
+        .shortcut-features h4 {
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .shortcut-features ul {
+            padding-left: 20px;
+        }
+
+        .shortcut-features li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -1151,6 +1224,39 @@
                         <h3>转换结果：<span id="conversionResult">等待输入...</span></h3>
                     </div>
                     <button id="convertUnitBtn">单位转换</button>
+                </div>
+            </div>
+
+            <!-- 青云之志快捷键模块 -->
+            <div class="table-container">
+                <div class="table-title">
+                    青云之志快捷键
+                    <span class="toggle-eye closed" id="toggleShortcutModule" title="点击显示快捷键信息">🙈</span>
+                </div>
+                <div class="shortcut-module-container hidden">
+                    <div class="shortcut-content">
+                        <h3>游戏快捷键脚本</h3>
+                        <p>为解决商店开包需要大量移动和点击鼠标，对右手产生过重负担的问题，制作了一个快捷键脚本</p>
+                        <div class="download-info">
+                            <p><strong>下载地址：</strong></p>
+                            <div class="download-link">
+                                <span>网盘：</span>
+                                <a href="https://wwmc.lanzoue.com/iV4353989yti" target="_blank">https://wwmc.lanzoue.com/iV4353989yti</a>
+                            </div>
+                            <div class="password-info">
+                                <span>密码：<strong>77kf</strong></span>
+                            </div>
+                        </div>
+                        <div class="shortcut-features">
+                            <h4>功能特点：</h4>
+                            <ul>
+                                <li>减少重复鼠标操作</li>
+                                <li>降低右手负担</li>
+                                <li>提升游戏效率</li>
+                                <li>简化商店开包流程</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -3051,6 +3157,33 @@
         return numericValue.times(Decimal.pow(10, totalMagnitude));
     }
 
+    // 添加快捷键模块切换功能
+    function setupShortcutModuleToggle() {
+        document.getElementById('toggleShortcutModule').addEventListener('click', function() {
+            const container = document.querySelector('.shortcut-module-container');
+            const eye = document.getElementById('toggleShortcutModule');
+
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                eye.textContent = "👁️";
+                eye.title = "点击隐藏快捷键信息";
+            } else {
+                container.classList.add('hidden');
+                eye.textContent = "🙈";
+                eye.title = "点击显示快捷键信息";
+            }
+        });
+    }
+
+    // 在init函数中调用设置函数
+    // 在现有的init函数末尾添加：
+    function init() {
+        // ... 现有代码 ...
+
+        // 初始化快捷键模块
+        setupShortcutModuleToggle();
+    }
+
 
     // 初始化函数
     function init() {
@@ -3295,6 +3428,9 @@
 
         // 初始化单位转换器
         setupUnitConverter();
+
+        // 初始化快捷键模块
+        setupShortcutModuleToggle();
     }
 
     // 页面加载完成后初始化
