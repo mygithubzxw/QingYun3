@@ -913,6 +913,49 @@
             margin-bottom: 8px;
             line-height: 1.4;
         }
+
+        /* 阶段控制按钮样式 */
+        .stage-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 收起/展开图标样式 */
+        .toggle-stage-icon {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .toggle-stage-icon:hover {
+            background-color: #e0e0e0;
+        }
+
+        .toggle-stage-icon.open {
+            background-color: #2575fc;
+            color: white;
+        }
+
+        .toggle-stage-icon.closed {
+            background-color: #f0f0f0;
+            color: #666;
+        }
+
+        /* 阶段内容收起状态 */
+        .stage-content.collapsed {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -2074,12 +2117,15 @@
         const defaultYgEnabled = document.getElementById('ygTalismanEnabled').checked;
 
         const stageHTML = `
-        <div class="strategy-stage" id="${stageId}">
-            <div class="stage-header">
-                <div class="stage-title">阶段 ${stageNumber}</div>
+    <div class="strategy-stage" id="${stageId}">
+        <div class="stage-header">
+            <div class="stage-title">阶段 ${stageNumber}</div>
+            <div class="stage-controls">
+                <span class="toggle-stage-icon open" title="收起阶段内容">−</span>
                 <button type="button" class="remove-stage" onclick="removeStage('${stageId}')">×</button>
             </div>
-            <div class="stage-content">
+        </div>
+        <div class="stage-content">
                 <div class="stage-form-group">
                     <label>阶段名称</label>
                     <input type="text" class="stage-name" value="${stageData?.name || `阶段${stageNumber}`}" placeholder="阶段名称">
@@ -3178,13 +3224,35 @@
         });
     }
 
-    // 在init函数中调用设置函数
-    // 在现有的init函数末尾添加：
-    function init() {
-        // ... 现有代码 ...
+    // 设置阶段收起/展开功能
+    function setupStageToggle() {
+        document.getElementById('strategyStagesContainer').addEventListener('click', function(e) {
+            if (e.target.classList.contains('toggle-stage-icon')) {
+                toggleStageContent(e.target);
+            }
+        });
+    }
 
-        // 初始化快捷键模块
-        setupShortcutModuleToggle();
+    // 切换阶段内容显示/隐藏
+    function toggleStageContent(toggleIcon) {
+        const stageElement = toggleIcon.closest('.strategy-stage');
+        const contentElement = stageElement.querySelector('.stage-content');
+
+        if (contentElement.classList.contains('collapsed')) {
+            // 展开阶段内容
+            contentElement.classList.remove('collapsed');
+            toggleIcon.classList.remove('closed');
+            toggleIcon.classList.add('open');
+            toggleIcon.textContent = '−';
+            toggleIcon.title = '收起阶段内容';
+        } else {
+            // 收起阶段内容
+            contentElement.classList.add('collapsed');
+            toggleIcon.classList.remove('open');
+            toggleIcon.classList.add('closed');
+            toggleIcon.textContent = '+';
+            toggleIcon.title = '展开阶段内容';
+        }
     }
 
 
@@ -3434,6 +3502,9 @@
 
         // 初始化快捷键模块
         setupShortcutModuleToggle();
+
+        // 设置阶段收起/展开功能
+        setupStageToggle();
     }
 
     // 页面加载完成后初始化
