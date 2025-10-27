@@ -956,6 +956,56 @@
         .stage-content.collapsed {
             display: none;
         }
+
+        /* 输入参数头部样式 */
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .input-header h2 {
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        /* 收起/展开图标样式 */
+        .toggle-input-icon {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            user-select: none;
+            margin-left: 10px;
+        }
+
+        .toggle-input-icon:hover {
+            background-color: #e0e0e0;
+        }
+
+        .toggle-input-icon.open {
+            background-color: #2575fc;
+            color: white;
+        }
+
+        .toggle-input-icon.closed {
+            background-color: #f0f0f0;
+            color: #666;
+        }
+
+        /* 输入参数内容收起状态 */
+        .input-content.collapsed {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -973,158 +1023,162 @@
 
     <div class="content">
         <div class="input-section">
-            <h2>输入参数
-                <span class="tooltip-container">
-							<span class="tooltip-icon">ⓘ</span>
-							<span class="tooltip-text">商店阶段</span>
-						</span>
-            </h2>
-
-            <div class="form-group">
-                <label for="curLevel">当前关卡EX</label>
-                <input type="number" id="curLevel" value="1" min="1" max="163">
+            <div class="input-header">
+                <h2>输入参数
+                    <span class="tooltip-container">
+                <span class="tooltip-icon">ⓘ</span>
+                <span class="tooltip-text">商店阶段</span>
+            </span>
+                </h2>
+                <span class="toggle-input-icon open" title="收起输入参数">−</span>
             </div>
-
-            <!-- 盗印护身符卡片 -->
-            <div class="talisman-card" id="dyTalismanCard">
-                <div class="talisman-header">
-                    <div class="talisman-title">护身符 - 盗印</div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="dyTalismanEnabled" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
+            <div class="input-content">
+                <div class="form-group">
+                    <label for="curLevel">当前关卡EX</label>
+                    <input type="number" id="curLevel" value="1" min="1" max="163">
                 </div>
-                <div class="talisman-content">
-                    <div class="talisman-form-group">
-                        <label for="dy">
-                            盗印番数
-                            <span class="tooltip-container">
+
+                <!-- 盗印护身符卡片 -->
+                <div class="talisman-card" id="dyTalismanCard">
+                    <div class="talisman-header">
+                        <div class="talisman-title">护身符 - 盗印</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="dyTalismanEnabled" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="talisman-content">
+                        <div class="talisman-form-group">
+                            <label for="dy">
+                                盗印番数
+                                <span class="tooltip-container">
 										<span class="tooltip-icon">ⓘ</span>
 										<span class="tooltip-text">支持格式：数字(396.87)、科学计数法(3.9687e34)、单位(396.87沟)</span>
 									</span>
-                        </label>
-                        <input type="text" id="dy" value="144.61">
-                    </div>
-                    <div class="talisman-form-group">
-                        <label for="dy_type">
-                            盗印类型
-                            <span class="tooltip-container">
+                            </label>
+                            <input type="text" id="dy" value="144.61">
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="dy_type">
+                                盗印类型
+                                <span class="tooltip-container">
 										<span class="tooltip-icon">ⓘ</span>
 										<span class="tooltip-text">
                                             膨胀盗印加膨胀负重加黑客的玩法中，因为黑客随机变化，算不出来盗印的成长，黑客变一次盗印，相当于吃一次迷雾，可以根据实际情况换算成吃迷雾次数，
                                             最佳实践：在EX1的时候输入参数计算一次大概的极限关卡，在EX45重新输入参数计算，就能知道哪一关找岚星，哪一关刷传导卡维，再用吃迷雾次数修正数据
                                         </span>
                             </span>
-                        </label>
-                        <select id="dy_type">
-                            <option value="卡维膨胀盗印">卡维膨胀盗印1.3^4</option>
-                            <option value="其他卡膨胀盗印">其他卡膨胀盗印1.3^2</option>
-                            <option value="普通盗印">普通盗印1.3</option>
-                            <option value="黑客只变盗印">黑客只变盗印1.3^6</option>
-                        </select>
-                    </div>
-                    <div class="talisman-form-group">
-                        <label for="dy_times">盗印次数</label>
-                        <input type="number" id="dy_times" value="2" min="0">
-                    </div>
-                    <div class="talisman-form-group">
-                        <label for="eat_fog">
-                            吃迷雾次数
-                            <span class="tooltip-container">
+                            </label>
+                            <select id="dy_type">
+                                <option value="卡维膨胀盗印">卡维膨胀盗印1.3^4</option>
+                                <option value="其他卡膨胀盗印">其他卡膨胀盗印1.3^2</option>
+                                <option value="普通盗印">普通盗印1.3</option>
+                                <option value="黑客只变盗印">黑客只变盗印1.3^6</option>
+                            </select>
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="dy_times">盗印次数</label>
+                            <input type="number" id="dy_times" value="2" min="0">
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="eat_fog">
+                                吃迷雾次数
+                                <span class="tooltip-container">
 										<span class="tooltip-icon">ⓘ</span>
 										<span class="tooltip-text">吃迷雾和吃成长印章对盗印效果一样，统一成吃迷雾次数</span>
                             </span>
+                            </label>
+                            <input type="number" id="eat_fog" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 负重护身符卡片 -->
+                <div class="talisman-card" id="fzTalismanCard">
+                    <div class="talisman-header">
+                        <div class="talisman-title">护身符 - 负重</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="fzTalismanEnabled" checked>
+                            <span class="toggle-slider"></span>
                         </label>
-                        <input type="number" id="eat_fog" value="0" min="0">
+                    </div>
+                    <div class="talisman-content">
+                        <div class="talisman-form-group">
+                            <label for="fz">负重番数</label>
+                            <input type="text" id="fz" value="378.36">
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="fz_type">负重类型</label>
+                            <select id="fz_type">
+                                <option value="膨胀负重">膨胀负重</option>
+                                <option value="天使负重">天使负重</option>
+                                <option value="普通负重">普通负重</option>
+                            </select>
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="fz_times">负重次数</label>
+                            <input type="number" id="fz_times" value="2" min="0">
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="lose_fz">亏负重次数</label>
+                            <input type="number" id="lose_fz" value="0" min="0">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- 负重护身符卡片 -->
-            <div class="talisman-card" id="fzTalismanCard">
-                <div class="talisman-header">
-                    <div class="talisman-title">护身符 - 负重</div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="fzTalismanEnabled" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="talisman-content">
-                    <div class="talisman-form-group">
-                        <label for="fz">负重番数</label>
-                        <input type="text" id="fz" value="378.36">
+                <!-- 月光护身符卡片 -->
+                <div class="talisman-card" id="ygTalismanCard">
+                    <div class="talisman-header">
+                        <div class="talisman-title">护身符 - 月光</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="ygTalismanEnabled" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
                     </div>
-                    <div class="talisman-form-group">
-                        <label for="fz_type">负重类型</label>
-                        <select id="fz_type">
-                            <option value="膨胀负重">膨胀负重</option>
-                            <option value="天使负重">天使负重</option>
-                            <option value="普通负重">普通负重</option>
-                        </select>
-                    </div>
-                    <div class="talisman-form-group">
-                        <label for="fz_times">负重次数</label>
-                        <input type="number" id="fz_times" value="2" min="0">
-                    </div>
-                    <div class="talisman-form-group">
-                        <label for="lose_fz">亏负重次数</label>
-                        <input type="number" id="lose_fz" value="0" min="0">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 月光护身符卡片 -->
-            <div class="talisman-card" id="ygTalismanCard">
-                <div class="talisman-header">
-                    <div class="talisman-title">护身符 - 月光</div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="ygTalismanEnabled" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="talisman-content">
-                    <div class="talisman-form-group">
-                        <label for="yg">月光番数</label>
-                        <input type="text" id="yg" value="56.02">
-                    </div>
-                    <div class="talisman-form-group">
-                        <label for="yg_type">月光类型</label>
-                        <select id="yg_type">
-                            <option value="普通月光">普通月光</option>
-                            <option value="膨胀月光">膨胀月光</option>
-                            <option value="天使月光">天使月光</option>
-                        </select>
-                    </div>
-                    <div class="talisman-form-group">
-                        <label for="yg_times">月光次数</label>
-                        <input type="number" id="yg_times" value="1" min="0">
-                    </div>
-                    <div class="talisman-form-group">
-                        <label for="lose_yg">亏月光次数</label>
-                        <input type="number" id="lose_yg" value="0" min="0">
+                    <div class="talisman-content">
+                        <div class="talisman-form-group">
+                            <label for="yg">月光番数</label>
+                            <input type="text" id="yg" value="56.02">
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="yg_type">月光类型</label>
+                            <select id="yg_type">
+                                <option value="普通月光">普通月光</option>
+                                <option value="膨胀月光">膨胀月光</option>
+                                <option value="天使月光">天使月光</option>
+                            </select>
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="yg_times">月光次数</label>
+                            <input type="number" id="yg_times" value="1" min="0">
+                        </div>
+                        <div class="talisman-form-group">
+                            <label for="lose_yg">亏月光次数</label>
+                            <input type="number" id="lose_yg" value="0" min="0">
+                        </div>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="basicFan">基础番数</label>
+                    <input type="number" id="basicFan" value="19" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="basicScore">基础分数</label>
+                    <input type="number" id="basicScore" value="38" min="1">
+                </div>
+
+                <button id="addCustomParam">
+                    <span class="add-icon">+</span> 添加自定义护身符
+                </button>
+
+                <div id="customParamsContainer">
+                    <!-- 自定义护身符将在这里动态添加 -->
+                </div>
+
+                <button id="calculateBtn">计算关卡极限</button>
             </div>
-
-            <div class="form-group">
-                <label for="basicFan">基础番数</label>
-                <input type="number" id="basicFan" value="19" min="1">
-            </div>
-
-            <div class="form-group">
-                <label for="basicScore">基础分数</label>
-                <input type="number" id="basicScore" value="38" min="1">
-            </div>
-
-            <button id="addCustomParam">
-                <span class="add-icon">+</span> 添加自定义护身符
-            </button>
-
-            <div id="customParamsContainer">
-                <!-- 自定义护身符将在这里动态添加 -->
-            </div>
-
-            <button id="calculateBtn">计算关卡极限</button>
 
             <!-- 自定义策略部分 -->
             <div class="strategy-section">
@@ -2348,20 +2402,20 @@
 
     // 新增：立即同步阶段1的值到顶部
     function syncStage1ToTop(stageData) {
-        document.getElementById('dy_type').value =              stageData.dy_type;
-        document.getElementById('fz_type').value =              stageData.fz_type;
-        document.getElementById('yg_type').value =              stageData.yg_type;
-        document.getElementById('basicFan').value =             stageData.basicFan;
-        document.getElementById('basicScore').value =           stageData.basicScore;
-        document.getElementById('dy_times').value =             stageData.dy_times || 0;
-        document.getElementById('fz_times').value =             stageData.fz_times || 0;
-        document.getElementById('yg_times').value =             stageData.yg_times || 0;
-        document.getElementById('eat_fog').value =              stageData.eat_fog || 0;
-        document.getElementById('lose_fz').value =              stageData.lose_fz || 0;
-        document.getElementById('lose_yg').value =              stageData.lose_yg || 0;
-        document.getElementById('dyTalismanEnabled').checked =  stageData.dy_enabled;
-        document.getElementById('fzTalismanEnabled').checked =  stageData.fz_enabled;
-        document.getElementById('ygTalismanEnabled').checked =  stageData.yg_enabled;
+        document.getElementById('dy_type').value = stageData.dy_type;
+        document.getElementById('fz_type').value = stageData.fz_type;
+        document.getElementById('yg_type').value = stageData.yg_type;
+        document.getElementById('basicFan').value = stageData.basicFan;
+        document.getElementById('basicScore').value = stageData.basicScore;
+        document.getElementById('dy_times').value = stageData.dy_times || 0;
+        document.getElementById('fz_times').value = stageData.fz_times || 0;
+        document.getElementById('yg_times').value = stageData.yg_times || 0;
+        document.getElementById('eat_fog').value = stageData.eat_fog || 0;
+        document.getElementById('lose_fz').value = stageData.lose_fz || 0;
+        document.getElementById('lose_yg').value = stageData.lose_yg || 0;
+        document.getElementById('dyTalismanEnabled').checked = stageData.dy_enabled;
+        document.getElementById('fzTalismanEnabled').checked = stageData.fz_enabled;
+        document.getElementById('ygTalismanEnabled').checked = stageData.yg_enabled;
 
         // 更新顶部护身符显示状态
         updateTopTalismanContent('dy', stageData.dy_enabled);
@@ -3123,7 +3177,7 @@
     // 单位转换功能
     function setupUnitConverter() {
         // 切换显示/隐藏
-        document.getElementById('toggleUnitConverter').addEventListener('click', function() {
+        document.getElementById('toggleUnitConverter').addEventListener('click', function () {
             const container = document.querySelector('.unit-converter-container');
             const eye = document.getElementById('toggleUnitConverter');
 
@@ -3142,7 +3196,7 @@
         document.getElementById('convertUnitBtn').addEventListener('click', convertUnit);
 
         // 输入框回车事件
-        document.getElementById('unitInput').addEventListener('keypress', function(e) {
+        document.getElementById('unitInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 convertUnit();
             }
@@ -3208,7 +3262,7 @@
 
     // 添加快捷键模块切换功能
     function setupShortcutModuleToggle() {
-        document.getElementById('toggleShortcutModule').addEventListener('click', function() {
+        document.getElementById('toggleShortcutModule').addEventListener('click', function () {
             const container = document.querySelector('.shortcut-module-container');
             const eye = document.getElementById('toggleShortcutModule');
 
@@ -3226,7 +3280,7 @@
 
     // 设置阶段收起/展开功能
     function setupStageToggle() {
-        document.getElementById('strategyStagesContainer').addEventListener('click', function(e) {
+        document.getElementById('strategyStagesContainer').addEventListener('click', function (e) {
             if (e.target.classList.contains('toggle-stage-icon')) {
                 toggleStageContent(e.target);
             }
@@ -3255,6 +3309,31 @@
         }
     }
 
+    // 设置输入参数部分收起/展开功能
+    function setupInputSectionToggle() {
+        const toggleIcon = document.querySelector('.toggle-input-icon');
+        const inputContent = document.querySelector('.input-content');
+
+        if (toggleIcon && inputContent) {
+            toggleIcon.addEventListener('click', function () {
+                if (inputContent.classList.contains('collapsed')) {
+                    // 展开内容
+                    inputContent.classList.remove('collapsed');
+                    toggleIcon.classList.remove('closed');
+                    toggleIcon.classList.add('open');
+                    toggleIcon.textContent = '−';
+                    toggleIcon.title = '收起输入参数';
+                } else {
+                    // 收起内容
+                    inputContent.classList.add('collapsed');
+                    toggleIcon.classList.remove('open');
+                    toggleIcon.classList.add('closed');
+                    toggleIcon.textContent = '+';
+                    toggleIcon.title = '展开输入参数';
+                }
+            });
+        }
+    }
 
     // 初始化函数
     function init() {
@@ -3505,6 +3584,9 @@
 
         // 设置阶段收起/展开功能
         setupStageToggle();
+
+        // 设置输入参数部分收起/展开功能
+        setupInputSectionToggle();
     }
 
     // 页面加载完成后初始化
