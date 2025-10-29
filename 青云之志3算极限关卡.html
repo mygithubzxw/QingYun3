@@ -2177,44 +2177,84 @@
         });
     }
 
-    // 添加策略阶段
+    // 添加策略阶段 - 修复版（确保护身符类型正确继承）
     function addStrategyStage(stageData = null) {
         const stageId = `stage${stageCounter}`;
         const stageNumber = stageCounter;
 
-        // 获取顶部参数的当前值作为默认值
-        const defaultDyType = document.getElementById('dy_type').value;
-        const defaultFzType = document.getElementById('fz_type').value;
-        const defaultYgType = document.getElementById('yg_type').value;
-        const defaultBasicFan = document.getElementById('basicFan').value;
-        const defaultBasicScore = document.getElementById('basicScore').value;
-        const defaultDyTimes = document.getElementById('dy_times').value;
-        const defaultFzTimes = document.getElementById('fz_times').value;
-        const defaultYgTimes = document.getElementById('yg_times').value;
-        const defaultEatFog = document.getElementById('eat_fog').value;
-        const defaultLoseFz = document.getElementById('lose_fz').value;
-        const defaultLoseYg = document.getElementById('lose_yg').value;
-        const defaultDyEnabled = document.getElementById('dyTalismanEnabled').checked;
-        const defaultFzEnabled = document.getElementById('fzTalismanEnabled').checked;
-        const defaultYgEnabled = document.getElementById('ygTalismanEnabled').checked;
+        // 获取上一个阶段的参数作为默认值
+        let defaultData = {};
+        const allStages = document.querySelectorAll('.strategy-stage');
+
+        if (allStages.length > 0) {
+            // 获取最后一个阶段
+            const lastStage = allStages[allStages.length - 1];
+
+            // 获取最后一个阶段的参数
+            defaultData = {
+                name: `阶段${stageNumber}`,
+                actualLevel: 0,
+                dy_type: lastStage.querySelector('.dy-type').value,
+                fz_type: lastStage.querySelector('.fz-type').value,
+                yg_type: lastStage.querySelector('.yg-type').value,
+                basicFan: parseInt(lastStage.querySelector('.basic-fan').value),
+                basicScore: parseInt(lastStage.querySelector('.basic-score').value),
+                dy_times: parseInt(lastStage.querySelector('.dy-times').value),
+                fz_times: parseInt(lastStage.querySelector('.fz-times').value),
+                yg_times: parseInt(lastStage.querySelector('.yg-times').value),
+                eat_fog: 0, // 固定为0，不继承
+                lose_fz: 0, // 固定为0，不继承
+                lose_yg: 0, // 固定为0，不继承
+                dy_enabled: lastStage.querySelector('.stage-dy-enabled').checked,
+                fz_enabled: lastStage.querySelector('.stage-fz-enabled').checked,
+                yg_enabled: lastStage.querySelector('.stage-yg-enabled').checked,
+                customizedParams: getStageCustomParamsData(lastStage)
+            };
+        } else {
+            // 如果没有阶段，使用顶部参数的当前值作为默认值
+            defaultData = {
+                name: `阶段${stageNumber}`,
+                actualLevel: 0,
+                dy_type: document.getElementById('dy_type').value,
+                fz_type: document.getElementById('fz_type').value,
+                yg_type: document.getElementById('yg_type').value,
+                basicFan: parseInt(document.getElementById('basicFan').value),
+                basicScore: parseInt(document.getElementById('basicScore').value),
+                dy_times: parseInt(document.getElementById('dy_times').value),
+                fz_times: parseInt(document.getElementById('fz_times').value),
+                yg_times: parseInt(document.getElementById('yg_times').value),
+                eat_fog: 0, // 固定为0
+                lose_fz: 0, // 固定为0
+                lose_yg: 0, // 固定为0
+                dy_enabled: document.getElementById('dyTalismanEnabled').checked,
+                fz_enabled: document.getElementById('fzTalismanEnabled').checked,
+                yg_enabled: document.getElementById('ygTalismanEnabled').checked,
+                customizedParams: getCustomizedParams()
+            };
+        }
+
+        // 如果提供了阶段数据，则使用提供的数据覆盖默认值
+        if (stageData) {
+            defaultData = {...defaultData, ...stageData};
+        }
 
         const stageHTML = `
-    <div class="strategy-stage" id="${stageId}">
-        <div class="stage-header">
-            <div class="stage-title">阶段 ${stageNumber}</div>
-            <div class="stage-controls">
-                <span class="toggle-stage-icon open" title="收起阶段内容">−</span>
-                <button type="button" class="remove-stage" onclick="removeStage('${stageId}')">×</button>
+        <div class="strategy-stage" id="${stageId}">
+            <div class="stage-header">
+                <div class="stage-title">阶段 ${stageNumber}</div>
+                <div class="stage-controls">
+                    <span class="toggle-stage-icon open" title="收起阶段内容">−</span>
+                    <button type="button" class="remove-stage" onclick="removeStage('${stageId}')">×</button>
+                </div>
             </div>
-        </div>
-        <div class="stage-content">
+            <div class="stage-content">
                 <div class="stage-form-group">
                     <label>阶段名称</label>
-                    <input type="text" class="stage-name" value="${stageData?.name || `阶段${stageNumber}`}" placeholder="阶段名称">
+                    <input type="text" class="stage-name" value="${defaultData.name}" placeholder="阶段名称">
                 </div>
                 <div class="stage-form-group">
                     <label>实际开始关卡</label>
-                    <input type="number" class="actual-level actual-level-input" value="${stageData?.actualLevel || ''}" placeholder="不填则使用前一阶段极限" min="1" max="163">
+                    <input type="number" class="actual-level actual-level-input" value="${defaultData.actualLevel || ''}" placeholder="不填则使用前一阶段极限" min="1" max="163">
                 </div>
 
                 <!-- 盗印护身符卡片 -->
@@ -2222,7 +2262,7 @@
                     <div class="talisman-header">
                         <div class="talisman-title">护身符 - 盗印</div>
                         <label class="toggle-switch">
-                            <input type="checkbox" class="stage-dy-enabled" ${(stageData?.dy_enabled !== undefined ? stageData.dy_enabled : defaultDyEnabled) ? 'checked' : ''}>
+                            <input type="checkbox" class="stage-dy-enabled" ${defaultData.dy_enabled ? 'checked' : ''}>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -2230,19 +2270,19 @@
                         <div class="stage-form-group">
                             <label>盗印类型</label>
                             <select class="dy-type">
-                                <option value="普通盗印" ${(stageData?.dy_type || defaultDyType) === '普通盗印' ? 'selected' : ''}>普通盗印1.3</option>
-                                <option value="卡维膨胀盗印" ${(stageData?.dy_type || defaultDyType) === '卡维膨胀盗印' ? 'selected' : ''}>卡维膨胀盗印1.3^4</option>
-                                <option value="其他卡膨胀盗印" ${(stageData?.dy_type || defaultDyType) === '其他卡膨胀盗印' ? 'selected' : ''}>其他卡膨胀盗印1.3^2</option>
-                                <option value="黑客只变盗印" ${(stageData?.dy_type || defaultDyType) === '黑客只变盗印' ? 'selected' : ''}>黑客只变盗印1.3^6</option>
+                                <option value="普通盗印" ${defaultData.dy_type === '普通盗印' ? 'selected' : ''}>普通盗印1.3</option>
+                                <option value="卡维膨胀盗印" ${defaultData.dy_type === '卡维膨胀盗印' ? 'selected' : ''}>卡维膨胀盗印1.3^4</option>
+                                <option value="其他卡膨胀盗印" ${defaultData.dy_type === '其他卡膨胀盗印' ? 'selected' : ''}>其他卡膨胀盗印1.3^2</option>
+                                <option value="黑客只变盗印" ${defaultData.dy_type === '黑客只变盗印' ? 'selected' : ''}>黑客只变盗印1.3^6</option>
                             </select>
                         </div>
                         <div class="stage-form-group">
                             <label>盗印次数</label>
-                            <input type="number" class="dy-times" value="${stageData?.dy_times || defaultDyTimes}" min="0">
+                            <input type="number" class="dy-times" value="${defaultData.dy_times}" min="0">
                         </div>
                         <div class="stage-form-group">
                             <label>吃迷雾次数</label>
-                            <input type="number" class="eat-fog" value="${stageData?.eat_fog ?? defaultEatFog}" min="0">
+                            <input type="number" class="eat-fog" value="${defaultData.eat_fog}" min="0">
                         </div>
                     </div>
                 </div>
@@ -2252,7 +2292,7 @@
                     <div class="talisman-header">
                         <div class="talisman-title">护身符 - 负重</div>
                         <label class="toggle-switch">
-                            <input type="checkbox" class="stage-fz-enabled" ${(stageData?.fz_enabled !== undefined ? stageData.fz_enabled : defaultFzEnabled) ? 'checked' : ''}>
+                            <input type="checkbox" class="stage-fz-enabled" ${defaultData.fz_enabled ? 'checked' : ''}>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -2260,18 +2300,18 @@
                         <div class="stage-form-group">
                             <label>负重类型</label>
                             <select class="fz-type">
-                                <option value="膨胀负重" ${(stageData?.fz_type || defaultFzType) === '膨胀负重' ? 'selected' : ''}>膨胀负重</option>
-                                <option value="天使负重" ${(stageData?.fz_type || defaultFzType) === '天使负重' ? 'selected' : ''}>天使负重</option>
-                                <option value="普通负重" ${(stageData?.fz_type || defaultFzType) === '普通负重' ? 'selected' : ''}>普通负重</option>
+                                <option value="膨胀负重" ${defaultData.fz_type === '膨胀负重' ? 'selected' : ''}>膨胀负重</option>
+                                <option value="天使负重" ${defaultData.fz_type === '天使负重' ? 'selected' : ''}>天使负重</option>
+                                <option value="普通负重" ${defaultData.fz_type === '普通负重' ? 'selected' : ''}>普通负重</option>
                             </select>
                         </div>
                         <div class="stage-form-group">
                             <label>负重次数</label>
-                            <input type="number" class="fz-times" value="${stageData?.fz_times || defaultFzTimes}" min="0">
+                            <input type="number" class="fz-times" value="${defaultData.fz_times}" min="0">
                         </div>
                         <div class="stage-form-group">
                             <label>亏负重次数</label>
-                            <input type="number" class="lose-fz" value="${stageData?.lose_fz ?? defaultLoseFz}" min="0">
+                            <input type="number" class="lose-fz" value="${defaultData.lose_fz}" min="0">
                         </div>
                     </div>
                 </div>
@@ -2281,7 +2321,7 @@
                     <div class="talisman-header">
                         <div class="talisman-title">护身符 - 月光</div>
                         <label class="toggle-switch">
-                            <input type="checkbox" class="stage-yg-enabled" ${(stageData?.yg_enabled !== undefined ? stageData.yg_enabled : defaultYgEnabled) ? 'checked' : ''}>
+                            <input type="checkbox" class="stage-yg-enabled" ${defaultData.yg_enabled ? 'checked' : ''}>
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
@@ -2289,29 +2329,29 @@
                         <div class="stage-form-group">
                             <label>月光类型</label>
                             <select class="yg-type">
-                                <option value="普通月光" ${(stageData?.yg_type || defaultYgType) === '普通月光' ? 'selected' : ''}>普通月光</option>
-                                <option value="膨胀月光" ${(stageData?.yg_type || defaultYgType) === '膨胀月光' ? 'selected' : ''}>膨胀月光</option>
-                                <option value="天使月光" ${(stageData?.yg_type || defaultYgType) === '天使月光' ? 'selected' : ''}>天使月光</option>
+                                <option value="普通月光" ${defaultData.yg_type === '普通月光' ? 'selected' : ''}>普通月光</option>
+                                <option value="膨胀月光" ${defaultData.yg_type === '膨胀月光' ? 'selected' : ''}>膨胀月光</option>
+                                <option value="天使月光" ${defaultData.yg_type === '天使月光' ? 'selected' : ''}>天使月光</option>
                             </select>
                         </div>
                         <div class="stage-form-group">
                             <label>月光次数</label>
-                            <input type="number" class="yg-times" value="${stageData?.yg_times || defaultYgTimes}" min="0">
+                            <input type="number" class="yg-times" value="${defaultData.yg_times}" min="0">
                         </div>
                         <div class="stage-form-group">
                             <label>亏月光次数</label>
-                            <input type="number" class="lose-yg" value="${stageData?.lose_yg ?? defaultLoseYg}" min="0">
+                            <input type="number" class="lose-yg" value="${defaultData.lose_yg}" min="0">
                         </div>
                     </div>
                 </div>
 
                 <div class="stage-form-group basic-fan-group">
                     <label>基础番数</label>
-                    <input type="number" class="basic-fan" value="${stageData?.basicFan || defaultBasicFan}" min="1">
+                    <input type="number" class="basic-fan" value="${defaultData.basicFan}" min="1">
                 </div>
                 <div class="stage-form-group basic-score-group">
                     <label>基础分数</label>
-                    <input type="number" class="basic-score" value="${stageData?.basicScore || defaultBasicScore}" min="1">
+                    <input type="number" class="basic-score" value="${defaultData.basicScore}" min="1">
                 </div>
                 <div class="stage-form-group" style="grid-column: 1 / -1;">
                     <button type="button" class="add-stage-custom-param-btn strategy-btn" onclick="addStageCustomParam('${stageId}')">
@@ -2326,6 +2366,7 @@
     `;
 
         document.getElementById('strategyStagesContainer').insertAdjacentHTML('beforeend', stageHTML);
+
         // 设置阶段护身符内容的初始显示状态
         const stageElement = document.getElementById(stageId);
         if (stageElement) {
@@ -2361,11 +2402,11 @@
         }
 
         // 添加预设的自定义护身符（如果有）
-        if (stageData && stageData.customizedParams) {
+        if (defaultData.customizedParams && defaultData.customizedParams.length > 0) {
             const container = document.getElementById(`stageCustomParams-${stageId}`);
             if (container) {
-                stageData.customizedParams.forEach(param => {
-                    addStageCustomParamToContainer(container, param.name, param.value, param.times);
+                defaultData.customizedParams.forEach(param => {
+                    addStageCustomParamToContainer(container, param.name, param.value, param.times, false);
                 });
             }
         }
@@ -2580,7 +2621,7 @@
 
             if (valueInput && timesInput && nameInput) {
                 try {
-                    const value = parseValue(valueInput.value);
+                    const value = valueInput.value;
                     const times = parseInt(timesInput.value) || 0;
                     const name = nameInput.value;
 
@@ -3640,7 +3681,7 @@
                     name: nameInput.value,
                     value: valueInput.value,
                     times: timesInput.value,
-                    index: index // 添加索引，确保按位置匹配
+                    index: index
                 });
             }
         });
@@ -3719,14 +3760,7 @@
     function init() {
         // 事件监听
         document.getElementById('addCustomParam').addEventListener('click', addCustomParam);
-        document.getElementById('addStageBtn').addEventListener('click', () => addStrategyStage({
-            dy_type: "普通盗印",
-            fz_type: "普通负重",
-            yg_type: "普通月光",
-            eat_fog: 0,
-            lose_fz: 0,
-            lose_yg: 0
-        }));
+        document.getElementById('addStageBtn').addEventListener('click', () => addStrategyStage());
 
         // 预设策略按钮事件监听
         document.getElementById('twoInflationBtn').addEventListener('click', applyTwoInflationStrategy);
