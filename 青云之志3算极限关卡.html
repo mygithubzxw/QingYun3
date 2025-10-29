@@ -1065,7 +1065,7 @@
 										<span class="tooltip-icon">ⓘ</span>
 										<span class="tooltip-text">
                                             膨胀盗印加膨胀负重加黑客的玩法中，因为黑客随机变化，算不出来盗印的成长，黑客变一次盗印，相当于吃一次迷雾，可以根据实际情况换算成吃迷雾次数，
-                                            最佳实践：在EX1的时候输入参数计算一次大概的极限关卡，在EX45重新输入参数计算，就能知道哪一关找岚星，哪一关刷传导卡维，再用吃迷雾次数修正数据
+                                            最佳实践：在EX45输入参数计算，就能知道哪一关找岚星，哪一关刷传导卡维，再用吃迷雾次数修正数据
                                         </span>
                             </span>
                             </label>
@@ -1210,6 +1210,9 @@
                             膨胀盗印膨胀负重普通月光
                         </button>
                         <button class="preset-btn" data-preset="singleDyHacker" id="singleDyHackerBtn">单盗印黑客
+                        </button>
+                        <button class="preset-btn" data-preset="inflationDyFzHacker" id="inflationDyFzHackerBtn">
+                            膨胀盗印膨胀负重黑客
                         </button>
                     </div>
                 </div>
@@ -1861,8 +1864,8 @@
         });
     }
 
-    // 添加阶段自定义护身符到指定容器
-    function addStageCustomParamToContainer(container, name = "", value = "1", times = "1") {
+    // 添加阶段自定义护身符到指定容器 - 修复版（保持位置对应）
+    function addStageCustomParamToContainer(container, name = "", value = "1", times = "1", triggerSync = true) {
         const paramId = `stageCustomParam${Date.now()}`;
 
         const customParamHTML = `
@@ -1885,19 +1888,35 @@
         const paramElement = document.getElementById(paramId);
         const nameInput = paramElement.querySelector('.stage-custom-param-name');
         const valueInput = paramElement.querySelector('.stage-custom-param-value');
-        const timesInput = paramElement.querySelector('.stage-custom-param-times');
 
-        // 监听输入变化，同步到顶部
-        [nameInput, valueInput, timesInput].forEach(input => {
+        // 只监听名称和数值的变化
+        [nameInput, valueInput].forEach(input => {
             input.addEventListener('input', function () {
-                syncStage1CustomParamsToTop();
+                // 同步到顶部（如果是阶段1）
+                const stageElement = container.closest('.strategy-stage');
+                if (stageElement && stageElement.id === 'stage1') {
+                    syncStage1CustomParamsToTop();
+                }
+
+                // 同步到后续阶段
+                const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
+                const currentStageIndex = allStages.indexOf(stageElement);
+                syncStageParameters(currentStageIndex);
             });
         });
+
+        // 触发同步（除非明确设置为不触发）
+        if (triggerSync) {
+            const stageElement = container.closest('.strategy-stage');
+            const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
+            const currentStageIndex = allStages.indexOf(stageElement);
+            syncStageParameters(currentStageIndex);
+        }
 
         return paramId;
     }
 
-    // 添加阶段自定义护身符
+    // 添加阶段自定义护身符 - 修复版
     function addStageCustomParam(stageId) {
         const container = document.getElementById(`stageCustomParams-${stageId}`);
         if (!container) return;
@@ -1908,7 +1927,8 @@
             container,
             `自定义护身符${currentCount}`,
             "1",
-            "1"
+            "1",
+            true // 触发同步
         );
 
         // 如果是阶段1，同步到顶部
@@ -1999,12 +2019,20 @@
     function removeStageCustomParam(paramId) {
         const element = document.getElementById(paramId);
         if (element) {
+            const container = element.closest('.stage-custom-params-container');
             element.remove();
+
             // 如果是阶段1，同步到顶部
             const stage1 = document.querySelector('.strategy-stage');
-            if (stage1 && element.closest('.strategy-stage') === stage1) {
+            if (stage1 && container.closest('.strategy-stage') === stage1) {
                 syncStage1CustomParamsToTop();
             }
+
+            // 同步到后续阶段
+            const stageElement = container.closest('.strategy-stage');
+            const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
+            const currentStageIndex = allStages.indexOf(stageElement);
+            syncStageParameters(currentStageIndex);
         }
     }
 
@@ -2316,6 +2344,12 @@
             if (stageYgEnabled) {
                 updateStageTalismanContent(stageElement, 'yg', stageYgEnabled.checked);
             }
+
+            // 绑定自定义护身符事件
+            const customParamsContainer = stageElement.querySelector('.stage-custom-params-container');
+            if (customParamsContainer) {
+                bindCustomParamEvents(customParamsContainer);
+            }
         }
 
         // 如果是第一个阶段，设置双向绑定
@@ -2324,6 +2358,16 @@
 
             // 同步顶部的自定义护身符到阶段1
             syncTopCustomParamsToStage1();
+        }
+
+        // 添加预设的自定义护身符（如果有）
+        if (stageData && stageData.customizedParams) {
+            const container = document.getElementById(`stageCustomParams-${stageId}`);
+            if (container) {
+                stageData.customizedParams.forEach(param => {
+                    addStageCustomParamToContainer(container, param.name, param.value, param.times);
+                });
+            }
         }
 
         stageCounter++;
@@ -2971,6 +3015,197 @@
             "\n转到下一个阶段的实际开始关卡需要自己根据实际情况填写；\n吸星入链按1万星币来算；\n不考虑天恩往前移的步骤");
     }
 
+    // 膨胀盗印膨胀负重黑客策略配置
+    const inflationDyFzHackerStrategy = [
+        {
+            name: "两指数黑客",
+            actualLevel: 0,
+            dy_type: "卡维膨胀盗印",
+            fz_type: "膨胀负重",
+            basicFan: 19,
+            basicScore: 38,
+            dy_times: 2,
+            fz_times: 3,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: false
+        },
+        {
+            name: "刷传导卡维",
+            actualLevel: 0,
+            dy_type: "其他卡膨胀盗印",
+            fz_type: "膨胀负重",
+            basicFan: 19,
+            basicScore: 38,
+            dy_times: 3,
+            fz_times: 2,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: false
+        },
+        {
+            name: "盗印入链",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "膨胀负重",
+            basicFan: 19,
+            basicScore: 38,
+            dy_times: 4,
+            fz_times: 3,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: false
+        },
+        {
+            name: "月光吸星入链，天恩放后面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 2000000,
+            dy_times: 5,
+            fz_times: 3,
+            yg_times: 4,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: true
+        },
+        {
+            name: "天恩移到月光前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "膨胀负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 2000000,
+            dy_times: 6,
+            fz_times: 3,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: true
+        },
+        {
+            name: "负重琳琅入链，天恩放后面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 2000000,
+            dy_times: 7,
+            fz_times: 6,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 1,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: true,
+            customizedParams: [
+                {name: "琳琅", value: "1000", times: 4}
+            ]
+        },
+        {
+            name: "天恩移到盗印前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 2000000,
+            dy_times: 8,
+            fz_times: 6,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: true,
+            customizedParams: [
+                {name: "琳琅", value: "1000", times: 4}
+            ]
+        },
+        {
+            name: "天恩移到负重前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 2000000,
+            dy_times: 8,
+            fz_times: 7,
+            yg_times: 5,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: true,
+            customizedParams: [
+                {name: "琳琅", value: "1000", times: 4}
+            ]
+        },
+        {
+            name: "最终8链，天恩移到琳琅前面",
+            actualLevel: 0,
+            dy_type: "普通盗印",
+            fz_type: "普通负重",
+            yg_type: "普通月光",
+            basicFan: 19,
+            basicScore: 2000000,
+            dy_times: 8,
+            fz_times: 7,
+            yg_times: 6,
+            eat_fog: 0,
+            lose_fz: 0,
+            lose_yg: 0,
+            dy_enabled: true,
+            fz_enabled: true,
+            yg_enabled: true,
+            customizedParams: [
+                {name: "琳琅", value: "1500", times: 5}
+            ]
+        }
+    ];
+
+    // 应用膨胀盗印膨胀负重黑客策略
+    function applyInflationDyFzHackerStrategy() {
+        // 清除所有现有阶段
+        document.getElementById('strategyStagesContainer').innerHTML = '';
+        stageCounter = 1;
+
+        // 添加新阶段
+        inflationDyFzHackerStrategy.forEach(stageData => {
+            addStrategyStage(stageData);
+        });
+
+        syncStage1ToTop(inflationDyFzHackerStrategy[0]);
+
+        // 显示提示信息
+        alert("此为两指数黑客的一种策略\n黑客变盗印是随机的，所以盗印的成长不能得到准确值，最佳实践：建议45关的时候输入参数计算一下极限关卡，然后在卖黑客之前用吃迷雾次数来修正数据，就能知道哪一关找岚星，哪一关开始刷传导卡维\n" +
+            "刷传导卡维的实际开始关卡需要根据实际情况来填\n盗印入链后，以找到天恩继续后续阶段，如果是其他乘N番卡，需要自己修改策略\n此策略预设的是月光直接入链，月光吸星入链的实际开始关卡需要自己根据实际情况来填，" +
+            "如果有岚星Plus，可以刷天使月光，则需要修改此策略\n负重入链后，此策略是直接卖吸星找琳琅，亏一次月光，如果是其他乘N番卡，需要自己根据情况修改");
+    }
+
     // 关卡分数数据
     const LEVEL_SCORE_DATA = [
         {level: "Ex1", score: "1.00E+06"},
@@ -3335,6 +3570,151 @@
         }
     }
 
+    // 同步阶段参数到后续阶段 - 修复版（名称修改时保持次数）
+    function syncStageParameters(currentStageIndex) {
+        const allStages = document.querySelectorAll('.strategy-stage');
+        if (currentStageIndex >= allStages.length - 1) return; // 如果是最后一个阶段，不需要同步
+
+        const currentStage = allStages[currentStageIndex];
+
+        // 获取当前阶段的值
+        const basicFan = currentStage.querySelector('.basic-fan').value;
+        const basicScore = currentStage.querySelector('.basic-score').value;
+
+        // 获取当前阶段的自定义护身符数据
+        const currentCustomParams = getStageCustomParamsData(currentStage);
+
+        // 同步到后续所有阶段
+        for (let i = currentStageIndex + 1; i < allStages.length; i++) {
+            const targetStage = allStages[i];
+
+            // 同步基础番数
+            const targetBasicFan = targetStage.querySelector('.basic-fan');
+            if (targetBasicFan) targetBasicFan.value = basicFan;
+
+            // 同步基础分数
+            const targetBasicScore = targetStage.querySelector('.basic-score');
+            if (targetBasicScore) targetBasicScore.value = basicScore;
+
+            // 同步自定义护身符（保持目标阶段的次数）
+            const targetCustomParamsContainer = targetStage.querySelector('.stage-custom-params-container');
+            if (targetCustomParamsContainer) {
+                // 获取目标阶段现有的自定义护身符数据（保留次数）
+                const targetCustomParams = getStageCustomParamsData(targetStage);
+
+                // 清空目标容器
+                targetCustomParamsContainer.innerHTML = '';
+
+                // 重新添加所有自定义护身符，使用目标阶段的次数
+                currentCustomParams.forEach((param, index) => {
+                    // 如果目标阶段有对应位置的护身符，使用目标阶段的次数
+                    // 否则使用当前阶段的次数
+                    const times = targetCustomParams[index] ? targetCustomParams[index].times : param.times;
+
+                    addStageCustomParamToContainer(
+                        targetCustomParamsContainer,
+                        param.name,
+                        param.value,
+                        times,
+                        false // 不触发同步，避免循环
+                    );
+                });
+            }
+        }
+    }
+    // 获取阶段自定义护身符数据
+    function getStageCustomParamsData(stageElement) {
+        const container = stageElement.querySelector('.stage-custom-params-container');
+        if (!container) return [];
+
+        const customParams = [];
+        const customParamGroups = container.querySelectorAll('.stage-custom-param-group');
+
+        customParamGroups.forEach((group, index) => {
+            const nameInput = group.querySelector('.stage-custom-param-name');
+            const valueInput = group.querySelector('.stage-custom-param-value');
+            const timesInput = group.querySelector('.stage-custom-param-times');
+
+            if (nameInput && valueInput && timesInput) {
+                customParams.push({
+                    name: nameInput.value,
+                    value: valueInput.value,
+                    times: timesInput.value,
+                    index: index // 添加索引，确保按位置匹配
+                });
+            }
+        });
+
+        return customParams;
+    }
+
+    // 绑定自定义护身符事件 - 修复版（不同步次数）
+    function bindCustomParamEvents(container) {
+        const customParamGroups = container.querySelectorAll('.stage-custom-param-group');
+
+        customParamGroups.forEach(group => {
+            const nameInput = group.querySelector('.stage-custom-param-name');
+            const valueInput = group.querySelector('.stage-custom-param-value');
+            const timesInput = group.querySelector('.stage-custom-param-times');
+
+            // 移除可能重复的事件监听器
+            [nameInput, valueInput].forEach(input => {
+                // 克隆元素并替换以移除所有事件监听器
+                const newInput = input.cloneNode(true);
+                input.parentNode.replaceChild(newInput, input);
+            });
+
+            // 重新获取元素引用（只获取名称和数值输入框）
+            const newNameInput = group.querySelector('.stage-custom-param-name');
+            const newValueInput = group.querySelector('.stage-custom-param-value');
+
+            // 监听名称和数值输入变化，触发同步（不监听次数变化）
+            [newNameInput, newValueInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    const stageElement = container.closest('.strategy-stage');
+                    const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
+                    const currentStageIndex = allStages.indexOf(stageElement);
+                    syncStageParameters(currentStageIndex);
+                });
+            });
+        });
+    }
+
+    // 设置阶段同步功能 - 修复版（不同步次数）
+    function setupStageSync() {
+        const stagesContainer = document.getElementById('strategyStagesContainer');
+
+        // 监听基础番数和基础分数的变化
+        stagesContainer.addEventListener('input', function(e) {
+            if (e.target.classList.contains('basic-fan') || e.target.classList.contains('basic-score')) {
+                const stageElement = e.target.closest('.strategy-stage');
+                const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
+                const currentStageIndex = allStages.indexOf(stageElement);
+                syncStageParameters(currentStageIndex);
+            }
+        });
+
+        // 监听自定义护身符的变化（只监听名称和数值，不监听次数）
+        stagesContainer.addEventListener('input', function(e) {
+            if (e.target.classList.contains('stage-custom-param-name') ||
+                e.target.classList.contains('stage-custom-param-value')) {
+
+                const stageElement = e.target.closest('.strategy-stage');
+                const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
+                const currentStageIndex = allStages.indexOf(stageElement);
+                syncStageParameters(currentStageIndex);
+            }
+        });
+
+        // 监听添加自定义护身符按钮的点击
+        stagesContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('add-stage-custom-param-btn') ||
+                e.target.closest('.add-stage-custom-param-btn')) {
+                // 添加自定义护身符后会自动触发同步，不需要额外处理
+            }
+        });
+    }
+
     // 初始化函数
     function init() {
         // 事件监听
@@ -3351,6 +3731,7 @@
         // 预设策略按钮事件监听
         document.getElementById('twoInflationBtn').addEventListener('click', applyTwoInflationStrategy);
         document.getElementById('singleDyHackerBtn').addEventListener('click', applySingleDyHackerStrategy);
+        document.getElementById('inflationDyFzHackerBtn').addEventListener('click', applyInflationDyFzHackerStrategy);
 
         // 单次计算按钮点击事件
         document.getElementById('calculateBtn').addEventListener('click', function () {
@@ -3587,6 +3968,9 @@
 
         // 设置输入参数部分收起/展开功能
         setupInputSectionToggle();
+
+        // 设置阶段同步功能
+        setupStageSync();
     }
 
     // 页面加载完成后初始化
