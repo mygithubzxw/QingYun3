@@ -1864,7 +1864,7 @@
         });
     }
 
-    // 添加阶段自定义护身符到指定容器 - 修复版（保持位置对应）
+    // 添加阶段自定义护身符到指定容器 - 修复版（触发自定义护身符同步）
     function addStageCustomParamToContainer(container, name = "", value = "1", times = "1", triggerSync = true) {
         const paramId = `stageCustomParam${Date.now()}`;
 
@@ -1898,10 +1898,10 @@
                     syncStage1CustomParamsToTop();
                 }
 
-                // 同步到后续阶段
+                // 同步自定义护身符到后续阶段
                 const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
                 const currentStageIndex = allStages.indexOf(stageElement);
-                syncStageParameters(currentStageIndex);
+                syncCustomParams(currentStageIndex);
             });
         });
 
@@ -1910,7 +1910,7 @@
             const stageElement = container.closest('.strategy-stage');
             const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
             const currentStageIndex = allStages.indexOf(stageElement);
-            syncStageParameters(currentStageIndex);
+            syncCustomParams(currentStageIndex);
         }
 
         return paramId;
@@ -2015,7 +2015,7 @@
         }
     }
 
-    // 删除阶段自定义护身符
+    // 删除阶段自定义护身符 - 修复版（触发自定义护身符同步）
     function removeStageCustomParam(paramId) {
         const element = document.getElementById(paramId);
         if (element) {
@@ -2028,11 +2028,11 @@
                 syncStage1CustomParamsToTop();
             }
 
-            // 同步到后续阶段
+            // 同步自定义护身符到后续阶段
             const stageElement = container.closest('.strategy-stage');
             const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
             const currentStageIndex = allStages.indexOf(stageElement);
-            syncStageParameters(currentStageIndex);
+            syncCustomParams(currentStageIndex);
         }
     }
 
@@ -2223,9 +2223,9 @@
                 dy_times: parseInt(document.getElementById('dy_times').value),
                 fz_times: parseInt(document.getElementById('fz_times').value),
                 yg_times: parseInt(document.getElementById('yg_times').value),
-                eat_fog: 0, // 固定为0
-                lose_fz: 0, // 固定为0
-                lose_yg: 0, // 固定为0
+                eat_fog: parseInt(getValueOrDefault(document.getElementById('eat_fog').value, 0)),
+                lose_fz: parseInt(getValueOrDefault(document.getElementById('lose_fz').value, 0)),
+                lose_yg: parseInt(getValueOrDefault(document.getElementById('lose_yg').value, 0)),
                 dy_enabled: document.getElementById('dyTalismanEnabled').checked,
                 fz_enabled: document.getElementById('fzTalismanEnabled').checked,
                 yg_enabled: document.getElementById('ygTalismanEnabled').checked,
@@ -3688,15 +3688,13 @@
 
         return customParams;
     }
-
-    // 绑定自定义护身符事件 - 修复版（不同步次数）
+    // 绑定自定义护身符事件 - 修复版（触发自定义护身符同步）
     function bindCustomParamEvents(container) {
         const customParamGroups = container.querySelectorAll('.stage-custom-param-group');
 
         customParamGroups.forEach(group => {
             const nameInput = group.querySelector('.stage-custom-param-name');
             const valueInput = group.querySelector('.stage-custom-param-value');
-            const timesInput = group.querySelector('.stage-custom-param-times');
 
             // 移除可能重复的事件监听器
             [nameInput, valueInput].forEach(input => {
@@ -3709,33 +3707,33 @@
             const newNameInput = group.querySelector('.stage-custom-param-name');
             const newValueInput = group.querySelector('.stage-custom-param-value');
 
-            // 监听名称和数值输入变化，触发同步（不监听次数变化）
+            // 监听名称和数值输入变化，触发自定义护身符同步
             [newNameInput, newValueInput].forEach(input => {
                 input.addEventListener('input', function() {
                     const stageElement = container.closest('.strategy-stage');
                     const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
                     const currentStageIndex = allStages.indexOf(stageElement);
-                    syncStageParameters(currentStageIndex);
+                    syncCustomParams(currentStageIndex);
                 });
             });
         });
     }
 
-    // 设置阶段同步功能 - 修复版（不同步次数）
+    // 设置阶段同步功能 - 修复版（分离基础参数和自定义护身符同步）
     function setupStageSync() {
         const stagesContainer = document.getElementById('strategyStagesContainer');
 
-        // 监听基础番数和基础分数的变化
+        // 监听基础番数和基础分数的变化 - 只同步基础参数
         stagesContainer.addEventListener('input', function(e) {
             if (e.target.classList.contains('basic-fan') || e.target.classList.contains('basic-score')) {
                 const stageElement = e.target.closest('.strategy-stage');
                 const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
                 const currentStageIndex = allStages.indexOf(stageElement);
-                syncStageParameters(currentStageIndex);
+                syncBasicParameters(currentStageIndex);
             }
         });
 
-        // 监听自定义护身符的变化（只监听名称和数值，不监听次数）
+        // 监听自定义护身符的变化（只监听名称和数值，不监听次数）- 只同步自定义护身符
         stagesContainer.addEventListener('input', function(e) {
             if (e.target.classList.contains('stage-custom-param-name') ||
                 e.target.classList.contains('stage-custom-param-value')) {
@@ -3743,7 +3741,7 @@
                 const stageElement = e.target.closest('.strategy-stage');
                 const allStages = Array.from(document.querySelectorAll('.strategy-stage'));
                 const currentStageIndex = allStages.indexOf(stageElement);
-                syncStageParameters(currentStageIndex);
+                syncCustomParams(currentStageIndex);
             }
         });
 
@@ -3754,6 +3752,78 @@
                 // 添加自定义护身符后会自动触发同步，不需要额外处理
             }
         });
+    }
+
+    // 同步基础参数到后续阶段（不影响自定义护身符）
+    function syncBasicParameters(currentStageIndex) {
+        const allStages = document.querySelectorAll('.strategy-stage');
+        if (currentStageIndex >= allStages.length - 1) return; // 如果是最后一个阶段，不需要同步
+
+        const currentStage = allStages[currentStageIndex];
+
+        // 获取当前阶段的基础参数值
+        const basicFan = currentStage.querySelector('.basic-fan').value;
+        const basicScore = currentStage.querySelector('.basic-score').value;
+
+        // 同步到后续所有阶段
+        for (let i = currentStageIndex + 1; i < allStages.length; i++) {
+            const targetStage = allStages[i];
+
+            // 同步基础番数
+            const targetBasicFan = targetStage.querySelector('.basic-fan');
+            if (targetBasicFan) targetBasicFan.value = basicFan;
+
+            // 同步基础分数
+            const targetBasicScore = targetStage.querySelector('.basic-score');
+            if (targetBasicScore) targetBasicScore.value = basicScore;
+        }
+    }
+
+    // 同步自定义护身符到后续阶段
+    function syncCustomParams(currentStageIndex) {
+        const allStages = document.querySelectorAll('.strategy-stage');
+        if (currentStageIndex >= allStages.length - 1) return; // 如果是最后一个阶段，不需要同步
+
+        const currentStage = allStages[currentStageIndex];
+
+        // 获取当前阶段的自定义护身符数据
+        const currentCustomParams = getStageCustomParamsData(currentStage);
+
+        // 同步到后续所有阶段
+        for (let i = currentStageIndex + 1; i < allStages.length; i++) {
+            const targetStage = allStages[i];
+
+            // 同步自定义护身符
+            const targetCustomParamsContainer = targetStage.querySelector('.stage-custom-params-container');
+            if (targetCustomParamsContainer) {
+                // 获取目标阶段现有的自定义护身符数据（保留次数）
+                const targetCustomParams = getStageCustomParamsData(targetStage);
+                const targetTimesMap = {};
+
+                // 创建目标阶段的次数映射表
+                targetCustomParams.forEach(param => {
+                    targetTimesMap[param.name] = param.times;
+                });
+
+                // 清空目标容器
+                targetCustomParamsContainer.innerHTML = '';
+
+                // 重新添加所有自定义护身符，使用目标阶段的次数
+                currentCustomParams.forEach((param, index) => {
+                    // 如果目标阶段有相同名称的护身符，使用目标阶段的次数
+                    // 否则使用当前阶段的次数
+                    const times = targetTimesMap[param.name] || param.times;
+
+                    addStageCustomParamToContainer(
+                        targetCustomParamsContainer,
+                        param.name,
+                        param.value,
+                        times,
+                        false // 不触发同步，避免循环
+                    );
+                });
+            }
+        }
     }
 
     // 初始化函数
