@@ -375,30 +375,49 @@
             font-size: 14px;
         }
 
+        /* 策略阶段样式 - 修改边框样式 */
         .strategy-stage {
             background-color: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
+            border: 2px solid #2575fc; /* 增加边框宽度，使用主题蓝色 */
+            border-radius: 10px; /* 增加圆角 */
             padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+            transition: all 0.3s ease; /* 添加过渡效果 */
         }
 
+        /* 鼠标悬停时增强边框效果 */
+        .strategy-stage:hover {
+            border-color: #6a11cb; /* 悬停时使用渐变中的深色 */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 增强阴影 */
+            transform: translateY(-2px); /* 轻微上浮效果 */
+        }
+
+        /* 收起状态下的样式 */
+        .strategy-stage.collapsed {
+            border-color: #ddd; /* 收起时使用较浅的边框色 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 收起时减少阴影 */
+        }
+
+        /* 阶段头部样式 - 与边框协调 */
         .stage-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid #e0e0e0;
         }
 
+        /* 阶段标题样式 */
         .stage-title {
             font-weight: bold;
             color: #2575fc;
-            font-size: 16px;
+            font-size: 18px;
         }
 
+        /* 删除按钮样式 */
         .remove-stage {
             background: #e74c3c;
             color: white;
@@ -411,12 +430,62 @@
             align-items: center;
             justify-content: center;
             font-size: 14px;
+            transition: all 0.3s ease;
         }
 
+        .remove-stage:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        /* 阶段内容样式 */
         .stage-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 10px;
+        }
+
+        /* 护身符卡片样式 - 与阶段边框协调 */
+        .strategy-stage .talisman-card {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 阶段表单组样式 */
+        .strategy-stage .stage-form-group {
+            margin-bottom: 8px;
+        }
+
+        .strategy-stage .stage-form-group label {
+            font-size: 12px;
+            margin-bottom: 3px;
+            color: #666;
+        }
+
+        .strategy-stage .stage-form-group input,
+        .strategy-stage .stage-form-group select {
+            padding: 6px 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* 基础番数和基础分数组样式 */
+        .strategy-stage .basic-fan-group,
+        .strategy-stage .basic-score-group {
+            grid-column: span 1;
+        }
+
+        /* 自定义护身符容器样式 */
+        .strategy-stage .stage-custom-params-container {
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 4px 0;
         }
 
         .stage-form-group {
@@ -687,6 +756,22 @@
                 /* PC端让基础番数/分数并排显示 */
                 max-width: none;
                 /* 取消宽度限制，避免挤压 */
+            }
+
+            .strategy-stage {
+                border-width: 2px; /* 保持边框宽度 */
+                padding: 12px; /* 稍微减少内边距 */
+                margin-bottom: 15px;
+            }
+
+            .stage-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .stage-controls {
+                align-self: flex-end;
             }
         }
 
