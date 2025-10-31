@@ -1619,7 +1619,7 @@
 
         while (!toNextStage) {
             if (talismanEnabled.dy) {
-                outputLines.push(`EX${curLevel}盗印：${formatScientific(dy)}`);
+                outputLines.push(`EX${curLevel}盗印：${formatValueDisplay(dy)}`);
             }
 
             // 考虑亏负重 - 只在负重护身符启用时处理
@@ -1640,7 +1640,7 @@
                 } else {
                     lose_fz--;
                 }
-                outputLines.push(`EX${curLevel}负重：${formatScientific(fz)}`);
+                outputLines.push(`EX${curLevel}负重：${formatValueDisplay(fz)}`);
             }
 
             // 考虑亏月光 - 只在月光护身符启用时处理
@@ -1661,7 +1661,7 @@
                 } else {
                     lose_yg--;
                 }
-                outputLines.push(`EX${curLevel}月光：${formatScientific(yg)}`);
+                outputLines.push(`EX${curLevel}月光：${formatValueDisplay(yg)}`);
             }
 
             // 计算总番数和分数
@@ -1690,7 +1690,7 @@
             const totalFan = zhiShuFan.times(basicFan);
             const totalScore = totalFan.times(basicScore);
 
-            outputLines.push(`----EX${curLevel}分数：${formatScientific(totalScore)}`);
+            outputLines.push(`----EX${curLevel}分数：${formatValueDisplay(totalScore)}`);
 
             // 检查当前关卡是否能通过,如果不能通过，就没有下一阶段了
             if (totalScore.lt(REQUIRED_SCORE[curLevel - 1])) {
@@ -3972,7 +3972,85 @@
             }
         }
     }
+    // 格式化数值显示 - 根据数值大小选择单位或科学计数法
+    function formatValueDisplay(value) {
+        // 如果值小于1e300，用单位显示
+        if (value.lessThan(new Decimal('1e300'))) {
+            return formatWithUnits(value);
+        } else {
+            // 如果值大于等于1e300，用科学计数法显示，保留6位小数
+            return value.toExponential(6);
+        }
+    }
 
+    // 使用单位格式化数值 - 每48位替换一个"极"
+    function formatWithUnits(value) {
+        // 定义单位对照表（从大到小）
+        const units = [
+            { name: "极", magnitude: 48 },
+            { name: "载", magnitude: 44 },
+            { name: "正", magnitude: 40 },
+            { name: "涧", magnitude: 36 },
+            { name: "沟", magnitude: 32 },
+            { name: "穰", magnitude: 28 },
+            { name: "秭", magnitude: 24 },
+            { name: "垓", magnitude: 20 },
+            { name: "京", magnitude: 16 },
+            { name: "兆", magnitude: 12 },
+            { name: "亿", magnitude: 8 },
+            { name: "万", magnitude: 4 }
+        ];
+
+        // 计算数值的数量级
+        const magnitude = value.log(10);
+
+        // 如果数值小于1万，直接显示
+        if (magnitude < 4) {
+            return value.toDecimalPlaces(2).toString();
+        }
+
+        // 计算需要多少个"极"单位
+        let jiCount = 0;
+        let remainingMagnitude = magnitude;
+
+        // 每48位添加一个"极"
+        while (remainingMagnitude >= 48) {
+            jiCount++;
+            remainingMagnitude -= 48;
+        }
+
+        // 找到适合的单位
+        let unit = null;
+        for (let u of units) {
+            if (remainingMagnitude >= u.magnitude) {
+                unit = u;
+                break;
+            }
+        }
+
+        // 计算显示值
+        let displayValue = value;
+        let unitStr = "";
+
+        // 处理"极"单位
+        if (jiCount > 0) {
+            for (let i = 0; i < jiCount; i++) {
+                displayValue = displayValue.dividedBy(Decimal.pow(10, 48));
+                unitStr += "极";
+            }
+        }
+
+        // 处理其他单位
+        if (unit) {
+            displayValue = displayValue.dividedBy(Decimal.pow(10, unit.magnitude));
+            unitStr = unit.name + unitStr;
+        }
+
+        // 保留两位小数
+        const formattedValue = displayValue.toDecimalPlaces(2).toString();
+
+        return formattedValue + unitStr;
+    }
     // 初始化函数
     function init() {
         // 事件监听
