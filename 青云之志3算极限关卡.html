@@ -2485,7 +2485,7 @@
             .getElementById('ygTalismanEnabled').checked);
     }
 
-    // 新增：立即同步阶段1的值到顶部
+    // 同步阶段1的值到顶部 - 修改版（确保自定义护身符正确同步）
     function syncStage1ToTop(stageData) {
         document.getElementById('dy_type').value = stageData.dy_type;
         document.getElementById('fz_type').value = stageData.fz_type;
@@ -2511,31 +2511,93 @@
         syncStage1CustomParamsToTop();
     }
 
-    // 删除阶段
+    // 删除阶段 - 修改版（删除第一个阶段后同步新阶段1到上方，无阶段时保持上方参数不变）
     function removeStage(stageId) {
         const element = document.getElementById(stageId);
         if (element) {
+            const isFirstStage = element.id === 'stage1';
             element.remove();
+
             // 重新编号所有阶段
             renumberStages();
+
+            // 如果删除的是第一个阶段，并且有新的阶段1，则同步到上方
+            if (isFirstStage) {
+                const newFirstStage = document.querySelector('.strategy-stage');
+                if (newFirstStage) {
+                    syncStage1ToTop(getStageData(newFirstStage));
+                }
+                // 如果没有阶段了，保持上方参数不变
+            }
         }
     }
 
-    // 重新编号阶段
+    // 获取阶段的完整数据
+    function getStageData(stageElement) {
+        const customizedParams = getStageCustomParamsData(stageElement);
+
+        return {
+            name: stageElement.querySelector('.stage-name').value,
+            actualLevel: parseInt(stageElement.querySelector('.actual-level').value) || 0,
+            dy_type: stageElement.querySelector('.dy-type').value,
+            fz_type: stageElement.querySelector('.fz-type').value,
+            yg_type: stageElement.querySelector('.yg-type').value,
+            basicFan: parseInt(stageElement.querySelector('.basic-fan').value),
+            basicScore: parseInt(stageElement.querySelector('.basic-score').value),
+            dy_times: parseInt(stageElement.querySelector('.dy-times').value),
+            fz_times: parseInt(stageElement.querySelector('.fz-times').value),
+            yg_times: parseInt(stageElement.querySelector('.yg-times').value),
+            eat_fog: parseInt(getValueOrDefault(stageElement.querySelector('.eat-fog').value, 0)),
+            lose_fz: parseInt(getValueOrDefault(stageElement.querySelector('.lose-fz').value, 0)),
+            lose_yg: parseInt(getValueOrDefault(stageElement.querySelector('.lose-yg').value, 0)),
+            dy_enabled: stageElement.querySelector('.stage-dy-enabled').checked,
+            fz_enabled: stageElement.querySelector('.stage-fz-enabled').checked,
+            yg_enabled: stageElement.querySelector('.stage-yg-enabled').checked,
+            customizedParams: customizedParams
+        };
+    }
+
+    // 重新编号阶段 - 修改版（确保阶段1正确绑定）
     function renumberStages() {
         const stages = document.querySelectorAll('.strategy-stage');
         stageCounter = 1;
         stages.forEach((stage, index) => {
             const title = stage.querySelector('.stage-title');
             const nameInput = stage.querySelector('.stage-name');
+            const newStageId = `stage${index + 1}`;
+
+            // 更新阶段ID
+            stage.id = newStageId;
+
+            // 更新阶段标题
             title.textContent = `阶段 ${index + 1}`;
+
+            // 更新阶段名称（如果是默认名称）
             if (nameInput.value === `阶段${stageCounter}` || nameInput.value.includes('阶段')) {
                 nameInput.value = `阶段${index + 1}`;
             }
 
+            // 更新自定义护身符容器的ID
+            const customParamsContainer = stage.querySelector('.stage-custom-params-container');
+            if (customParamsContainer) {
+                customParamsContainer.id = `stageCustomParams-${newStageId}`;
+            }
+
+            // 更新删除按钮的onclick事件
+            const removeButton = stage.querySelector('.remove-stage');
+            if (removeButton) {
+                removeButton.setAttribute('onclick', `removeStage('${newStageId}')`);
+            }
+
+            // 更新添加自定义护身符按钮的onclick事件
+            const addCustomParamButton = stage.querySelector('.add-stage-custom-param-btn');
+            if (addCustomParamButton) {
+                addCustomParamButton.setAttribute('onclick', `addStageCustomParam('${newStageId}')`);
+            }
+
             // 如果是第一个阶段，重新设置双向绑定
             if (index === 0) {
-                setupStage1Binding(stage.id);
+                setupStage1Binding(newStageId);
             }
 
             stageCounter++;
