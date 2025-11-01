@@ -8,6 +8,14 @@
     ],
     "routes": [
         {
+            "src": "/favicon.ico",
+            "dest": "/favicon.ico",
+            "headers": {
+                "Cache-Control": "public, max-age=86400",
+                "Content-Type": "image/x-icon"
+            }
+        },
+        {
             "src": "/",
             "dest": "/青云之志3算极限关卡.html"
         }
