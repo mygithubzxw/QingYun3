@@ -8,6 +8,13 @@
     ],
     "routes": [
         {
+            "src": "/js/(.*)",
+            "dest": "/js/$1",
+            "headers": {
+                "Cache-Control": "public, max-age=31536000, immutable"
+            }
+        },
+        {
             "src": "/favicon.ico",
             "dest": "/favicon.ico",
             "headers": {
@@ -17,7 +24,11 @@
         },
         {
             "src": "/",
-            "dest": "/青云之志3算极限关卡.html"
+            "dest": "/%E9%9D%92%E4%BA%91%E4%B9%8B%E5%BF%973%E7%AE%97%E6%9E%81%E9%99%90%E5%85%B3%E5%8D%A1.html"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/%E9%9D%92%E4%BA%91%E4%B9%8B%E5%BF%973%E7%AE%97%E6%9E%81%E9%99%90%E5%85%B3%E5%8D%A1.html"
         }
     ]
 }
