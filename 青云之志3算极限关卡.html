@@ -2768,7 +2768,7 @@
 
             if (valueInput && timesInput && nameInput) {
                 try {
-                    const value = valueInput.value;
+                    const value = parseValue(valueInput.value);
                     const times = parseInt(timesInput.value) || 0;
                     const name = nameInput.value;
 
