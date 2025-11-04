@@ -1091,8 +1091,173 @@
         .input-content.collapsed {
             display: none;
         }
+
+        /* 提示图标样式 */
+        .preset-tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .preset-tooltip-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 提示框样式 - 修复版 */
+        .strategy-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            max-width: 90vw;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            user-select: none; /* 防止文本选择 */
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-content {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .modal-content h3 {
+            color: #2575fc;
+            margin: 15px 0 10px;
+            font-size: 16px;
+        }
+
+        .modal-content p {
+            margin-bottom: 10px;
+        }
+
+        .modal-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .modal-content li {
+            margin-bottom: 8px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        /* 预设按钮容器样式调整 */
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .preset-btn-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .strategy-modal {
+                width: 95vw;
+            }
+
+            .preset-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .preset-btn-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
     </style>
 </head>
+<!-- 策略提示模态框 -->
+<div class="strategy-modal" id="strategyModal">
+    <div class="modal-header" id="modalHeader">
+        <div class="modal-title" id="modalTitle">策略说明</div>
+        <button class="modal-close" id="modalClose">×</button>
+    </div>
+    <div class="modal-content" id="modalContent">
+        <!-- 内容将通过JavaScript动态填充 -->
+    </div>
+</div>
+<div class="modal-overlay" id="modalOverlay"></div>
+
 <body>
 <div class="container">
     <header>
@@ -1291,14 +1456,22 @@
                 <div class="strategy-presets">
                     <h3>预设策略</h3>
                     <div class="preset-buttons">
-                        <button class="preset-btn" data-preset="standard" id="twoInflationBtn">
-                            膨胀盗印膨胀负重普通月光
-                        </button>
-                        <button class="preset-btn" data-preset="singleDyHacker" id="singleDyHackerBtn">单盗印黑客
-                        </button>
-                        <button class="preset-btn" data-preset="inflationDyFzHacker" id="inflationDyFzHackerBtn">
-                            膨胀盗印膨胀负重黑客
-                        </button>
+                        <div class="preset-btn-container">
+                            <button class="preset-btn" data-preset="standard" id="twoInflationBtn">
+                                膨胀盗印膨胀负重普通月光
+                            </button>
+                            <span class="preset-tooltip-icon" data-preset="standard">?</span>
+                        </div>
+                        <div class="preset-btn-container">
+                            <button class="preset-btn" data-preset="singleDyHacker" id="singleDyHackerBtn">单盗印黑客</button>
+                            <span class="preset-tooltip-icon" data-preset="singleDyHacker">?</span>
+                        </div>
+                        <div class="preset-btn-container">
+                            <button class="preset-btn" data-preset="inflationDyFzHacker" id="inflationDyFzHackerBtn">
+                                膨胀盗印膨胀负重黑客
+                            </button>
+                            <span class="preset-tooltip-icon" data-preset="inflationDyFzHacker">?</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3075,7 +3248,7 @@
         syncStage1ToTop(twoInflationStrategy[0]);
 
         // 显示提示信息
-        alert("此为膨胀盗印+膨胀负重+普通月光的标准策略；\n阶段2的实际开始关卡就是改出传导卡维的那关，如果为空，则表示没改出传导卡维，就不会执行后续阶段了；\n吸星按照1万星币来算");
+        //alert("此为膨胀盗印+膨胀负重+普通月光的标准策略；\n阶段2的实际开始关卡就是改出传导卡维的那关，如果为空，则表示没改出传导卡维，就不会执行后续阶段了；\n吸星按照1万星币来算");
     }
 
     // 单盗印黑客策略配置
@@ -3133,28 +3306,13 @@
             yg_enabled: false
         },
         {
-            name: "吸星入链",
-            actualLevel: 0,
-            dy_type: "普通盗印",
-            fz_type: "普通负重",
-            basicFan: 19,
-            basicScore: 100000,
-            dy_times: 6,
-            fz_times: 5,
-            eat_fog: 0,
-            lose_fz: 0,
-            dy_enabled: true,
-            fz_enabled: true,
-            yg_enabled: false
-        },
-        {
-            name: "月光入链",
+            name: "月光吸星入链",
             actualLevel: 0,
             dy_type: "普通盗印",
             fz_type: "普通负重",
             yg_type: "普通月光",
             basicFan: 19,
-            basicScore: 100000,
+            basicScore: 1000000,
             dy_times: 7,
             fz_times: 6,
             yg_times: 5,
@@ -3172,7 +3330,7 @@
             fz_type: "普通负重",
             yg_type: "普通月光",
             basicFan: 19,
-            basicScore: 100000,
+            basicScore: 1000000,
             dy_times: 8,
             fz_times: 7,
             yg_times: 6,
@@ -3199,8 +3357,8 @@
         syncStage1ToTop(singleDyHackerStrategy[0]);
 
         // 显示提示信息
-        alert("此为单盗印黑客基础策略" +
-            "\n转到下一个阶段的实际开始关卡需要自己根据实际情况填写；\n吸星入链按1万星币来算；\n不考虑天恩往前移的步骤");
+       // alert("此为单盗印黑客基础策略" +
+       //     "\n转到下一个阶段的实际开始关卡需要自己根据实际情况填写；\n吸星入链按1万星币来算；\n不考虑天恩往前移的步骤");
     }
 
     // 膨胀盗印膨胀负重黑客策略配置
@@ -3389,9 +3547,9 @@
         syncStage1ToTop(inflationDyFzHackerStrategy[0]);
 
         // 显示提示信息
-        alert("此为两指数黑客的一种策略\n1.黑客变盗印是随机的，所以盗印的成长不能得到准确值，最佳实践：建议45关的时候输入参数计算一下极限关卡，然后在卖黑客之前用吃迷雾次数来修正数据，就能知道哪一关找岚星，哪一关开始刷传导卡维\n" +
-            "2.刷传导卡维的实际开始关卡需要根据实际情况来填\n盗印入链后，以找到天恩继续后续阶段，如果是其他乘N番卡，需要自己修改策略\n3.此策略预设的是月光直接入链，月光吸星入链的实际开始关卡需要自己根据实际情况来填\n" +
-            "4.如果有岚星Plus，可以刷天使月光，月光最后入链能多大约4关，则需要修改此策略\n5.负重入链后，此策略是直接卖吸星找琳琅，亏一次月光，如果是其他乘N番卡，需要自己根据情况修改此策略");
+       // alert("此为两指数黑客的一种策略\n1.黑客变盗印是随机的，所以盗印的成长不能得到准确值，最佳实践：建议45关的时候输入参数计算一下极限关卡，然后在卖黑客之前用吃迷雾次数来修正数据，就能知道哪一关找岚星，哪一关开始刷传导卡维\n" +
+        //    "2.刷传导卡维的实际开始关卡需要根据实际情况来填\n盗印入链后，以找到天恩继续后续阶段，如果是其他乘N番卡，需要自己修改策略\n3.此策略预设的是月光直接入链，月光吸星入链的实际开始关卡需要自己根据实际情况来填\n" +
+        //    "4.如果有岚星Plus，可以刷天使月光，月光最后入链能多大约4关，则需要修改此策略\n5.负重入链后，此策略是直接卖吸星找琳琅，亏一次月光，如果是其他乘N番卡，需要自己根据情况修改此策略");
     }
 
     // 关卡分数数据
@@ -4051,6 +4209,200 @@
 
         return formattedValue + unitStr;
     }
+
+    // 策略提示内容
+    const strategyTips = {
+        standard: {
+            title: "膨胀盗印+膨胀负重+普通月光策略说明",
+            content: `
+            <p>此为膨胀盗印+膨胀负重+普通月光的标准策略。</p>
+
+            <h3>使用说明：</h3>
+            <ul>
+                <li>阶段2的实际开始关卡就是改出传导卡维的那关</li>
+                <li>如果为空，则表示没改出传导卡维，就不会执行后续阶段了</li>
+                <li>吸星按照1万星币来算</li>
+            </ul>
+
+            <h3>策略流程：</h3>
+            <ol>
+                <li>改传导卡维 - 使用卡维膨胀盗印</li>
+                <li>改岚星 - 切换到其他卡膨胀盗印</li>
+                <li>岚星入链 - 增加盗印次数</li>
+                <li>月光入链 - 增加月光次数</li>
+                <li>盗印入链 - 切换到普通盗印</li>
+                <li>天恩入链 - 继续增加次数</li>
+                <li>...后续阶段逐步优化链结构</li>
+            </ol>
+
+            <p><strong>注意：</strong>此策略适合大多数标准玩法，可根据实际情况微调。</p>
+        `
+        },
+        singleDyHacker: {
+            title: "单盗印黑客策略说明",
+            content: `
+            <p>此为单盗印黑客基础策略。</p>
+
+            <h3>使用说明：</h3>
+            <ul>
+                <li>转到下一个阶段的实际开始关卡需要自己根据实际情况填写</li>
+                <li>吸星入链按1万星币来算</li>
+                <li>不考虑天恩往前移的步骤</li>
+            </ul>
+
+            <h3>策略流程：</h3>
+            <ol>
+                <li>卡维+膨胀盗印+黑客 - 初始阶段</li>
+                <li>开始刷传导卡维 - 切换到其他卡膨胀盗印</li>
+                <li>天恩入链 - 切换到普通盗印</li>
+                <li>负重入链 - 启用负重护身符</li>
+                <li>月光吸星入链 - 启用月光护身符</li>
+                <li>8链成型 - 最终阶段</li>
+            </ol>
+
+            <p><strong>注意：</strong>此策略适合单盗印黑客玩法，可根据实际游戏进展调整策略。</p>
+        `
+        },
+        inflationDyFzHacker: {
+            title: "膨胀盗印+膨胀负重+黑客策略说明",
+            content: `
+            <p>此为两指数黑客的一种策略。</p>
+
+            <h3>使用说明：</h3>
+            <ul>
+                <li>黑客变盗印是随机的，所以盗印的成长不能得到准确值</li>
+                <li>最佳实践：建议45关的时候输入参数计算一下极限关卡，然后在卖黑客之前用吃迷雾次数来修正数据，就能知道哪一关找岚星，哪一关开始刷传导卡维</li>
+                <li>刷传导卡维的实际开始关卡需要根据实际情况来填</li>
+                <li>盗印入链后，以找到天恩继续后续阶段，如果是其他乘N番卡，需要修改策略</li>
+                <li>此策略预设的是月光直接入链，月光吸星入链的实际开始关卡需要自己根据实际情况来填</li>
+                <li>如果有岚星Plus，可以刷天使月光，月光最后入链，能多大约4关，需要修改此策略</li>
+                <li>负重入链后，此策略是直接卖吸星找琳琅，亏一次月光，如果是其他乘N番卡，需要修改此策略</li>
+            </ul>
+
+            <h3>策略流程：</h3>
+            <ol>
+                <li>两指数黑客 - 初始阶段</li>
+                <li>刷传导卡维 - 切换到其他卡膨胀盗印</li>
+                <li>盗印入链 - 切换到普通盗印</li>
+                <li>月光吸星入链 - 启用月光护身符</li>
+                <li>天恩移到月光前面 - 优化链结构</li>
+                <li>负重琳琅入链 - 启用负重和自定义护身符</li>
+                <li>最终8链成型 - 完整链结构</li>
+            </ol>
+
+            <p><strong>注意：</strong>此策略包含自定义护身符"琳琅"，可根据实际情况调整数值。</p>
+        `
+        }
+    };
+
+    // 初始化策略提示功能
+    function initStrategyTips() {
+        // 获取DOM元素
+        const modal = document.getElementById('strategyModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const modalClose = document.getElementById('modalClose');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalHeader = document.getElementById('modalHeader');
+
+        // 所有提示图标
+        const tooltipIcons = document.querySelectorAll('.preset-tooltip-icon');
+
+        // 为每个提示图标添加点击事件
+        tooltipIcons.forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const preset = this.getAttribute('data-preset');
+                showStrategyModal(preset);
+            });
+        });
+
+        // 关闭按钮事件
+        modalClose.addEventListener('click', closeModal);
+
+        // 点击遮罩层关闭
+        modalOverlay.addEventListener('click', closeModal);
+
+        // ESC键关闭
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                closeModal();
+            }
+        });
+
+// 显示策略提示框
+        function showStrategyModal(preset) {
+            if (strategyTips[preset]) {
+                modalTitle.textContent = strategyTips[preset].title;
+                modalContent.innerHTML = strategyTips[preset].content;
+                modal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+
+                // 重置模态框位置到中心
+                modal.style.left = '50%';
+                modal.style.top = '50%';
+                modal.style.transform = 'translate(-50%, -50%)';
+
+                // 初始化拖拽功能
+                initModalDrag(modal, modalHeader);
+            }
+        }
+
+// 关闭模态框
+        function closeModal() {
+            modal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+
+            // 重置模态框位置和变换
+            modal.style.left = '50%';
+            modal.style.top = '50%';
+            modal.style.transform = 'translate(-50%, -50%)';
+        }
+
+// 初始化模态框拖拽功能
+        function initModalDrag(modal, header) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            header.addEventListener("mousedown", dragStart);
+            document.addEventListener("mousemove", drag);
+            document.addEventListener("mouseup", dragEnd);
+
+            function dragStart(e) {
+                isDragging = true;
+
+                // 获取鼠标初始位置
+                startX = e.clientX;
+                startY = e.clientY;
+
+                // 获取模态框当前的位置
+                const rect = modal.getBoundingClientRect();
+                initialX = rect.left;
+                initialY = rect.top;
+
+                // 防止文本选择
+                e.preventDefault();
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+
+                // 计算移动距离
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                // 应用新的位置
+                modal.style.left = `${initialX + dx}px`;
+                modal.style.top = `${initialY + dy}px`;
+                modal.style.transform = 'none'; // 移除transform，使用left/top定位
+            }
+
+            function dragEnd(e) {
+                isDragging = false;
+            }
+        }
+    }
+
     // 初始化函数
     function init() {
         // 事件监听
@@ -4300,6 +4652,9 @@
 
         // 设置阶段同步功能
         setupStageSync();
+
+        // 初始化策略提示功能
+        initStrategyTips();
     }
 
     // 页面加载完成后初始化
